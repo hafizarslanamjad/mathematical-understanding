@@ -2,6 +2,8 @@
 
 This repository contains the source and rendered HTML version of **Before Mathematics Begins: How Language and Visual Representation Shape Mathematical Understanding**, an article by Hafiz Arslan Amjad.
 
+**[Read the article online](https://hafizarslanamjad.github.io/mathematical-understanding/article.html)**
+
 The article investigates a process that occurs before formal mathematical reasoning: the learner must interpret external representations and organize them into a mental model. Its central argument is that mathematical explanations should be evaluated not only for correctness, but also for how effectively their language, notation, diagrams, examples, and sequence support the construction of meaning.
 
 Mathematical equations or other mathematical subjects may appear as case studies, but they are not the primary subject. The article is concerned with the design of mathematical explanations and draws conceptually from cognitive psychology, instructional design, linguistics, and mathematics education.
