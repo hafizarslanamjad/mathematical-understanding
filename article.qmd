@@ -1,0 +1,303 @@
+---
+title: "Before Mathematics Begins"
+subtitle: "How Language and Visual Representation Shape Mathematical Understanding"
+author: "Hafiz Arslan Amjad"
+date: today
+
+format:
+  html:
+    toc: true
+    number-sections: true
+    embed-resources: true
+    code-fold: false
+  pdf:
+    toc: true
+    number-sections: true
+
+execute:
+  echo: false
+  warning: false
+---
+
+# Introduction {.unnumbered}
+
+When students struggle with mathematics, the difficulty is usually attributed to weak computational skills, insufficient logical ability, or an incomplete understanding of the underlying concept. This diagnosis appears reasonable because mathematics is commonly viewed as a discipline of numbers, symbols, equations, and formal reasoning. If a learner produces an incorrect answer, it therefore seems natural to conclude that the mathematical reasoning itself has failed.
+
+This view overlooks a process that begins before formal mathematical reasoning becomes possible. A learner cannot reason about an explanation merely because the explanation has been presented. Spoken words, written sentences, mathematical symbols, diagrams, gestures, and visual cues constitute external representations of mathematical ideas. These representations must first be perceived and interpreted. The learner then constructs an internal representation—a mental structure that captures the meaning and relationships conveyed by the external representations. It is this internal representation, rather than the external representations themselves, upon which mathematical reasoning operates.
+
+The following diagram presents a deliberately simplified first model of this process. Its purpose is not to claim that understanding always develops through a rigid sequence, but to make visible the representational work that precedes explicit mathematical reasoning.
+
+```{mermaid}
+%%| fig-cap: "A simplified first model of the representational work that makes mathematical reasoning possible."
+%%| label: fig-before-reasoning
+
+flowchart LR
+    A["External representations"] --> B["Perception and interpretation"]
+    B --> C["Internal representations"]
+    C --> D["Organized mental model"]
+    D --> E["Mathematical reasoning"]
+```
+
+An internal representation is not yet necessarily a coherent mental model. A learner may remember the appearance of a symbol, understand the meaning of an individual sentence, or visualize part of a diagram without understanding how these elements are related. A mental model arises when such internal representations become organized into a structure that supports explanation, inference, prediction, or further reasoning. The movement from external presentation to understanding is therefore not simply the transfer of information into the mind; it is the construction of relationships among internally represented elements.
+
+This process is also not entirely linear. An emerging mental model influences what the learner notices when returning to the explanation. Initial reasoning may reveal a contradiction or missing relationship, causing the learner to reinterpret an earlier sentence, symbol, or diagram. Understanding therefore develops through repeated movement between external representations, interpretation, mental-model construction, and reasoning.
+
+```{mermaid}
+%%| fig-cap: "Understanding develops recursively: emerging models guide attention, while reasoning reveals where reinterpretation is needed."
+%%| label: fig-recursive-understanding
+
+flowchart LR
+    A["External representations"] --> B["Interpretation"]
+    B --> C["Emerging mental model"]
+    C --> D["Mathematical reasoning"]
+    C -. "guides attention" .-> A
+    D -. "reveals gaps" .-> B
+```
+
+A useful, though incomplete, analogy is that of constructing a building. Delivering bricks, beams, windows, and doors to a construction site does not produce a usable house. The materials must be organized according to a structure. Mathematical explanations create a more demanding problem, however, because their components do not always arrive with their roles already established. A learner may have to determine what a symbol means, identify which sentence explains it, discover how a diagram corresponds to it, and infer the larger structure connecting them. The learner is therefore not merely assembling known materials according to an available blueprint; the learner may be identifying the materials, reconstructing the blueprint, and building the structure at the same time.
+
+```{mermaid}
+%%| fig-cap: "The learner must often infer both the meanings of representational components and the structure that connects them."
+%%| label: fig-construction-problem
+
+flowchart TD
+    A["Representational components"] --> B["What does each component mean?"]
+    A --> C["How are the components related?"]
+    B --> D["Emerging structure"]
+    C --> D
+    D --> E["Usable mental model"]
+```
+
+This hidden work is easy to overlook because expertise changes how representations are perceived. An experienced learner does not merely interpret the same isolated pieces more quickly. Familiar elements have become organized into larger, meaningful units. For example, a beginner may initially encounter \(y=2x\) as several symbols whose individual roles must be decoded. A more experienced learner may recognize the expression as a single relational structure: one quantity varies at twice the rate of another, and the same relationship can be represented by a table, a graph, or a verbal description. The difference between beginners and experts therefore cannot be reduced to general intelligence or processing speed. An explanation that ignores this difference may be mathematically correct while still requiring the beginner to reconstruct connections that the expert no longer notices as separate.
+
+```{mermaid}
+%%| fig-cap: "Experience changes the organization of what is perceived: isolated elements become a coordinated relational structure."
+%%| label: fig-expert-novice
+
+flowchart TD
+    A["The expression y = 2x"] --> B["Beginning learner"]
+    A --> C["Experienced learner"]
+    B --> D["y, equals sign, 2, and x treated as separate elements"]
+    C --> E["One relationship connecting two varying quantities"]
+    D --> F["Additional work needed to coordinate the elements"]
+    E --> G["Immediate access to related meanings and representations"]
+```
+
+This does not mean that every mathematical difficulty is merely a linguistic or visual misunderstanding. Learners may also struggle because of missing prerequisite knowledge, inaccurate concepts, insufficient fluency, anxiety, limitations of attention, or the inherent complexity of the mathematical relationships involved. The more defensible claim is that many difficulties that become visible during mathematical reasoning originate, at least partly, in the representational work required before and during that reasoning. Because mathematical thought operates through representations, representational difficulty and mathematical difficulty cannot always be separated cleanly.
+
+The purpose of explanatory design is not to eliminate all cognitive effort. Understanding necessarily requires work: learners must compare cases, identify relationships, coordinate representations, test interpretations, and revise incomplete models. The relevant distinction is between productive work that contributes directly to understanding and avoidable work created by the explanation itself. Ambiguous language, unexplained notation, inconsistent terminology, poorly aligned diagrams, and disordered presentation can force learners to spend cognitive resources repairing the explanation before they can investigate the mathematics.
+
+```{mermaid}
+%%| fig-cap: "Explanatory design should preserve productive intellectual work while reducing avoidable interpretive repair."
+%%| label: fig-productive-avoidable-work
+
+flowchart LR
+    A["Learner's cognitive effort"] --> B["Productive construction"]
+    A --> C["Avoidable interpretive repair"]
+    B --> D["Compare, connect, infer, and revise"]
+    C --> E["Decode ambiguity, resolve inconsistency, and reconstruct order"]
+    D --> F["Stronger mental model"]
+    E --> G["Resources diverted before mathematical reasoning"]
+```
+
+Good explanatory design does not remove the work of understanding. It protects that work from being displaced by unnecessary interpretation, reorganization, and ambiguity resolution. Mathematical correctness is therefore necessary but insufficient. An explanation must also be designed so that its language, notation, visual structure, and sequence help the intended relationships become perceptible and support the construction of a usable mental model.
+
+The purpose of this article is to investigate this usually hidden stage of mathematical understanding. Rather than asking only how mathematical ideas should be stated, demonstrated, or computed, it asks a more fundamental question:
+
+> How should mathematical explanations be designed so that they align with the processes through which the human mind constructs meaning?
+
+The sections that follow will examine how language, mathematical notation, diagrams, spatial organization, sequencing, and prior knowledge interact during this construction. The subject of the investigation is not any one branch of mathematics, but the design of explanations that make mathematical relationships available for thought.
+
+# When Information Is Present but Structure Is Hidden
+
+As noted in the above discussion that information becomes usable for mathematical reasoning only when the learner can organize it into relationships. The word *usable* is important. A fact may be present in an explanation and may even be remembered correctly, yet still remain unavailable for inference because its *role* within the larger structure has not been established.
+
+Consider a tank that initially contains \(120\) litres of water and loses \(15\) litres every minute. Let \(t\) represent the number of minutes that have passed, and let \(Q(t)\) represent the quantity of water remaining after \(t\) minutes. All the information needed to describe the situation is contained in these statements. Nevertheless, the numbers \(120\) and \(15\) do not play equivalent roles. The value \(120\) describes the quantity present before any water has left, whereas \(15\) describes a repeated change occurring during every minute. The variable \(t\) determines how many times that change has accumulated, and \(Q(t)\) represents the resulting quantity.
+
+```{mermaid}
+%%| fig-cap: "The mathematical structure becomes visible when each piece of information is assigned a role and the relationships among those roles are made explicit."
+%%| label: fig-information-structure
+
+flowchart TD
+    A["Initial quantity<br/>120 litres"] --> D["Quantity remaining<br/>Q(t)"]
+    B["Change per minute<br/>−15 litres"] --> C["Accumulated change<br/>−15t"]
+    E["Elapsed time<br/>t minutes"] --> C
+    C --> D
+    D --> F["Q(t) = 120 − 15t"]
+```
+
+The diagram does not add another fact to the problem. Instead, it exposes the organization that was implicit in the verbal description. The equation
+
+\[
+Q(t)=120-15t
+\]
+
+compresses this same relational structure into symbolic form. The value \(120\) appears as the starting quantity, the product \(15t\) represents the accumulated loss, and subtraction expresses the direction of change. The equation is therefore not merely a collection of the symbols mentioned in the explanation. Its arrangement records how the represented quantities are related.
+
+However, the equation does not automatically make the relationship visible to every learner. For someone familiar with linear relationships, \(Q(t)=120-15t\) may immediately express an initial value and a constant rate of decrease. For a beginner, it may become another external representation requiring interpretation. The instructional value of the equation therefore depends on whether the learner can connect its symbolic organization to the situation it represents. The diagram serves as a bridge because it makes explicit the relationships that the equation expresses compactly. This case reveals the difference between supplying information and designing an explanation. Supplying information ensures that all required facts are present. Designing an explanation determines whether the roles and relationships among those facts can be perceived.
+
+## The Hidden Work of Reconstructing Relationships
+
+When an explanation leaves important relationships implicit, the learner must supply the missing organization. The learner must determine the role of each piece of information, identify which elements refer to the same object or quantity, infer how those elements are connected, arrange them into a coherent structure, and test whether the resulting interpretation is consistent with the rest of the explanation. These activities may occur rapidly and interactively rather than as a fixed sequence, but separating them analytically allows us to see the cognitive work that a poorly organized explanation transfers to the learner.
+
+The first requirement is **role assignment**. In the tank example, the values \(120\), \(15\), and \(t\) are not meaningful merely because they have been identified. The learner must determine that \(120\) is an initial quantity, \(15\) is a rate, and \(t\) is a duration. A number does not announce its mathematical role by itself. The role emerges from the language surrounding it, the units attached to it, and its relationship to other quantities. If these cues are weak, the learner must search the explanation and infer the intended function of each value.
+
+The second requirement is **reference binding**: the learner must determine which words, symbols, and visual elements refer to the same underlying quantity. The phrases “water remaining,” “quantity in the tank,” and \(Q(t)\), for example, may all refer to one changing quantity. Unless this identity is made clear, the learner may preserve them as separate pieces of information rather than treating them as different representations of the same object. Similar difficulty arises when a diagram uses one label, the prose uses another, and an equation introduces a third without explicitly connecting them.
+
+The third requirement is **relational integration**. After assigning roles and binding references, the learner must determine how the quantities affect one another. Knowing that \(15\) is a rate and \(t\) is a duration is not sufficient. The learner must infer that multiplying them produces the total amount removed after \(t\) minutes. The learner must then connect that accumulated loss to the initial quantity through subtraction. The mathematical model emerges only when these local relationships are integrated into a larger structure.
+
+```{mermaid}
+%%| fig-cap: "When relationships remain implicit, the learner must reconstruct the organization required for reasoning."
+%%| label: fig-hidden-reconstruction
+
+flowchart TD
+    A["Presented information<br/>120, 15, t, Q(t)"] --> B["Assign roles<br/>initial value, rate, duration, result"]
+    B --> C["Bind references<br/>connect words, symbols, and quantities"]
+    C --> D["Infer local relationships<br/>rate × time = accumulated change"]
+    D --> E["Construct a global structure<br/>initial quantity − accumulated change"]
+    E --> F["Test for coherence<br/>Does the model fit the situation?"]
+    F -. "revise if necessary" .-> B
+```
+
+The final requirement is **coherence testing**. A learner must decide whether the constructed model behaves as the described situation should behave. If no time has passed, substituting \(t=0\) should produce the initial quantity:
+
+\[
+Q(0)=120-15(0)=120.
+\]
+
+After one minute, the quantity should be \(15\) litres smaller:
+
+\[
+Q(1)=120-15(1)=105.
+\]
+
+These substitutions do more than calculate answers. They test whether the inferred structure preserves the meaning of the original situation. If the learner had written \(Q(t)=15-120t\), the expression would contain the same visible numbers and variable, yet the checks would reveal that their roles and relationships had been organized incorrectly. The reconstruction process therefore involves several forms of uncertainty. The learner may be uncertain about what an element represents, which elements belong together, which operation expresses their relationship, or whether the completed structure is consistent with the situation.
+
+## Productive Inference and Avoidable Interpretive Repair
+
+The previous discussion creates a possible misunderstanding. If implicit relationships require additional cognitive work, it may appear that every effective explanation should state every relationship explicitly. Such a conclusion would be mistaken. Mathematical learning depends upon inference. Learners must discover patterns, coordinate ideas, test conjectures, and construct relationships that have not been stated in advance. An explanation that removes all such work may become easy to follow while providing little opportunity for understanding to develop. The purpose of explanatory design is therefore not to eliminate difficulty, but to distinguish difficulty that serves the learning objective from difficulty produced accidentally by the presentation.
+
+We can call the first kind of work **productive inference**. Productive inference occurs when the learner’s effort is directed toward the mathematical relationship that the lesson intends to develop. If learners are studying how verbal descriptions can be converted into linear models, asking them to determine that the tank is represented by \(Q(t)=120-15t\) may be entirely appropriate. Identifying the initial value, interpreting the rate, and deciding how elapsed time affects the remaining quantity are then not obstacles surrounding the lesson; they are the substance of the lesson.
+
+The second kind of work can be called **avoidable interpretive repair**. It occurs when the learner must resolve a problem created by the explanation rather than investigate the intended mathematical idea. Suppose a textbook describes the remaining water as \(Q(t)\), labels the same quantity as \(W\) in a diagram, and then uses \(A(t)\) in an equation without explaining that all three symbols refer to the same quantity. Determining whether \(Q(t)\), \(W\), and \(A(t)\) are equivalent does not deepen the learner’s understanding of linear change. It consumes effort because the external representations have not been coordinated.
+
+| Kind of cognitive work | Source of the difficulty | What the learner must do | Relationship to the learning objective |
+|---|---|---|---|
+| Productive inference | The mathematical relationship being studied | Compare, infer, connect, test, or generalize | Directly develops the intended understanding |
+| Interpretive repair | Ambiguity, inconsistency, omission, or poor coordination in the explanation | Decode terminology, reconcile labels, recover references, or reconstruct presentation order | Consumes effort without directly developing the intended understanding |
+
+```{mermaid}
+%%| fig-cap: "The educational value of cognitive effort depends on whether it is directed toward the intended object of learning."
+%%| label: fig-productive-or-repair
+
+flowchart TD
+    A["Cognitive effort required"] --> B{"What produces the effort?"}
+    B -->|"The target relationship"| C["Productive inference"]
+    B -->|"A defect in presentation"| D["Interpretive repair"]
+    C --> E["Constructs intended understanding"]
+    D --> F["Diverts resources from intended understanding"]
+```
+
+
+Determining whether an inference is productive requires attention to prior knowledge. A relationship that is a reasonable object of discovery for one learner may be an inaccessible prerequisite for another. Similarly, a connection that an expert regards as obvious may require substantial reconstruction from a beginner. Explanatory design must therefore consider not only the mathematical content and instructional objective, but also the knowledge that the intended reader can reasonably be expected to bring to the explanation.
+
+The central design principle can now be stated more precisely:
+
+> Make prerequisite relationships visible; preserve target relationships for meaningful inference; remove accidental obstacles created by the presentation.
+
+# Prior Knowledge and the Difference Between Expert and Beginner Understanding
+
+An explanation does not enter an empty mind. Every learner encounters it through knowledge already acquired: familiar concepts, remembered examples, established symbol meanings, expectations about how mathematical statements are organized, and previous experience connecting one representation to another. This prior knowledge affects more than what the learner can recall after reading an explanation. It influences what the learner notices, how the presented information is divided into meaningful units, which relationships appear immediately, and which relationships must be constructed deliberately. The same explanation can therefore produce different mental representations in different learners even when both attend to exactly the same words, symbols, and diagrams. Prior knowledge thus changes the effective structure of the information presented to the learner.
+
+Consider again the expression
+
+\[
+Q(t)=120-15t.
+\]
+
+A beginner may initially encounter this expression as a sequence of separate objects: a letter \(Q\), parentheses, another letter \(t\), an equals sign, the number \(120\), a subtraction sign, the number \(15\), and another occurrence of \(t\). Even if the learner knows the conventional meaning of each symbol, the relationship expressed by the complete equation may not yet be available. The learner must determine that \(Q(t)\) represents a quantity depending on time, that \(120\) is an initial value, that \(-15\) is a constant rate of change, and that multiplication by \(t\) accumulates this change over time.
+
+An experienced learner is more likely to perceive the same expression as an instance of a familiar structure:
+
+\[
+\text{(current quantity)}
+=
+\text{(initial quantity)}
++
+(\text{(rate of change)})(\text{(elapsed time)}).
+\]
+
+The equation is recognized not merely as a line of notation but as a linear model. This recognition can also activate related expectations: the graph should be a straight line, its vertical intercept should be \(120\), its slope should be \(-15\), and the represented quantity should decrease as \(t\) increases. A compact symbolic expression therefore activates a network of relationships for the expert that may not yet exist for the beginner.
+
+```{mermaid}
+%%| fig-cap: "The same external expression can be organized into different internal units depending on the learner's prior knowledge."
+%%| label: fig-prior-knowledge-organization
+
+flowchart TD
+    A["Same external expression<br/>Q(t) = 120 − 15t"] --> B["Limited relevant prior knowledge"]
+    A --> C["Organized relevant prior knowledge"]
+    B --> D["Separate symbols and local meanings"]
+    D --> E["Relationships require deliberate construction"]
+    C --> F["Recognized linear-model structure"]
+    F --> G["Initial value, rate, dependence, and graph become connected"]
+```
+
+The diagram does not imply that every beginner necessarily follows the left path or that every expert immediately follows the right one. Expertise is domain-specific rather than universal. A professional mathematician may process an elementary algebraic equation as a unified structure while becoming a beginner when encountering unfamiliar notation in another field. Similarly, a student may recognize one type of linear equation fluently but struggle when the same relationship is expressed through unfamiliar language or a diagram. The relevant distinction is therefore not between fixed categories of people, but between different states of organized prior knowledge in relation to a particular explanation.
+
+Prior knowledge also guides interpretation when an explanation is incomplete or ambiguous. But this creates an important problem in explanatory design. Authors naturally evaluate explanations through their own understanding, but their understanding supplies connections that may not be present in the external presentation. What appears to be visible on the page may actually be visible only because the author already knows what the page is intended to mean. The expert may therefore mistake the accessibility of personal knowledge for the clarity of the explanation.
+
+```{mermaid}
+%%| fig-cap: "An expert may unknowingly complete an explanation with relationships supplied by prior knowledge."
+%%| label: fig-expert-completion
+
+flowchart LR
+    A["Incomplete external explanation"] --> B["Expert prior knowledge"]
+    B --> C["Missing relationship supplied automatically"]
+    C --> D["Explanation appears complete"]
+    A --> E["Beginner's available knowledge"]
+    E --> F["Missing relationship remains missing"]
+```
+
+Prior knowledge therefore determines part of the boundary between productive inference and interpretive repair. The same omitted relationship may invite useful discovery from a prepared learner but create directionless reconstruction for a learner who lacks the necessary conceptual resources. Explanatory design cannot be evaluated solely by examining the information on the page. It must also consider the knowledge required to transform that information into the intended mental model.
+
+# A Framework for Engineering Mathematical Explanations
+
+The argument developed throughout this article can now be expressed as a practical framework. Its point of departure is that an explanation should not be evaluated only by examining whether its statements are mathematically correct. Correctness concerns the validity of the represented mathematics; explanatory design concerns whether an intended learner can construct an appropriate mental model from the representations provided. These criteria are related, but they are not identical.
+
+Design must begin with the mental model that the explanation is intended to support. Before choosing sentences, equations, examples, or diagrams, the author must determine what the learner should be able to perceive and reason about after engaging with the explanation. This intended model should specify the relevant objects, their mathematical roles, the relationships among them, and the inferences those relationships are expected to support. Without such a specification, explanatory choices are likely to follow convention or author preference rather than the requirements of understanding.
+
+The intended model must then be considered in relation to the learner’s probable prior knowledge. The designer must ask which meanings and relationships can reasonably be assumed, which require reactivation, which must be introduced, and which are intended to be constructed by the learner. This prevents the expert’s automatic interpretations from being mistaken for properties of the explanation itself. It also establishes the boundary between legitimate prerequisite knowledge and missing information.
+
+Once that boundary has been identified, representations can be selected according to their explanatory functions. Language may establish meaning and context, notation may express relational structure compactly, tables may expose repeated numerical relationships, and diagrams or graphs may make spatial organization or patterns of change perceptible. The question is not how many representations can be included, but what each representation contributes to the intended mental model. A representation that adds information without clarifying structure may increase the learner’s interpretive burden rather than reduce it.
+
+The representations must then be coordinated. Corresponding elements should be identifiable across language, notation, diagrams, and examples. Terminology should remain stable unless variation serves a clear mathematical purpose. Related representations should appear at the point where their comparison becomes useful, and their sequence should follow the construction of understanding rather than the appearance of a completed expert solution. Coordination allows multiple external forms to contribute to one internal structure.
+
+Finally, the explanation must be examined in terms of the work it assigns to the learner. Some inference must remain because constructing relationships is central to learning mathematics. The relevant question is whether the required work serves the intended objective. If learners must compare cases, identify a pattern, justify a connection, or test a model because those activities constitute the target understanding, the effort is productive. If they must resolve inconsistent labels, infer missing references, decode unexplained notation, or reconstruct a disordered presentation, the explanation has transferred avoidable repair work to them.
+
+These considerations can be organized into five design questions:
+
+| Design question | Purpose |
+|---|---|
+| What mental model should the learner construct? | Identifies the objects, roles, relationships, and inferences that constitute the intended understanding |
+| What prior knowledge does construction of that model require? | Separates reasonable prerequisites from relationships that the explanation must support |
+| What does each representation contribute? | Ensures that language, notation, diagrams, tables, and examples have distinct explanatory functions |
+| How are the representations coordinated? | Makes correspondences, terminology, spatial relationships, and sequence perceptible |
+| What cognitive work remains for the learner? | Distinguishes productive mathematical inference from avoidable interpretive repair |
+
+The framework is not a rigid procedure in which each decision is completed once. Explanatory design is iterative. A diagram may reveal that the intended relationship has not been stated clearly; an equation may expose ambiguity in the language; consideration of a beginner’s prior knowledge may require the intended mental model to be divided into intermediate structures. Each design decision can therefore lead to revision of the others.
+
+```{mermaid}
+%%| fig-cap: "Engineering a mathematical explanation is an iterative process organized around the construction of an intended mental model."
+%%| label: fig-explanatory-design-framework
+
+flowchart TD
+    A["Specify the intended mental model"] --> B["Examine required prior knowledge"]
+    B --> C["Select representations by function"]
+    C --> D["Coordinate meanings and relationships"]
+    D --> E["Evaluate the learner's cognitive work"]
+    E -. "revise where necessary" .-> A
+```
+
+The framework also provides a basis for evaluating an existing explanation. Instead of asking only whether the explanation is correct or whether it contains enough detail, an evaluator can reconstruct the path required of the learner. Which meanings are available directly? Which correspondences must be inferred? Which relationships are made perceptible, and which remain hidden? Where must prior knowledge supply an unstated connection? Does each diagram contribute to reasoning, or does it merely repeat the prose? Most importantly, is the learner’s effort directed toward the mathematical idea being studied or toward repairing the presentation?
+
+To describe this work as *engineering* is not to suggest that understanding can be manufactured with certainty. Learners differ in knowledge, attention, experience, and interpretation, and no explanation determines a single identical mental model in every mind. Engineering instead refers to deliberate design under constraints. The author identifies an intended outcome, anticipates the conditions under which construction must occur, selects representations according to their functions, and evaluates where the design may fail. The aim is not control over thought, but responsibility for the conditions offered to thought.
