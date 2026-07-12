@@ -1,1 +1,13 @@
-.quarto/ 
+# Quarto-generated output
+/_site/
+/.quarto/
+*_files/
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+
+**/*.quarto_ipynb

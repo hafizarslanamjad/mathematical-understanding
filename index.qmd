@@ -1,0 +1,19 @@
+---
+title: "Mathematical Understanding"
+---
+
+This website contains long-form articles investigating how mathematical meaning is constructed, preserved, and communicated. The articles examine mathematics not only as a formal system, but also as an activity performed through language, notation, diagrams, conceptual models, and human reasoning.
+
+## Articles
+
+### [Before Mathematics Begins](articles/before-mathematics-begins/index.qmd)
+
+**How Language and Visual Representation Shape Mathematical Understanding**
+
+An investigation into the representational work that occurs before formal mathematical reasoning can begin.
+
+### [When Symbols Stay the Same but Meaning Changes](articles/when-symbols-stay-the-same/index.qmd)
+
+**A Cognitive Framework for Preserving Context in Mathematical Reasoning**
+
+An examination of how learners silently change the conceptual interpretation of a mathematical expression while its visible symbols remain unchanged.
