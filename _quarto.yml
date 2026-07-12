@@ -1,0 +1,39 @@
+project:
+  type: website
+  output-dir: _site
+  render:
+    - index.qmd
+    - articles/**/*.qmd
+
+website:
+  title: "Mathematical Understanding"
+  site-url: "https://hafizarslanamjad.github.io/mathematical-understanding/"
+
+  navbar:
+    left:
+      - href: index.qmd
+        text: Articles
+
+    right:
+      - icon: github
+        href: "https://github.com/hafizarslanamjad/mathematical-understanding"
+        aria-label: "GitHub repository"
+
+  page-footer:
+    left: "Articles by Hafiz Arslan Amjad"
+    right:
+      - text: "Source"
+        href: "https://github.com/hafizarslanamjad/mathematical-understanding"
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+    number-sections: true
+    code-fold: false
+    embed-resources: false
+
+execute:
+  echo: false
+  warning: false

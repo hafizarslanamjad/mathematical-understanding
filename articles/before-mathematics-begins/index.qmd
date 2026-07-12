@@ -2,21 +2,8 @@
 title: "Before Mathematics Begins"
 subtitle: "How Language and Visual Representation Shape Mathematical Understanding"
 author: "Hafiz Arslan Amjad"
-date: today
-
-format:
-  html:
-    toc: true
-    number-sections: true
-    embed-resources: true
-    code-fold: false
-  pdf:
-    toc: true
-    number-sections: true
-
-execute:
-  echo: false
-  warning: false
+date: 2026-07-11
+bibliography: ../../references.bib
 ---
 
 # Introduction {.unnumbered}

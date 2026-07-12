@@ -1,0 +1,56 @@
+---
+title: "When Symbols Stay the Same but Meaning Changes"
+subtitle: "A Cognitive Framework for Preserving Context in Mathematical Reasoning"
+author: "Hafiz Arslan Amjad"
+date: 2026-07-12
+bibliography: ../../references.bib
+---
+
+# Introduction {.unnumbered}
+
+Mathematical errors are commonly explained as failures of calculation, memory, or logical reasoning. A learner applies the wrong operation, forgets a rule, or makes an invalid deduction, and the visible mistake is treated as the point at which understanding failed. Yet some errors begin earlier. The learner may perform each local operation correctly while silently changing what the symbols are understood to represent. The notation remains unchanged, but the conceptual situation in which the notation is being interpreted has shifted.
+
+A mathematical expression is not a self-contained object whose full meaning can always be recovered from its visible symbols alone. Symbols constrain interpretation, but they acquire usable meaning through definitions, conventions, surrounding language, diagrams, and the mathematical situation under consideration. The expression \(5/5\), for example, can be interpreted through a part–whole model, in which one whole has been partitioned into five equal parts and all five parts are selected. It can also be interpreted as a quotient, in which five units are divided or distributed into five equal groups. Both interpretations lead to the numerical value \(1\), but they organize the situation differently.
+
+This difference matters because mathematical reasoning does not operate on symbols alone. It operates on symbols as interpreted within a conceptual model. In the part–whole model, the denominator \(5\) describes the number of equal parts into which one whole has been partitioned, while the numerator \(5\) describes how many of those parts are being considered. The numerator does not mean that five independent wholes existed before the partitioning occurred. If the learner suddenly begins imagining five original objects being divided among five groups, the expression has been transferred into a quotient model. That second interpretation is legitimate, but it is not the same situation as the first.
+
+```{mermaid}
+%%| fig-cap: "The visible expression remains the same, but different conceptual models assign different roles to its components."
+%%| label: fig-one-expression-two-models
+
+flowchart TD
+    A["Visible expression<br/>5/5"] --> B["Part–whole model"]
+    A --> C["Quotient model"]
+    B --> D["One whole partitioned into 5 equal parts<br/>5 parts selected"]
+    C --> E["5 units divided into 5 equal groups"]
+    D --> F["Numerical value: 1"]
+    E --> F
+```
+
+The diagram reveals an important distinction. The equality of the final numerical results does not erase the difference between the models that produced them. In both cases, \(5/5=1\), but the objects, roles, and relationships represented by the two occurrences of \(5\) are not identical. A learner who moves deliberately between these interpretations can use their connection to deepen understanding. A learner who moves between them without recognizing the transition may combine assumptions from one model with deductions belonging to another.
+
+We will call this unnoticed transition **silent contextual switching**. The term refers to a change in the conceptual model used to interpret an expression when the change is neither recognized nor explicitly reconstructed. It does not describe every movement between representations as an error. Moving between part–whole, quotient, ratio, measurement, graphical, and symbolic interpretations is essential to mathematical maturity. The danger arises when the mind changes models while treating meaning as though it had remained constant.
+
+```{mermaid}
+%%| fig-cap: "A contextual transition becomes dangerous when the expression is carried into a new model without reassigning the meanings of its components."
+%%| label: fig-silent-contextual-switch
+
+flowchart LR
+    A["Expression in Model A"] --> B["Reasoning begins"]
+    B --> C{"Model changes?"}
+    C -->|"No"| D["Continue within established meanings"]
+    C -->|"Yes, explicitly"| E["Reassign objects, roles, and relationships"]
+    C -->|"Yes, unnoticed"| F["Old assumptions enter a new model"]
+    E --> G["Context-preserving reasoning"]
+    F --> H["Conceptual confusion"]
+```
+
+The central problem is therefore not contextual change itself, but the preservation of semantic control during that change. Before reasoning from an expression, the learner must know what kind of objects are being represented, what role each symbol plays, which relationships are currently assumed, and which conclusions are valid within that interpretation. When another interpretation becomes useful, the learner must identify what has changed and what has remained invariant. The symbols may be preserved, and the numerical value may be preserved, while the meanings assigned to the symbols are reorganized.
+
+This article investigates how such contextual control can become part of mathematical reasoning. It asks why visible features of notation can trigger unintended interpretations, why beginners are especially vulnerable to unnoticed model changes, how valid mathematical meanings become confused when they are combined without translation, and how explanations can help learners preserve conceptual coherence. Its purpose is not to teach a single meaning of fractions or to discourage movement between mathematical representations. Its purpose is to develop a framework through which learners can move between meanings deliberately.
+
+The guiding question of the article is therefore:
+
+> How can a learner preserve the meaning of a mathematical expression while reasoning within one conceptual model and moving deliberately into another?
+
+The next section examines \(5/5\) more closely, not as an arithmetic exercise, but as a case in which one visible expression can belong to two valid mathematical worlds.
