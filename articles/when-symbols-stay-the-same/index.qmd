@@ -6,13 +6,13 @@ date: 2026-07-12
 bibliography: ../../references.bib
 ---
 
-# Introduction {.unnumbered}
+# Introduction
 
 Mathematical errors are commonly explained as failures of calculation, memory, or logical reasoning. A learner applies the wrong operation, forgets a rule, or makes an invalid deduction, and the visible mistake is treated as the point at which understanding failed. Yet some errors begin earlier. The learner may perform each local operation correctly while silently changing what the symbols are understood to represent. The notation remains unchanged, but the conceptual situation in which the notation is being interpreted has shifted.
 
-A mathematical expression is not a self-contained object whose full meaning can always be recovered from its visible symbols alone. Symbols constrain interpretation, but they acquire usable meaning through definitions, conventions, surrounding language, diagrams, and the mathematical situation under consideration. The expression \(5/5\), for example, can be interpreted through a part–whole model, in which one whole has been partitioned into five equal parts and all five parts are selected. It can also be interpreted as a quotient, in which five units are divided or distributed into five equal groups. Both interpretations lead to the numerical value \(1\), but they organize the situation differently.
+A mathematical expression is not a self-contained object whose full meaning can always be recovered from its visible symbols alone. Symbols constrain interpretation, but their usable meaning can only be acquired through definitions, conventions, surrounding language, diagrams, and the mathematical situation under consideration. The expression $5/5$, for example, can be interpreted through a part–whole model, in which one whole has been partitioned into five equal parts and all five parts are selected. It can also be interpreted as a quotient, in which five units are divided or distributed into five equal groups. Both interpretations lead to the numerical value $1$, but they organize the situation differently.
 
-This difference matters because mathematical reasoning does not operate on symbols alone. It operates on symbols as interpreted within a conceptual model. In the part–whole model, the denominator \(5\) describes the number of equal parts into which one whole has been partitioned, while the numerator \(5\) describes how many of those parts are being considered. The numerator does not mean that five independent wholes existed before the partitioning occurred. If the learner suddenly begins imagining five original objects being divided among five groups, the expression has been transferred into a quotient model. That second interpretation is legitimate, but it is not the same situation as the first.
+This difference matters because mathematical reasoning does not operate on symbols alone. It operates on symbols as interpreted within a conceptual model. In the part–whole model, the denominator $5$ describes the number of equal parts into which one whole has been partitioned, while the numerator $5$ describes how many of those parts are being considered. The numerator does not mean that five independent wholes existed before the partitioning occurred. If the learner suddenly begins imagining five original objects being divided among five groups, the expression has been transferred into a quotient model. That second interpretation is legitimate, but it is not the same situation as the first.
 
 ```{mermaid}
 %%| fig-cap: "The visible expression remains the same, but different conceptual models assign different roles to its components."
@@ -27,9 +27,7 @@ flowchart TD
     E --> F
 ```
 
-The diagram reveals an important distinction. The equality of the final numerical results does not erase the difference between the models that produced them. In both cases, \(5/5=1\), but the objects, roles, and relationships represented by the two occurrences of \(5\) are not identical. A learner who moves deliberately between these interpretations can use their connection to deepen understanding. A learner who moves between them without recognizing the transition may combine assumptions from one model with deductions belonging to another.
-
-We will call this unnoticed transition **silent contextual switching**. The term refers to a change in the conceptual model used to interpret an expression when the change is neither recognized nor explicitly reconstructed. It does not describe every movement between representations as an error. Moving between part–whole, quotient, ratio, measurement, graphical, and symbolic interpretations is essential to mathematical maturity. The danger arises when the mind changes models while treating meaning as though it had remained constant.
+The diagram reveals an important distinction. In both cases, $5/5=1$, but the objects, roles, and relationships represented by the two occurrences of $5$ are not identical. A learner who moves deliberately between these interpretations can use their connection to deepen understanding. A learner who moves between them without recognizing the transition may combine assumptions from one model with deductions belonging to another. We will call this unnoticed transition **silent contextual switching**. The term refers to a change in the conceptual model used to interpret an expression when the change is neither recognized nor explicitly reconstructed.
 
 ```{mermaid}
 %%| fig-cap: "A contextual transition becomes dangerous when the expression is carried into a new model without reassigning the meanings of its components."
@@ -45,7 +43,7 @@ flowchart LR
     F --> H["Conceptual confusion"]
 ```
 
-The central problem is therefore not contextual change itself, but the preservation of semantic control during that change. Before reasoning from an expression, the learner must know what kind of objects are being represented, what role each symbol plays, which relationships are currently assumed, and which conclusions are valid within that interpretation. When another interpretation becomes useful, the learner must identify what has changed and what has remained invariant. The symbols may be preserved, and the numerical value may be preserved, while the meanings assigned to the symbols are reorganized.
+Morever, the contextual change loses the preservation of semantic control during that change. Before reasoning from an expression, the learner must know what kind of objects are being represented, what role each symbol plays, which relationships are currently assumed, and which conclusions are valid within that interpretation. When another interpretation becomes useful, the learner must identify what has changed and what has remained invariant. The symbols may be preserved, and the numerical value may be preserved, while the meanings assigned to the symbols are reorganized.
 
 This article investigates how such contextual control can become part of mathematical reasoning. It asks why visible features of notation can trigger unintended interpretations, why beginners are especially vulnerable to unnoticed model changes, how valid mathematical meanings become confused when they are combined without translation, and how explanations can help learners preserve conceptual coherence. Its purpose is not to teach a single meaning of fractions or to discourage movement between mathematical representations. Its purpose is to develop a framework through which learners can move between meanings deliberately.
 
@@ -53,4 +51,468 @@ The guiding question of the article is therefore:
 
 > How can a learner preserve the meaning of a mathematical expression while reasoning within one conceptual model and moving deliberately into another?
 
-The next section examines \(5/5\) more closely, not as an arithmetic exercise, but as a case in which one visible expression can belong to two valid mathematical worlds.
+The next section examines $5/5$ more closely, not as an arithmetic exercise, but as a case in which one visible expression can belong to two valid mathematical worlds.
+
+# One Expression, Two Valid Mathematical Worlds
+
+The expression $5/5$ can represent different mathematical situations. These situations do not assign the same roles to the two occurrences of $5$.
+
+## The Part–Whole Model
+
+In the part–whole model, reasoning begins with one whole. The whole is partitioned into five equal parts, and all five parts are selected. The denominator tells us how many equal parts constitute the chosen partition of the whole, while the numerator tells us how many parts of that size are being considered.
+
+$$
+\frac{5}{5}
+=
+\frac{\text{five selected parts}}
+     {\text{five equal parts in the whole}}
+=
+1\text{ whole}.
+$$
+
+The numerator $5$ does not represent five original wholes. It represents five parts, each having the size $1/5$ of the original whole. Their combined quantity is therefore
+
+$$
+5\times\frac{1}{5}=1.
+$$
+
+The reasoning can be represented structurally:
+
+```{mermaid}
+%%| fig-cap: "In the part–whole model, five refers to the number of selected fifth-sized parts, not to five original wholes."
+%%| label: fig-part-whole-five-fifths
+
+flowchart LR
+    A["One whole"] --> B["Partition into 5 equal parts"]
+    B --> C["Each part has size 1/5"]
+    C --> D["Select all 5 parts"]
+    D --> E["5 × 1/5 = 1 whole"]
+```
+
+The important object at the beginning of this model is one whole. The number $5$ enters only after a partition has been chosen. It describes how the whole has been organized and how many resulting parts are under consideration. If the learner begins imagining five independent objects before the partition takes place, the learner is no longer reasoning within the original part–whole model.
+
+## The Quotient Model
+
+The same expression can also be interpreted as a division problem. Suppose five units are distributed equally among five recipients. The amount received by each recipient is
+
+$$
+5\div5=1.
+$$
+
+Here, the first $5$ represents the total quantity being distributed, while the second $5$ represents the number of equal recipient groups. The result $1$ represents the amount belonging to each group.
+
+```{mermaid}
+%%| fig-cap: "In the quotient model, the two occurrences of five represent a total quantity and a number of groups."
+%%| label: fig-quotient-five-divided-five
+
+flowchart LR
+    A["Total quantity<br/>5 units"] --> B["Distribute equally"]
+    C["Number of groups<br/>5"] --> B
+    B --> D["Quantity per group<br/>1 unit"]
+```
+
+This interpretation is mathematically legitimate. A fraction bar represents division, and every fraction $a/b$, with $b\neq0$, can be understood as the quotient $a\div b$. The problem does not arise because the learner recognizes this connection. The problem arises when the learner enters the quotient model without noticing that the roles of the numbers have been reassigned.
+
+## What Changes Between the Models
+
+The two models can be compared directly:
+
+| Feature | Part–whole interpretation | Quotient interpretation |
+|---|---|---|
+| Starting situation | One whole | Five units |
+| First $5$ | Number of selected fifth-sized parts | Total quantity being distributed |
+| Second $5$ | Number of equal parts constituting the whole | Number of equal groups |
+| Result | All parts reconstruct one whole | Each group receives one unit |
+| Preserved value | $1$ | $1$ |
+
+This allows us to locate the learner’s confusion precisely. The thought “$5/5$ means five things divided by five things” is not inherently false. It is a possible quotient interpretation. The confusion begins when the learner treats the first $5$ in that statement as though it were still referring to the five selected parts from the part–whole model while simultaneously treating those parts as five independent original units. The mind has retained the symbol $5$ but changed what the symbol counts.
+
+```{mermaid}
+%%| fig-cap: "Silent contextual switching preserves the visible symbol while replacing the object that the symbol represents."
+%%| label: fig-referent-switch
+
+flowchart TD
+    A["Symbol: numerator 5"] --> B["Part–whole meaning<br/>5 selected fifth-sized parts"]
+    A --> C["Quotient meaning<br/>5 units available for division"]
+    B --> D["Together equal one original whole"]
+    C --> E["Exist as the total quantity before distribution"]
+    B -. "unnoticed replacement" .-> C
+```
+
+The conceptual error therefore occurs at the level of reference rather than arithmetic. The learner has not necessarily calculated incorrectly. Instead, the learner has allowed a number to begin referring to a different kind of object without reconstructing the surrounding model. Once this substitution occurs, later predictions and deductions may become unreliable because they are built from assumptions that originated in different mathematical situations.
+
+A deliberate transition between the two models would make the change explicit: “Five fifth-sized parts reconstruct one whole. The numerical fraction $5/5$ is also equal to the quotient $5\div5$. In that quotient interpretation, however, the first $5$ now represents a total quantity rather than five parts previously created from one whole.” This statement preserves the mathematical connection while marking the change in meaning.
+
+The lesson is not that a learner must choose one permanent interpretation of $5/5$. The requirement is that each interpretation remain internally coherent and that movement between them include an explicit reassignment of objects, roles, and relationships. The next section examines why the mind often makes such transitions silently, especially when the visible notation strongly suggests another familiar operation.
+
+# Why the Mind Switches Models Silently
+
+A learner does not normally decide in explicit words to abandon one conceptual model and enter another. The transition occurs because visible features of an expression activate familiar mathematical meanings.
+
+The fraction bar in $5/5$ can express a part–whole relationship, a quotient, a ratio, a rational number, or an operation applied to two quantities. These interpretations are not arbitrary. They are mathematically connected, which is precisely why one notation can support all of them. However, their connection does not make their conceptual roles identical. When a learner sees
+
+$$
+\frac{5}{5},
+$$
+
+the horizontal bar may immediately activate the familiar rule that a fraction represents division. Attention then shifts from “five selected parts out of five equal parts” to “five divided by five.” Because the symbolic expression has not visibly changed, the mind may not register that a contextual transition has occurred.
+
+```{mermaid}
+%%| fig-cap: "A visible feature of notation can activate a second interpretation while the expression itself remains unchanged."
+%%| label: fig-notation-trigger
+
+flowchart TD
+    A["Current model<br/>5 selected fifth-sized parts"] --> B["Visible expression<br/>5/5"]
+    B --> C["Fraction bar activates division"]
+    C --> D["New model<br/>5 units divided among 5 groups"]
+    D --> E{"Was the change noticed?"}
+    E -->|"Yes"| F["Meanings are reassigned explicitly"]
+    E -->|"No"| G["New model inherits assumptions from the old model"]
+```
+
+The problem is that the symbol acts as a bridge between two models while providing no visible announcement that the meanings assigned to its components have changed.
+
+## Familiar Interpretations Compete for Control
+
+A learner often possesses several partially developed meanings for the same expression. One meaning may have been learned through shaded shapes, another through sharing objects, and another through the procedural statement that “a fraction means division.” When an expression is encountered, these interpretations do not necessarily appear in an orderly sequence. A familiar or recently practised interpretation may become active before the learner checks whether it matches the current situation.
+
+This explains why a learner may begin correctly with one whole divided into five equal parts and then suddenly imagine five objects being divided into five groups. The second image may be easier to retrieve because division has repeatedly been taught through sharing. The mind uses the most available pattern to complete the meaning of the notation. Prior knowledge therefore performs two opposing functions. Well-organized knowledge helps a learner recognize valid connections between models. Incomplete or weakly connected knowledge can cause one familiar model to intrude upon another.
+
+## Numerical Agreement Can Conceal Conceptual Change
+
+Silent switching is especially difficult to detect when both models produce the same numerical result. In the part–whole model,
+
+$$
+5\times\frac{1}{5}=1,
+$$
+
+while in the quotient model,
+
+$$
+5\div5=1.
+$$
+
+Because both paths end at $1$, the final answer provides no evidence that the learner changed the meaning of the expression during reasoning. A correct answer can therefore conceal an unstable conceptual process.
+
+```{mermaid}
+%%| fig-cap: "Agreement in the final numerical value can hide a change in the conceptual path used to reach it."
+%%| label: fig-correct-answer-hidden-switch
+
+flowchart LR
+    A["Part–whole path<br/>5 fifths reconstruct a whole"] --> C["Answer: 1"]
+    B["Quotient path<br/>5 units divided into 5 groups"] --> C
+    C --> D["Numerical agreement"]
+    D --> E["Contextual change may remain undetected"]
+```
+
+When two models happen to agree, the learner may conclude that their objects and relationships are interchangeable. That assumption can then be carried into a problem where the distinction affects what can validly be inferred. Correct calculation in the present problem does not guarantee conceptual stability for future reasoning.
+
+## Procedural Language Can Suppress the Model
+
+Mathematical instruction often compresses meaning into short rules: “the numerator is on top,” “the denominator is on the bottom,” “a fraction is division,” or “divide both sides.” Such statements can support fluency, but they identify visible positions and procedures more readily than conceptual roles. A learner may remember where a number appears or which operation to perform without preserving what the number represents.
+
+For example, saying only that $5/5$ means $5\div5$ is formally correct, but it can prematurely replace the part–whole interpretation that the learner was constructing. The explanation supplies an operational equivalence without explaining the translation between models. The learner sees that the same symbols can be calculated through division but may not see how five selected fifth-sized parts correspond to the quotient representation.
+
+A well-designed explanation should therefore distinguish between three claims:
+
+| Claim | What it establishes |
+|---|---|
+| $\frac{5}{5}$ represents five fifth-sized parts | Meaning within the part–whole model |
+| $\frac{5}{5}=5\div5$ | Formal connection between fraction and quotient |
+| Both expressions have the value $1$ | Numerical invariant preserved across the models |
+
+## Attention Usually Follows What Changes Visibly
+
+Human attention is naturally drawn to visible changes. If an equation gains a new term, if a diagram changes shape, or if an operation sign is replaced, the learner has an external cue that something new must be interpreted. Silent contextual switching is harder to detect because the crucial change is not visible. The expression remains $5/5$; only the internally assigned referents change.
+
+This produces an asymmetry between notation and thought:
+
+```{mermaid}
+%%| fig-cap: "During silent contextual switching, the external representation remains stable while the internally assigned meanings change."
+%%| label: fig-stable-symbol-changing-meaning
+
+flowchart LR
+    A["External notation<br/>5/5"] --> B["No visible change"]
+    C["Assigned meaning<br/>selected parts"] --> D["Assigned meaning<br/>divisible units"]
+    B --> E["Attention is not alerted"]
+    D --> E
+    E --> F["Context switch remains silent"]
+```
+
+The learner must therefore monitor something that the notation does not display directly: the continuing relationship between each symbol and the object it represents. This is a form of semantic monitoring. It asks not only, “What operation am I performing?” but also, “What does each quantity refer to now, and is that the same thing it referred to one step earlier?”The next section examines the consequences of this unnoticed transition. It shows how assumptions from one model can enter another, producing deductions that appear locally reasonable but are globally incoherent.
+
+# When Valid Meanings Are Combined Invalidly
+
+Consider the following reasoning:
+
+> In $5/5$, the numerator tells us that five parts are selected. The fraction bar means division, so five things are divided by five. Therefore, the situation began with five things.
+
+Every sentence resembles a familiar mathematical statement. The numerator can count selected parts, and the fraction bar can represent division. The conclusion nevertheless fails to follow from the original part–whole model. The phrase “five parts” initially refers to pieces produced by partitioning one whole. The later phrase “five things” treats the same numeral as a count of independent units existing before division. The word *five* has been preserved, but the kind of object being counted has changed.
+
+## A Number Does Not Preserve Its Referent Automatically
+
+A numeral tells us how many, but it does not independently tell us how many of what. The first $5$ in the part–whole interpretation counts fifth-sized parts:
+
+$$
+5\text{ parts}\times
+\frac{1\text{ whole}}{5\text{ parts}}
+=
+1\text{ whole}.
+$$
+
+The units written into this relationship expose what the bare notation can conceal. Five fifth-sized parts do not constitute five wholes. The numerical count is $5$, but the counted objects are parts whose individual size is $1/5$ of a whole.
+
+In the quotient interpretation, the first $5$ may instead describe a total of five units:
+
+$$
+\frac{5\text{ units}}{5\text{ groups}}
+=
+1\text{ unit per group}.
+$$
+
+Removing the words *parts*, *whole*, *units*, and *groups* compresses both relationships into the same visible expression. This compression is mathematically useful, but it places responsibility on the learner to preserve information that the notation no longer displays explicitly.
+
+```{mermaid}
+%%| fig-cap: "The numeral five remains visible while the kind of object being counted changes."
+%%| label: fig-numeral-referent-drift
+
+flowchart TD
+    A["Visible numeral<br/>5"] --> B["Counts selected parts"]
+    A --> C["Counts distributable units"]
+    B --> D["Each object has size 1/5 of a whole"]
+    C --> E["Each object is treated as one unit"]
+    D --> F["5 parts reconstruct 1 whole"]
+    E --> G["5 units form the quantity being divided"]
+```
+
+The numeral is therefore not the complete meaning. A more complete semantic unit consists of the number together with its referent, role, and relationships:
+
+$$
+\text{mathematical quantity}
+=
+\text{numerical value}
++
+\text{kind of object}
++
+\text{role in the model}.
+$$
+
+## Four Forms of Contextual Drift
+
+When a learner silently changes models, several kinds of meaning can drift:
+
+| Form of drift | What changes unnoticed | Example |
+|---|---|---|
+| Referent drift | The object to which a number or symbol refers | Five selected parts become five original units |
+| Role drift | The mathematical function of an element | The numerator changes from a count of parts to a dividend |
+| Relational drift | The relationship connecting the quantities | Partitioning one whole becomes distributing several units |
+| Temporal drift | What exists before and after an operation | Parts created by partitioning are treated as objects that existed beforehand |
+
+These forms of drift often occur together. In the $5/5$ example, the referent changes from parts to independent units, the numerator becomes a dividend, partitioning becomes distribution, and the five objects are moved from after the partition to before the division. The learner may experience this as one small change in imagery, although it has reorganized the entire conceptual situation.
+
+## The Question Can Change Along With the Model
+
+Contextual switching can also change the question being answered. In the part–whole model, the relevant question is:
+
+> How much of the original whole is represented by five of its five equal parts?
+
+In the quotient model, the question becomes:
+
+> How much does each group receive when five units are divided equally among five groups?
+
+Both questions have the answer $1$, but the answer describes something different in each case. In the first, it describes the proportion of the original whole that has been selected. In the second, it describes the quantity assigned to each group. This reveals why checking only the numerical answer is insufficient. A complete check must ask:
+
+$$
+\text{What does the answer represent in the current model?}
+$$
+
+## From Procedural Consistency to Semantic Consistency
+
+Semantic consistency requires continuity at three levels:
+
+```{mermaid}
+%%| fig-cap: "Coherent reasoning preserves or explicitly reassigns referents, roles, and relationships."
+%%| label: fig-semantic-consistency
+
+flowchart TD
+    A["Referents<br/>What objects do the symbols represent?"] --> D["Semantically coherent reasoning"]
+    B["Roles<br/>What function does each quantity perform?"] --> D
+    C["Relationships<br/>How are the quantities connected?"] --> D
+```
+
+Mathematical coherence therefore requires either preservation or explicit translation: meanings must remain stable within a model, or they must be deliberately reassigned when moving into another model. The next section develops a practical framework for achieving this control.
+
+# A Framework for Context-Preserving Mathematical Reasoning
+
+A learner should be able to recognize the model currently being used, reason coherently within it, and move into another model without carrying meanings across the boundary unchanged. This capacity can be organized into six connected actions: identify the active model, bind symbols to referents, preserve those bindings during reasoning, detect a possible transition, translate explicitly into the new model, and verify what remains invariant.
+
+```{mermaid}
+%%| fig-cap: "Context-preserving reasoning maintains semantic continuity within a model and requires explicit translation when the model changes."
+%%| label: fig-context-preserving-framework
+
+flowchart TD
+    A["1. Identify the active model"] --> B["2. Bind symbols to referents and roles"]
+    B --> C["3. Preserve meanings during deduction"]
+    C --> D{"4. Has the model changed?"}
+    D -->|"No"| C
+    D -->|"Yes"| E["5. Translate objects, roles, and relationships"]
+    E --> F["6. Verify what changed and what remained invariant"]
+    F --> C
+```
+
+## Identify the Active Model
+
+Before manipulating an expression, the learner should establish what mathematical situation is currently being represented. This requires more than naming a topic such as “fractions” or “division.” A topic can contain several conceptual models. The learner must identify the objects involved, the operation or relationship connecting them, and the question being answered.
+
+For $5/5$, saying only that the expression is “a fraction” does not identify the model. A more complete statement would be:
+
+> One whole has been partitioned into five equal parts, and five of those parts are being considered.
+
+This statement identifies the starting object, the partitioning action, the resulting parts, and the selection being represented. It establishes the conceptual environment within which the numerator and denominator will receive their meanings.
+
+A useful orienting question is:
+
+> What situation must be true for this expression to represent what I currently claim it represents?
+
+This question forces the learner to reconstruct the background that compact notation may have hidden.
+
+## Bind Each Symbol to a Referent and Role
+
+After identifying the model, the learner must determine what each important symbol refers to and what function it performs. A referent is the object or quantity represented by a symbol. A role is the function that the represented quantity performs within the current relationship.
+
+In the part–whole model of $5/5$, the bindings are:
+
+| Symbol | Referent | Role |
+|---|---|---|
+| Denominator $5$ | The five equal parts constituting the chosen partition | Determines the size of each part as $1/5$ of the whole |
+| Numerator $5$ | The five selected parts | Counts how many fifth-sized parts are considered |
+| Fraction bar | Relationship between selected parts and the partition | Forms the fraction and connects it formally to division |
+| Value $1$ | The quantity represented by all five fifths | Expresses one reconstructed whole |
+
+## Preserve Meanings During Deduction
+
+Once meanings have been assigned, they should remain stable while reasoning continues within the same model. Every new statement should use the symbols in a way compatible with their established referents and roles.
+
+Starting from the part–whole model, the following deduction preserves meaning:
+
+$$
+\frac{5}{5}
+=
+5\times\frac{1}{5}
+=
+1.
+$$
+
+The first $5$ continues to count selected parts, and $1/5$ continues to describe the size of each part relative to the original whole. The conclusion $1$ therefore means that the selected parts reconstruct one whole.
+
+Semantic preservation can be checked by restoring the hidden nouns:
+
+$$
+5\text{ selected parts}
+\times
+\frac{1\text{ whole}}{5\text{ parts}}
+=
+1\text{ whole}.
+$$
+
+Restoring units or referents is useful because symbolic compression can hide a change that becomes obvious when the represented objects are named.
+
+## Detect a Possible Contextual Transition
+
+A learner should pause when an expression activates another familiar interpretation. Common transition cues include changing from a diagram to an equation, replacing a fraction bar with a division symbol, introducing a new word for an existing quantity, applying a memorized rule, or interpreting a symbol through a recently learned procedure.
+
+The relevant question is not merely:
+
+> Is this new interpretation mathematically valid?
+
+It is also:
+
+> Am I still talking about the same objects in the same relationships?
+
+For example, rewriting
+
+$$
+\frac{5}{5}=5\div5
+$$
+
+is formally valid. Nevertheless, the explicit division notation may activate a sharing model. That activation marks a possible contextual boundary. Before continuing, the learner should determine whether the quotient is being used merely as an equivalent operation or whether an entirely new situation is being imagined.
+
+```{mermaid}
+%%| fig-cap: "A transition cue should trigger a semantic check before reasoning continues."
+%%| label: fig-transition-checkpoint
+
+flowchart LR
+    A["Current meaning<br/>5 selected fifths"] --> B["New representation<br/>5 ÷ 5"]
+    B --> C{"Same model or new model?"}
+    C -->|"Equivalent operation"| D["Retain established referents"]
+    C -->|"New sharing situation"| E["Reassign referents explicitly"]
+```
+
+## Translate Rather Than Merely Replace
+
+When a new model is useful, the learner should translate into it. Translation differs from silent replacement because it states how the elements of the original model correspond to those of the new one and where that correspondence stops.
+
+A deliberate transition might be expressed as follows:
+
+> In the part–whole model, $5/5$ represents five parts, each having size $1/5$ of one whole. Numerically, this fraction is equivalent to $5\div5$. If we now interpret the expression through a sharing model, the first $5$ will represent a total quantity of five units and the second $5$ will represent five groups. The value remains $1$, but the objects and the meaning of the result have changed.
+
+This translation makes three facts visible: the new model has begun, the two occurrences of $5$ have acquired new referents, and only certain properties—such as the numerical value—are preserved.
+
+## Verify Changes and Invariants
+
+The final action is to determine what changed during the transition and what remained invariant. An invariant is a property preserved across representations or models. In the transition between the part–whole and quotient interpretations of $5/5$, the symbolic expression and numerical value remain invariant. The starting objects, roles of the two fives, represented operation, and interpretation of the answer change.
+
+| Feature | Preserved or changed? |
+|---|---|
+| Written expression $5/5$ | Preserved |
+| Numerical value $1$ | Preserved |
+| Starting quantity | Changed |
+| Meaning of the first $5$ | Changed |
+| Meaning of the second $5$ | Changed |
+| Relationship between the quantities | Changed |
+| Meaning of the result | Changed |
+
+## Applying the Complete Framework
+
+The entire process can be applied to $5/5$ as a coherent sequence:
+
+1. **Identify the model:** one whole is partitioned into five equal parts, and all five are selected.
+2. **Bind the symbols:** the denominator counts equal parts in the partition; the numerator counts selected fifth-sized parts.
+3. **Preserve meaning:** reason that five copies of $1/5$ reconstruct one whole.
+4. **Detect the transition:** notice that reading the fraction bar as division may activate a quotient model.
+5. **Translate explicitly:** state that the first $5$ now represents a total quantity and the second represents a number of groups.
+6. **Verify invariants:** recognize that the value $1$ is preserved while the conceptual roles change.
+
+This framework adds semantic supervision to mathematical reasoning. Ordinary procedural supervision asks whether each operation is permitted. Semantic supervision asks whether each operation is still being performed on the objects that the symbols were established to represent. Reliable reasoning requires both.
+
+The framework is not limited to fractions. Similar contextual transitions occur when a negative number changes from representing a position to representing a displacement, when a letter changes from an unknown constant to a varying quantity, when equality changes from announcing an answer to expressing a relation, or when a probability changes from a long-run frequency interpretation to a degree of belief.
+
+# Conclusion
+
+Mathematical reasoning depends on more than manipulating symbols according to valid rules. Before an expression can support a deduction, its symbols must be connected to objects, quantities, roles, and relationships within a conceptual model. Those meanings are often compressed out of the visible notation, but they remain part of what the expression represents. A learner may therefore preserve every written symbol while changing the mathematical situation being considered.
+
+The expression $5/5$ made this hidden possibility visible. Within a part–whole model, it can represent five fifth-sized parts selected from a partition of one whole. Within a quotient model, it can represent five units divided among five equal groups. Both interpretations are legitimate, and both produce the value $1$. Nevertheless, they begin with different objects, assign different roles to the two occurrences of $5$, and give different meanings to the result. Their numerical agreement does not make their conceptual structures identical.
+
+The central difficulty arises when movement between these models occurs without recognition. The learner retains the visible expression but silently reassigns its referents. Five selected parts become five original units; partitioning becomes distribution; and objects produced by an operation are treated as though they existed before it. Each individual idea may be valid within its own model, yet their unmarked combination produces reasoning that is globally incoherent. This is the phenomenon described in this article as **silent contextual switching**.
+
+The appropriate response is not to prevent movement between interpretations. The ability to connect part–whole, quotient, ratio, symbolic, graphical, and other representations is an important form of mathematical understanding. The requirement is that such movement be controlled through explicit translation. A learner must recognize when a new model has become active, reassign the meanings of the symbols, and determine which properties survive the transition.
+
+```{mermaid}
+%%| fig-cap: "Mathematical coherence requires stable meanings within a model and explicit translation between models."
+%%| label: fig-final-context-principle
+
+flowchart LR
+    A["Identify the model"] --> B["Bind symbols to meanings"]
+    B --> C["Reason with stable meanings"]
+    C --> D["Mark a contextual transition"]
+    D --> E["Translate meanings explicitly"]
+    E --> F["Verify changes and invariants"]
+```
+
+The framework developed here therefore adds semantic supervision to procedural reasoning. Procedural supervision asks whether an operation is mathematically permitted and correctly performed. Semantic supervision asks whether the objects, roles, and relationships represented by the symbols have remained stable. A complete examination of reasoning requires both. A correct calculation may still conceal an unstable interpretation, just as a valid rule may be applied to quantities whose meanings have changed unnoticed.
+
+The deepest lesson is that a numeral is not merely a value, a variable is not merely a letter, and an expression is not merely an arrangement of marks. Each belongs to a structure of meaning that determines what can validly be inferred from it. Mathematical maturity includes the ability to preserve that structure while reasoning and to reconstruct it deliberately when changing representations.
+
+The central principle of the article can therefore be stated in its final form:
+
+> When mathematical symbols remain the same, never assume that their meanings have also remained the same. Preserve the active conceptual model during reasoning, and make every transition to another model explicit.
