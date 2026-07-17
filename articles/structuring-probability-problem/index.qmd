@@ -1,6 +1,6 @@
 ---
-title: "The Reasoning Hidden Inside a Probability Calculation"
-subtitle: "What the expression $210 \times \frac{4}{7}$ requires a learner to understand"
+title: "Structuring Probability Problem"
+subtitle: "Fractions Needed for Probability"
 author: "Hafiz Arslan Amjad"
 date: today
 bibliography: ../../references.bib

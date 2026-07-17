@@ -22,13 +22,13 @@ This article examines silent contextual switching: a change in the conceptual mo
 
 **[Read When Symbols Stay the Same but Meaning Changes](https://hafizarslanamjad.github.io/mathematical-understanding/articles/when-symbols-stay-the-same/)**
 
-### The Reasoning Hidden Inside a Probability Calculation
+### Structuring Probability Problem
 
-**What the Expression \(210 \times \frac{4}{7}\) Requires a Learner to Understand**
+**Fractions Needed for Probability**
 
 This article reconstructs the reasoning hidden inside a seemingly simple probability calculation. It examines how quantities acquire mathematical roles, how a probability derived from regions becomes applicable to repeated trials, how units preserve meaning, and how multiplication compresses proportional scaling and accumulated expected contributions.
 
-**[Read The Reasoning Hidden Inside a Probability Calculation](https://hafizarslanamjad.github.io/mathematical-understanding/articles/reasoning-hidden-inside-a-probability-calculation/)**
+**[Read The Reasoning Hidden Inside a Probability Calculation](https://hafizarslanamjad.github.io/mathematical-understanding/articles/structuring-probability-problem/)**
 
 ## Repository structure
 
