@@ -1,0 +1,2183 @@
+---
+title: "When Mathematics Changes the Expression"
+subtitle: "Equivalence, Derived Quantities, and the Construction of Sample Variance"
+author: "Hafiz Arslan Amjad"
+date: 2026-08-06
+bibliography: ../../references.bib
+---
+
+# Introduction
+
+A mathematical formula often appears to the learner as a finished object. Every symbol has already been selected, every operation has already been placed, and the complete expression is presented as though its structure followed immediately from the problem. Consider the formula for sample variance:
+$$
+s^2=\frac{1}{n-1}\sum_{i=1}^{n}(x_i-\bar{x})^2.
+$$
+A learner is usually taught how to use this formula. First calculate the sample mean $\bar{x}$. Then subtract the mean from every observation $x_i$, square each difference, add the squared differences, and divide their sum by $n-1$. These instructions make the calculation reproducible, but they do not explain why this particular sequence of operations was constructed. Why should the mean be subtracted from every observation? Why is the difference written as $x_i-\bar{x}$ rather than $\bar{x}-x_i$? Why should the difference be squared? Why should the resulting quantities be added, and why should their total be divided afterward? None of these operations is visibly contained in the original dataset. Each has been introduced by the designer of the measure.
+
+This can create a legitimate conceptual suspicion. If a mathematical expression represents the meaning of a problem, then changing the expression appears to risk changing the problem itself. An observation $x_i$ is not equal to its difference from the mean:
+$$
+x_i\neq x_i-\bar{x}.
+$$
+The difference is also not equal to its square:
+$$
+x_i-\bar{x}\neq(x_i-\bar{x})^2
+$$
+in general. The construction of variance therefore cannot be justified by claiming that every stage is merely another equivalent form of the original observation. Something more deliberate is happening. Mathematics is successively constructing new quantities from the original data, and each new quantity is intended to reveal a particular relationship that the original values do not display directly.
+
+This situation belongs to a broader pattern in mathematical reasoning. Sometimes an expression is difficult to calculate, compare, or interpret, so it is rewritten into another form while its value is preserved. For example,
+$$
+x^2-1=(x-1)(x+1)
+$$
+replaces one visible structure with another, but both expressions have the same value for every admissible value of $x$. The transformation changes the representation without changing the represented quantity. At other times, however, mathematics introduces a genuinely new quantity. If a temperature is $27^\circ\text{C}$ and the reference temperature is $20^\circ\text{C}$, then
+$$
+27-20=7
+$$
+does not provide another representation of the original temperature. It constructs a signed difference that answers a new question: where is the observed temperature relative to the chosen reference? The value $27$ describes a position on the temperature scale, whereas the value $7$ describes a relationship between two positions.
+
+These two mathematical activities can look similar because both alter the visible expression. Their purposes, however, are different. An **equivalence-preserving transformation** rewrites an existing quantity while preserving a specified value or relationship. A **derived construction** creates a new quantity from existing quantities so that a different property can be investigated. Confusing these activities makes mathematical invention appear arbitrary. If every alteration is assumed to preserve exactly the same meaning, the construction of variance seems illegitimate. If every mathematically permitted operation is assumed to be meaningful, then almost any invented expression seems acceptable. Neither conclusion is correct.
+
+```{mermaid}
+%%| fig-cap: "A change in mathematical form may either preserve an existing quantity or construct a new quantity for a new purpose."
+%%| label: fig-two-kinds-of-mathematical-change
+
+flowchart TD
+    A["Original expression or quantities"] --> B{"Purpose of the change"}
+    B --> C["Represent the same quantity differently"]
+    B --> D["Construct a quantity that measures another property"]
+    C --> E["Equivalence-preserving transformation"]
+    D --> F["Derived mathematical quantity"]
+    E --> G["Example: x² − 1 = (x − 1)(x + 1)"]
+    F --> H["Example: observation → deviation → squared deviation"]
+```
+
+A derived construction is not arbitrary merely because it changes the quantity being considered. Its legitimacy depends on the question it is designed to answer and on the behavior produced by its operations. Suppose we want to describe how dispersed a collection of observations is. The original observations tell us where the data points are, but they do not separately display their spread around a center. To study that spread, we first choose a reference point and express every observation relative to it. If the reference is the sample mean, the resulting quantity is
+$$
+x_i-\bar{x}.
+$$
+This difference is called a deviation. It is not an alternative representation of $x_i$ alone. It is a new relational quantity constructed from the observation and the mean. Its sign indicates the side of the mean on which the observation lies, while its magnitude indicates the amount of separation between them.
+
+The next operation changes the quantity again:
+$$
+x_i-\bar{x}
+\quad\longrightarrow\quad
+(x_i-\bar{x})^2.
+$$
+Squaring removes the distinction between deviations lying on opposite sides of the mean and makes larger deviations contribute more strongly. This is useful when the intended measure concerns total separation rather than direction. Yet squaring also discards information: after observing the squared deviation, we can no longer determine whether the original observation was above or below the mean. It changes the unit of measurement as well. If the observations are measured in metres, the deviations are measured in metres, but the squared deviations are measured in square metres. Squaring is therefore not an invisible computational convenience. It is a mathematical design decision with identifiable consequences.
+
+This observation reveals a more precise way to evaluate a constructed expression. Instead of asking only, “Has the meaning changed?”, we must ask: **What meaning has changed, why was the change introduced, what information has been preserved, what information has been discarded, and does the resulting quantity behave in the way required by the intended question?** Mathematical control does not require every stage to mean the same thing. It requires every transition in meaning to be explicit and justified.
+
+This principle connects the present investigation to the problem of mathematical representation developed in the preceding articles. A visible expression does not carry its complete meaning independently of a conceptual model. Its symbols must be connected to objects, roles, relationships, and an intended question. In the variance formula, the symbol $x_i$ represents an observation, $\bar{x}$ represents a chosen center, subtraction constructs a directed comparison, squaring converts that comparison into a nonnegative quadratic contribution, summation combines the individual contributions, and division normalizes their total. A learner who receives only the finished formula must reconstruct these roles after the fact. The formula may therefore be computationally usable while its design remains conceptually hidden.
+
+The hidden design is also what makes mathematical creativity appear inaccessible. Looking at the completed formula, a learner may wonder how anyone could have thought to square the deviations and may conclude that such an idea depends on an unusual creative gift. But the finished formula conceals the sequence of constraints that made squaring a reasonable candidate. Signed deviations above and below the mean cancel when added. A measure of spread must treat separation on either side of the center as contributing to dispersion. It must assign zero contribution to an observation located exactly at the center, and its contribution should increase as the observation moves farther away. Squaring satisfies these requirements and also possesses powerful algebraic and geometric properties. Once the design problem becomes visible, the square no longer appears as an operation invented without reason.
+
+This does not mean that squaring is the only possible choice. Absolute values also prevent positive and negative deviations from cancelling:
+$$
+\lvert x_i-\bar{x}\rvert.
+$$
+Absolute deviations and squared deviations produce different measures because they respond differently to increasing separation. A deviation of $4$ contributes twice as much as a deviation of $2$ under absolute value, but four times as much under squaring. Choosing between these constructions therefore depends on what behavior the measure is intended to possess. Mathematical creativity does not consist merely of finding an operation that makes a calculation possible. It consists of designing an expression whose properties correspond to the structure of the question.
+
+The purpose of this article is to reconstruct that design process. Sample variance will serve as the central case study, but the deeper subject is how mathematics moves from an original object to a deliberately constructed expression. We will distinguish equivalent rewriting from the creation of derived quantities, investigate subtraction as a way of expressing one quantity relative to another, examine centering as a change of reference, and determine what squaring preserves, removes, and emphasizes. We will then rebuild the variance formula one decision at a time so that its operations appear not as unexplained instructions but as responses to a sequence of mathematical requirements.
+
+The guiding question of the article is therefore:
+
+> How can mathematicians change or construct an expression without losing control of the meaning of the problem, and how can a learner reconstruct the reasoning that makes such a construction necessary?
+
+Answering this question requires moving behind the completed formula. Before asking how variance is calculated, we must first distinguish the different kinds of mathematical change that a calculation can contain.
+
+# Two Activities That Look Like the Same Kind of Change
+
+When a mathematical expression is replaced by another expression, the visible event is always similar: some symbols disappear, new symbols appear, or the existing symbols are rearranged. Mathematics uses changes of expression for fundamentally different purposes. Sometimes the new expression is intended to represent the same quantity in another form. At other times, it represents a new quantity constructed from the original one. Before deciding whether a mathematical step has changed the meaning illegitimately, we must therefore determine what kind of change was intended.
+
+## Rewriting an Existing Quantity
+
+Consider the expression
+$$
+x^2-1.
+$$
+It can be rewritten as
+$$
+(x-1)(x+1)
+$$
+because expanding the product returns the original expression:
+$$
+(x-1)(x+1)=x^2+x-x-1=x^2-1.
+$$
+The two forms have different visible structures. The first displays a difference between two squares, while the second displays two factors whose product is zero when either factor is zero. Nevertheless, for every admissible value of $x$, both forms produce the same numerical value:
+$$
+x^2-1=(x-1)(x+1).
+$$
+If $x=3$, for example, then
+$$
+3^2-1=8
+$$
+and
+$$
+(3-1)(3+1)=2\times4=8.
+$$
+The representation has changed, but the represented value has not. We can call this an **equivalence-preserving transformation**. Its purpose is not to create a new quantity but to expose a different structure within the same quantity. The expanded form may make addition and subtraction visible, while the factored form makes roots and multiplicative structure easier to identify.
+
+This is one reason mathematicians transform difficult expressions. A mathematical object may possess several structures simultaneously, but one representation rarely makes all of them equally visible. Rewriting does not necessarily alter the object being studied; it can provide a different view of that object. The choice of form depends on the work that must be performed. For example,
+$$
+\frac{1}{2}+\frac{1}{3}
+$$
+is convenient for displaying the two original fractions, whereas
+$$
+\frac{3}{6}+\frac{2}{6}
+$$
+makes their comparable units visible, and
+$$
+\frac{5}{6}
+$$
+makes their combined value visible. The forms serve different explanatory and computational functions while preserving the same numerical quantity.
+
+The word *equivalent*, however, should not be treated as a vague assurance that “nothing has changed.” Something has changed: the representation, visible organization, and accessibility of particular relationships have changed. What has been preserved is a specified mathematical property, usually numerical value. A careful description is therefore:
+
+> An equivalent transformation changes the form of an expression while preserving the value or relationship relevant to the current problem.
+
+This qualification matters because mathematics contains several kinds of equivalence. Two expressions may have the same value for every permitted input. Two equations may have the same solution set. Two fractions may represent the same rational number. Two geometric figures may have the same shape without having the same size. The claim that two mathematical objects are equivalent is incomplete until we identify the respect in which they are equivalent.
+
+For example, the equations
+$$
+x+2=5
+$$
+and
+$$
+x=3
+$$
+do not display the same symbolic relationship, but they have the same solution. Subtracting $2$ from both sides preserves the set of values that makes the equation true:
+$$
+x+2-2=5-2.
+$$
+The transformation is justified because applying the same reversible operation to both sides preserves equality. Here, the relevant invariant is not that the left side remains numerically unchanged. The expression $x+2$ has become $x$. What remains unchanged is the truth condition of the equation and therefore its solution set.
+
+This shows why the question “Did the expression change?” is too weak. Of course the expression changed; otherwise no transformation would have occurred. The more useful question is:
+
+> What property was the transformation required to preserve?
+
+In an algebraic identity, the required invariant may be value for every permissible input. In solving an equation, it may be the solution set. In converting units, it may be the represented physical magnitude. In simplifying a fraction, it may be the represented ratio. A valid transformation must preserve the property upon which the later reasoning depends.
+
+```{mermaid}
+%%| fig-cap: "An equivalence-preserving transformation changes the representation while maintaining a property required by the problem."
+%%| label: fig-equivalence-preservation
+
+flowchart TD
+    A["Original representation"] --> B["Permitted transformation"]
+    B --> C["New representation"]
+    A --> D["Required invariant"]
+    C --> D
+    D --> E["Value, solution set, ratio, or represented magnitude remains preserved"]
+```
+
+Equivalence must also be checked rather than assumed. Some operations preserve a relationship only under particular conditions. Starting with
+$$
+x=3
+$$
+and squaring both sides produces
+$$
+x^2=9.
+$$
+Every solution of the first equation is a solution of the second, but the reverse is not true because $x^2=9$ also permits $x=-3$. The operation has preserved the original solution but expanded the solution set. Squaring was algebraically permitted, yet it did not create an equation fully equivalent to the original one. This example reveals that mathematical validity cannot be determined merely by recognizing a familiar operation. We must examine exactly what the operation preserves and whether it introduces possibilities that were not present before.
+
+## Constructing a New Quantity
+
+Now consider a different situation. Suppose the observed temperature is $27^\circ\text{C}$ and the average temperature for that time of year is $20^\circ\text{C}$. We calculate
+$$
+27-20=7.
+$$
+This subtraction is not an attempt to rewrite $27$ in a more convenient form. The original observation and the result do not represent the same quantity. The value $27^\circ\text{C}$ identifies a position on the temperature scale. The value $7^\circ\text{C}$ describes how that position compares with a selected reference. It answers the new question:
+
+> Where is the observed temperature relative to the average temperature?
+
+The subtraction has constructed a **derived quantity**. A derived quantity is created by applying a defined relationship to one or more existing quantities. It does not need to be numerically equal to its source because numerical equality is not the intended preservation requirement. What must be preserved is a systematic and interpretable connection to the original quantities.
+
+If the observed temperature changes from $27^\circ\text{C}$ to $28^\circ\text{C}$ while the reference remains $20^\circ\text{C}$, the derived difference changes from $7^\circ\text{C}$ to $8^\circ\text{C}$. If the observed temperature equals the reference, the difference becomes zero. If it falls below the reference, the difference becomes negative. These behaviors justify the construction because they correspond to the intended meaning of relative position.
+
+A derived construction can therefore change meaning without losing semantic control. The original temperature, the reference temperature, and the temperature difference have distinct meanings, but the relationship connecting them is explicit:
+$$
+\text{temperature difference}
+=
+\text{observed temperature}
+-
+\text{reference temperature}.
+$$
+The construction becomes arbitrary only if no relationship is established between the chosen operations and the property being investigated. We could calculate
+$$
+(27+20)^3,
+$$
+but the mere fact that this expression can be calculated does not make it a meaningful measure of temperature anomaly. To justify it, we would need to identify a question whose structure requires addition followed by cubing and explain why the resulting behavior is appropriate for that question. Mathematical permissibility is not the same as explanatory or modeling relevance.
+
+This distinction applies directly to variance. Beginning with an observation $x_i$, we form
+$$
+x_i-\bar{x}.
+$$
+The deviation is not claimed to be another equivalent representation of $x_i$. It is a new quantity that expresses the observation relative to the sample mean. We then construct another quantity:
+$$
+(x_i-\bar{x})^2.
+$$
+The squared deviation is not equivalent to the signed deviation. It removes directional information, changes the measurement unit, and changes how increasing separation is weighted. Its legitimacy must therefore come from the properties needed in a measure of spread, not from an assertion that the meaning remained unchanged.
+
+## Preservation Within Construction
+
+Equivalent rewriting and derived construction should not be treated as completely unrelated activities. Even when mathematics constructs a new quantity, certain relationships are usually preserved. The construction of a deviation changes the position assigned to each observation, but if the same reference is subtracted from every observation, the separation between any two observations remains unchanged:
+$$
+(x_i-\bar{x})-(x_j-\bar{x})
+=
+x_i-x_j.
+$$
+The dataset has been moved to a new coordinate system in which the mean is zero, but its internal spacing has been preserved. Absolute position changes; relative position does not.
+
+Squaring the deviations produces a different preservation pattern. Direction is lost because
+$$
+(-d)^2=d^2,
+$$
+but zero separation is preserved:
+$$
+d=0
+\quad\Longleftrightarrow\quad
+d^2=0.
+$$
+The ordering of nonnegative magnitudes is also preserved. If
+$$
+|d_1|>|d_2|,
+$$
+then
+$$
+d_1^2>d_2^2.
+$$
+The farther observation still produces the larger contribution, although squaring changes the proportion between their contributions. A deviation twice as large contributes four times as much after squaring.
+
+This means that constructing a new quantity does not involve abandoning the original phenomenon. Instead, the construction selectively preserves the features relevant to the new question and discards or transforms others. Centering preserves relative spacing while removing absolute location. Squaring preserves the ordering of separation magnitudes while removing direction and emphasizing larger separations. Summation preserves total contribution while no longer displaying which individual observation produced each contribution. Every stage performs a kind of information selection.
+
+| Mathematical action                      | What is preserved                         | What changes or disappears                   | What becomes visible             |
+| ---------------------------------------- | ----------------------------------------- | -------------------------------------------- | -------------------------------- |
+| Rewrite $x^2-1$ as $(x-1)(x+1)$          | Numerical value for every $x$             | Visible algebraic structure                  | Factors and roots                |
+| Subtract the mean from every observation | Pairwise differences and internal spacing | Absolute location                            | Position relative to the center  |
+| Take the absolute value of a deviation   | Magnitude of separation                   | Direction                                    | Ordinary distance                |
+| Square a deviation                       | Zero separation and ordering by magnitude | Direction and original units                 | Quadratic contribution to spread |
+| Sum squared deviations                   | Combined amount of squared spread         | Individual contributions as separate objects | Total squared spread             |
+
+The table reveals that the question “Does the meaning change?” does not have a single yes-or-no answer. Some aspects of meaning may be preserved while others are changed deliberately. A mathematically responsible construction identifies both. Without this identification, the learner is left with either blind trust in the formula or unjustified suspicion of every transformation.
+
+## The Preservation Contract
+
+We can now describe a general principle for evaluating changes in mathematical expressions. Every legitimate change carries what may be called a **preservation contract**. This is not a formal object written beside every equation. It is a conceptual agreement specifying what the operation is required to preserve, what it is allowed to change, and what purpose the resulting form or quantity will serve.
+
+For an equivalent rewriting, the preservation contract might state:
+
+> The visible form may change, but the numerical value must remain the same for every permitted input.
+
+For solving an equation, it might state:
+
+> The equation may be simplified, but no valid solution may be lost or introduced.
+
+For centering a dataset, it might state:
+
+> The absolute location may change, but the relative spacing among observations must remain intact.
+
+For constructing squared deviations, it might state:
+
+> Direction may be removed and the unit may be squared, but zero must continue to represent no separation, and larger separations must make larger nonnegative contributions.
+
+Thinking in terms of a preservation contract changes how mathematical steps are interpreted. Instead of asking whether an operation looks familiar, the learner asks what the step was designed to maintain. Instead of assuming that every change must preserve complete meaning, the learner identifies which aspect of the original structure remains relevant. Instead of treating a new expression as a creative trick, the learner evaluates whether its behavior satisfies the constraints imposed by the intended question.
+
+```{mermaid}
+%%| fig-cap: "A preservation contract makes explicit what a mathematical change must retain, what it may alter, and why the new form is being introduced."
+%%| label: fig-preservation-contract
+
+flowchart TD
+    A["Proposed mathematical change"] --> B["What must remain invariant?"]
+    A --> C["What may change or be discarded?"]
+    A --> D["What new property should become measurable or visible?"]
+    B --> E["Evaluate the construction"]
+    C --> E
+    D --> E
+    E --> F["Justified transformation or derived quantity"]
+```
+
+The idea of a preservation contract also clarifies the difference between mathematical creativity and arbitrary manipulation. Creativity does not consist of attaching operations to quantities without restriction. It consists of finding a representation or construction that satisfies a collection of requirements. Once those requirements are visible, the operation becomes open to investigation: alternatives can be proposed, consequences can be compared, and the final choice can be justified.
+
+In sample variance, subtraction is the first major construction that requires such justification. It converts an observation from an absolute position into a position relative to a chosen center. To understand why the expression is written as $x_i-\bar{x}$, we must therefore investigate subtraction more deeply—not merely as taking one amount away from another, but as an operation that can construct comparisons, changes, and directed displacements.
+
+# What Subtraction Contributes
+
+The first constructed quantity inside the variance formula is not the square but the difference
+$$
+x_i-\bar{x}.
+$$
+Before asking why this difference is squared, we must understand why subtraction appears at all and why its two quantities are written in this order. These questions can be difficult because subtraction is commonly introduced through only one physical interpretation: taking something away. If a collection contains eight objects and three are removed, then
+$$
+8-3=5
+$$
+describes the quantity that remains. This model is valid, but it represents only one situation in which subtraction is useful. Later mathematical applications use subtraction to describe comparison, change, directed displacement, deviation, error, deficit, and position relative to a reference. A learner who possesses only the removal model may correctly perform these calculations while finding no conceptual reason for why subtraction was selected.
+
+## The Relationship Underlying Subtraction
+
+A more general understanding begins with the connection between subtraction and addition. The statement
+$$
+a-b=d
+$$
+means that $d$ is the quantity which, when added to $b$, produces $a$:
+$$
+b+d=a.
+$$
+For example,
+$$
+8-3=5
+$$
+because
+$$
+3+5=8.
+$$
+This relationship can support several interpretations. If eight objects were present and three were removed, five remain. If one person possesses eight objects and another possesses three, the first possesses five more than the second. If one position is $3$ and another is $8$, a displacement of $5$ moves from the first position to the second. The situations differ, but all of them use the same structural question:
+
+> What must be added to $b$ to reach $a$?
+
+This question explains why subtraction can describe both removal and comparison. In the removal interpretation, we know the original quantity $a$ and the removed quantity $b$, and we seek the remainder $d$. In the comparison interpretation, we know two quantities $a$ and $b$, and we seek the difference $d$ that connects them. The same numerical relationship is being used, but the numbers perform different roles in the surrounding model.
+
+| Interpretation | Meaning of $a$                 | Meaning of $b$                 | Meaning of $a-b$                                |
+| -------------- | ------------------------------ | ------------------------------ | ----------------------------------------------- |
+| Removal        | Original quantity              | Quantity removed               | Quantity remaining                              |
+| Comparison     | Quantity being compared        | Comparison quantity            | Signed amount by which they differ              |
+| Change         | Final state                    | Initial state                  | Signed change                                   |
+| Position       | Destination or object position | Starting or reference position | Directed displacement                           |
+| Deviation      | Observation                    | Chosen center                  | Signed position relative to the center          |
+| Residual       | Observed or target value       | Predicted value                | Signed discrepancy, under one common convention |
+
+The table does not imply that subtraction possesses several unrelated definitions. The underlying inverse relationship remains
+$$
+b+(a-b)=a.
+$$
+What changes is the conceptual role assigned to each quantity. Subtraction becomes meaningful only after those roles have been identified.
+
+## Subtraction as Directed Displacement
+
+Suppose two points lie on a number line. Let the reference point be located at $2$ and the object we want to describe be located at $5$. The difference
+$$
+5-2=3
+$$
+means that a displacement of $3$ units carries us from the reference position to the object position:
+$$
+2+3=5.
+$$
+If we reverse the subtraction, we obtain
+$$
+2-5=-3.
+$$
+This result means that a displacement of $-3$ units carries us from the position $5$ to the position $2$:
+$$
+5+(-3)=2.
+$$
+The two differences describe the same pair of points, but they describe opposite journeys between them. Their magnitudes are equal, while their signs differ because their starting and ending roles have been reversed.
+
+| Expression | Starting reference | Position being described | Directed displacement |
+| ---------- | -----------------: | -----------------------: | --------------------: |
+| $5-2$      |                $2$ |                      $5$ |                  $+3$ |
+| $2-5$      |                $5$ |                      $2$ |                  $-3$ |
+
+This gives us a useful pattern for subtraction used as comparison or displacement:
+$$
+\boxed{\text{object}-\text{reference}
+=
+\text{position of the object relative to the reference}.}
+$$
+The second quantity establishes the temporary origin from which the first quantity is described. Subtracting the reference shifts that reference to zero. In the example,
+$$
+2-2=0
+$$
+and
+$$
+5-2=3.
+$$
+After subtracting $2$ from every position, the original reference point $2$ is represented by $0$, while the point $5$ is represented by $3$. The physical or conceptual separation between the points has not changed. Only the coordinate system used to describe them has changed.
+
+This is an instance of the preservation contract introduced in the previous section. Subtracting the same reference from all positions changes their absolute coordinates while preserving their relative separation. If two original positions are $a$ and $b$, and the same reference $r$ is subtracted from both, then
+$$
+(a-r)-(b-r)=a-r-b+r=a-b.
+$$
+The reference $r$ cancels. Consequently, translating every point by the same amount does not change the difference between any pair of points.
+
+## Distance and Displacement Are Not the Same Quantity
+
+The word *difference* is sometimes used as though it automatically meant distance. This can conceal an important distinction. The expression
+$$
+a-b
+$$
+is a signed difference or directed displacement. It records both the amount of separation and the direction from $b$ toward $a$. The ordinary distance between the two values is
+$$
+|a-b|.
+$$
+Distance has no direction, which is why reversing the order does not affect it:
+$$
+|a-b|=|b-a|.
+$$
+For example, if an observation is $13$ and the mean is $10$, then
+$$
+13-10=3
+$$
+means that the observation is three units above the mean. Reversing the order gives
+$$
+10-13=-3,
+$$
+which means that the mean is three units below the observation. These are opposite directed descriptions of the same two positions. Their distance is the same:
+$$
+|13-10|=|10-13|=3.
+$$
+Therefore, the statement “the distance of the observation from the mean and the distance of the mean from the observation are different” requires refinement. The two **directed displacements** are different because they have opposite orientations. The two **distances** are equal because distance ignores orientation.
+
+This distinction will later explain part of what squaring accomplishes. Since
+$$
+(a-b)^2=(b-a)^2,
+$$
+squaring removes the directional distinction just as absolute value does. Before squaring, however, the order of subtraction still determines the interpretation of the sign.
+
+## How the Order of Subtraction Is Chosen
+
+The order in $a-b$ should not normally be selected by looking only at the numbers. It should be selected by examining the question and assigning semantic roles. A useful procedure is to identify four things: the quantity being described, the reference or starting quantity, the meaning desired for a positive result, and the meaning desired for a negative result.
+
+Suppose the question concerns temperature change. If the initial temperature was $18^\circ\text{C}$ and the final temperature is $23^\circ\text{C}$, then writing
+$$
+\text{final}-\text{initial}
+=
+23-18
+=
+5
+$$
+produces a positive result for an increase. Reversing the order gives
+$$
+18-23=-5,
+$$
+which describes the initial temperature relative to the final temperature rather than the final change relative to the initial state. The arithmetic is valid in both cases, but only the first order matches the chosen convention that increases should be positive.
+
+If the temperature later falls from $23^\circ\text{C}$ to $20^\circ\text{C}$, the same ordering produces
+$$
+20-23=-3.
+$$
+The negative sign now communicates a decrease. The usefulness of the formula comes from preserving the semantic role of the sign across different cases:
+$$
+\boxed{\text{change}=\text{final state}-\text{initial state}.}
+$$
+A similar choice appears in financial calculations:
+$$
+\text{profit}=\text{revenue}-\text{cost}.
+$$
+Here, a positive result is intended to mean that revenue exceeds cost, while a negative result indicates a loss. If the order were reversed, the numerical magnitude would remain related to the same two quantities, but the sign would communicate the opposite interpretation. The formula is designed so that its output behaves in accordance with the concept being measured.
+
+Prediction errors demonstrate that more than one convention can be legitimate. Some contexts define a residual as
+$$
+\text{observed value}-\text{predicted value},
+$$
+while an error may sometimes be written as
+$$
+\text{prediction}-\text{target}.
+$$
+Neither order is universally correct without a definition. The order determines what a positive value means. Under the first convention, a positive residual indicates that the observation lies above the prediction. Under the second, a positive error indicates that the prediction lies above the target. Mathematical communication therefore requires the convention to be stated and then used consistently.
+
+The general principle is not simply “larger number minus smaller number.” That procedure guarantees a nonnegative result but removes information about direction. Nor is “object minus reference” a universal replacement for every interpretation of subtraction. It is a powerful pattern when the problem concerns comparison, position, deviation, or change. In a removal problem, the roles may instead be original quantity and removed quantity. The correct order follows from the relationship being modeled and the meaning assigned to the sign.
+
+A disciplined analysis of $a-b$ can therefore use the following questions:
+
+1. What relationship is the subtraction intended to represent?
+2. Which quantity is being described or produced?
+3. Which quantity supplies the reference, baseline, starting state, prediction, or amount removed?
+4. What should a positive result mean?
+5. What should a negative result mean?
+6. Does the proposed order preserve these meanings in simple test cases?
+
+These questions convert the order of subtraction from a memorized arrangement into a semantic design decision.
+
+## Applying the Principle to Deviations from the Mean
+
+In a dataset, let $x_i$ represent the $i$th observation and let $\bar{x}$ represent the sample mean. The expression
+$$
+x_i-\bar{x}
+$$
+asks:
+
+> Where is observation $x_i$ relative to the mean of the data?
+
+The observation is the quantity being described, while the mean supplies the reference. This produces the following interpretation:
+$$
+x_i-\bar{x}
+\begin{cases}
+>0, & \text{if the observation lies above the mean},\\
+=0, & \text{if the observation equals the mean},\\
+<0, & \text{if the observation lies below the mean}.
+\end{cases}
+$$
+Suppose the dataset is
+$$
+\{8,10,12\}.
+$$
+Its mean is
+$$
+\bar{x}=\frac{8+10+12}{3}=10.
+$$
+The deviations are therefore
+$$
+8-10=-2,\qquad 10-10=0,\qquad 12-10=2.
+$$
+These values do not merely report that the observations are different from the mean. They reorganize the dataset around a new origin. The mean becomes zero, the value $8$ becomes a position two units below the center, and the value $12$ becomes a position two units above it:
+
+| Original observation $x_i$ | Mean $\bar{x}$ | Deviation $x_i-\bar{x}$ | Interpretation           |
+| -------------------------: | -------------: | ----------------------: | ------------------------ |
+|                        $8$ |           $10$ |                    $-2$ | Two units below the mean |
+|                       $10$ |           $10$ |                     $0$ | At the mean              |
+|                       $12$ |           $10$ |                     $2$ | Two units above the mean |
+
+If we used the reverse order,
+$$
+\bar{x}-x_i,
+$$
+the resulting values would be
+$$
+2,\qquad 0,\qquad -2.
+$$
+This would not be mathematically invalid. It would describe the mean relative to each observation rather than each observation relative to the mean. The signs would carry the opposite meaning. However, once the deviations are squared, both conventions produce the same values:
+$$
+(x_i-\bar{x})^2=(\bar{x}-x_i)^2.
+$$
+The standard expression $x_i-\bar{x}$ is therefore not required by the final squared calculation. It is preferred because its unsquared form follows the natural semantic pattern
+$$
+\text{observation}-\text{reference center}.
+$$
+It lets a positive deviation mean that the observation lies above the center and a negative deviation mean that it lies below the center.
+
+## What Subtraction Has and Has Not Accomplished
+
+Subtracting the mean has now produced a useful representation of the data, but it has not yet produced a measure of spread. Each deviation records two kinds of information: magnitude and direction. A deviation of $-5$ and a deviation of $5$ indicate equal separation from the mean but opposite positions relative to it.
+
+If the deviations are added directly, their directional information causes observations on opposite sides of the mean to cancel. For the dataset $\{8,10,12\}$,
+$$
+(-2)+0+2=0.
+$$
+Yet a total of zero does not mean that the data have no spread. It means that the signed displacements balance around the mean. Indeed, this balance is guaranteed by the definition of the sample mean:
+$$
+\sum_{i=1}^{n}(x_i-\bar{x})=0.
+$$
+Subtraction has successfully centered the data and exposed the position of every observation relative to the mean. The same feature that makes deviations informative individually—their signs—prevents their direct sum from measuring total spread. The next design problem is therefore not caused by a failure of subtraction. It arises because the information produced by subtraction contains more structure than the intended measure should retain.
+
+To construct a measure of spread, mathematics must preserve the magnitude of separation while preventing opposite directions from cancelling. This requirement leads to a choice between several possible constructions, including absolute values and squares. Understanding why variance chooses the square requires first examining what is preserved when a dataset is centered and why the mean is the particular reference naturally associated with squared separation.
+
+# Centering the Data: Why Subtract the Mean?
+
+The previous section established that $x_i-\bar{x}$ describes an observation relative to the sample mean. This explains the order of subtraction, but it leaves another question unresolved: why should the mean be chosen as the reference? A reference point cannot be justified merely by saying that it is “the average.” Zero, the median, the smallest observation, or any other value could also be subtracted from every data point. To understand why variance uses $\bar{x}$, we must first identify what centering is intended to accomplish and then examine why the mean is especially compatible with squared separation.
+
+## Separating Location from Spread
+
+A collection of observations contains several kinds of structure at once. It has a location on the measurement scale, but it also has an internal arrangement. Consider the two datasets
+$$
+A=\{8,10,12\}
+$$
+and
+$$
+B={98,100,102}.
+$$
+The datasets occupy very different regions of the number line. Dataset $A$ is centered around $10$, whereas dataset $B$ is centered around $100$. Nevertheless, their observations possess the same internal spacing. In each dataset, the lowest value lies two units below the center, one value lies at the center, and the highest value lies two units above it.
+
+If the purpose is to describe where the datasets are located, their difference matters. If the purpose is to describe how dispersed they are around their respective centers, their absolute locations should not matter. A measure of spread should recognize that these two datasets have the same internal pattern even though one has been shifted ninety units to the right.
+
+Their means are
+$$
+\bar{x}_A=10
+$$
+and
+$$
+\bar{x}_B=100.
+$$
+Subtracting the corresponding mean from every observation gives
+$$
+A-\bar{x}_A
+=
+\{-2,0,2\}
+$$
+and
+$$
+B-\bar{x}_B
+=
+\{-2,0,2\}.
+$$
+The absolute locations have disappeared, while the common internal arrangement has become visible.
+
+| Dataset | Original observations |  Mean | Centered observations |
+| ------- | --------------------- | ----: | --------------------- |
+| $A$     | $\{8,10,12\}$        |  $10$ | $\{-2,0,2\}$         |
+| $B$     | $\{98,100,102\}$     | $100$ | $\{-2,0,2\}$         |
+
+Centering therefore performs a form of information separation. It removes the component that tells us where the dataset is located and retains the component that tells us where each observation lies relative to the center. This is useful because location and spread answer different questions. The mean describes a central location; the deviations describe the arrangement around that location.
+
+The operation does not claim that $8$ and $98$ are the same observation. It claims that they occupy the same relative position within their respective datasets:
+$$
+8-10=-2
+$$
+and
+$$
+98-100=-2.
+$$
+Both values are two units below their dataset’s mean. Centering allows observations with different absolute positions to be compared through a common relational description.
+
+## Centering as a Translation of Coordinates
+
+The geometrical meaning of centering can be understood as a translation of the coordinate system. Suppose an observation lies at position $x_i$ and the mean lies at position $\bar{x}$ on a number line. In the original coordinate system, zero is the reference from which both positions are measured. After subtracting $\bar{x}$ from every position, the mean receives the new coordinate
+$$
+\bar{x}-\bar{x}=0,
+$$
+while the observation receives the coordinate
+$$
+x_i-\bar{x}.
+$$
+The data points have not moved relative to one another. Instead, the coordinate system has been shifted so that the mean becomes the new origin.
+
+```{mermaid}
+%%| fig-cap: "Centering translates the coordinate system so that the mean becomes zero while the internal spacing of the observations remains unchanged."
+%%| label: fig-centering-translation
+
+flowchart TD
+    A["Original coordinates<br/>8, 10, 12"] --> B["Subtract the mean<br/>10 from every coordinate"]
+    B --> C["Centered coordinates<br/>−2, 0, 2"]
+    A --> D["Center located at 10"]
+    C --> E["Center located at 0"]
+    D --> F["Internal gaps: 2 and 2"]
+    E --> F
+```
+
+The preservation of internal spacing can be demonstrated algebraically. If two observations are $x_i$ and $x_j$, their original signed separation is
+$$
+x_i-x_j.
+$$
+After centering, their separation becomes
+$$
+(x_i-\bar{x})-(x_j-\bar{x}).
+$$
+Simplifying gives
+$$
+(x_i-\bar{x})-(x_j-\bar{x})
+=
+x_i-\bar{x}-x_j+\bar{x}
+=
+x_i-x_j.
+$$
+Thus,
+$$
+\boxed{(x_i-\bar{x})-(x_j-\bar{x})=x_i-x_j.}
+$$
+The equation expresses the preservation contract of centering. Absolute coordinates may change, but every pairwise difference remains invariant. Because distances are absolute values of these differences, every pairwise distance also remains unchanged:
+$$
+\left|(x_i-\bar{x})-(x_j-\bar{x})\right|
+=
+|x_i-x_j|.
+$$
+This is why translating a dataset does not alter its spread. If the same constant $k$ is added to every observation,
+$$
+y_i=x_i+k,
+$$
+then the new mean is
+$$
+\bar{y}=\bar{x}+k.
+$$
+The centered value in the translated dataset becomes
+$$
+y_i-\bar{y}
+=
+(x_i+k)-(\bar{x}+k)
+=
+x_i-\bar{x}.
+$$
+The shift $k$ disappears. Consequently, a spread measure built from centered values can remain unaffected by a change in the dataset’s overall location. This property is known as **translation invariance**.
+
+## Why Not Use Zero as the Reference?
+
+One might ask why the original zero of the measurement scale cannot serve as the reference. If we square and add the raw observations, we obtain
+$$
+\sum_{i=1}^{n}x_i^2.
+$$
+This quantity measures squared separation from zero, not dispersion around the dataset’s own center. It therefore mixes location and spread.
+
+Consider again
+$$
+A=\{8,10,12\}
+$$
+and
+$$
+B={98,100,102}.
+$$
+Their sums of squares relative to zero are
+$$
+8^2+10^2+12^2=308
+$$
+and
+$$
+98^2+100^2+102^2=30008.
+$$
+The second value is vastly larger, although the datasets have identical internal spacing. The difference arises because dataset $B$ is farther from zero, not because it is more dispersed.
+
+After centering, both datasets have the same squared deviations:
+$$
+(-2)^2+0^2+2^2=8.
+$$
+This demonstrates why a reference appropriate for measuring spread must move with the data. The ordinary zero of the scale may have physical meaning—for example, zero metres or zero degrees on a particular temperature scale—but it is not automatically the center around which the observations vary.
+
+## Could Any Other Center Be Used?
+
+A deviation can be formed relative to any chosen value $c$:
+$$
+x_i-c.
+$$
+If $c$ is the median, the expression describes each observation relative to the median. If $c$ is a target value, it describes deviation from the target. If $c$ is a prediction, it describes prediction error. There is nothing mathematically invalid about these choices. The appropriate center depends on the question and on the way deviations will be measured.
+
+This point is essential. The mean is not the universally correct center for every purpose. It is the center naturally associated with **squared** deviations. The median, by contrast, is naturally associated with **absolute** deviations. Different constructions define different notions of what it means for a value to be central.
+
+To see the special relationship between the mean and squared deviations, consider the total squared separation from an arbitrary reference $c$:
+$$
+S(c)=\sum_{i=1}^{n}(x_i-c)^2.
+$$
+The expression $S(c)$ asks how much total squared separation the observations have from the candidate center $c$. We can compare this total with the squared separation from the mean by writing
+$$
+x_i-c=(x_i-\bar{x})+(\bar{x}-c).
+$$
+Squaring gives
+$$
+(x_i-c)^2
+=
+(x_i-\bar{x})^2
++
+2(x_i-\bar{x})(\bar{x}-c)
++
+(\bar{x}-c)^2.
+$$
+Now sum over all observations:
+$$
+\sum_{i=1}^{n}(x_i-c)^2
+=
+\sum_{i=1}^{n}(x_i-\bar{x})^2
++
+2(\bar{x}-c)\sum_{i=1}^{n}(x_i-\bar{x})
++
+\sum_{i=1}^{n}(\bar{x}-c)^2.
+$$
+The deviations from the mean sum to zero:
+$$
+\sum_{i=1}^{n}(x_i-\bar{x})=0.
+$$
+Because $\bar{x}-c$ is constant across all $n$ observations,
+$$
+\sum_{i=1}^{n}(\bar{x}-c)^2
+=
+n(\bar{x}-c)^2.
+$$
+The complete relationship is therefore
+$$
+\boxed{
+\sum_{i=1}^{n}(x_i-c)^2
+=
+\sum_{i=1}^{n}(x_i-\bar{x})^2
++
+n(\bar{x}-c)^2.
+}
+$$
+This identity explains why the mean is the center of squared deviation. The first term on the right,
+$$
+\sum_{i=1}^{n}(x_i-\bar{x})^2,
+$$
+does not depend on $c$. The second term,
+$$
+n(\bar{x}-c)^2,
+$$
+is always nonnegative. It reaches its smallest possible value, zero, only when
+$$
+c=\bar{x}.
+$$
+Consequently,
+$$
+\sum_{i=1}^{n}(x_i-c)^2
+\geq
+\sum_{i=1}^{n}(x_i-\bar{x})^2
+$$
+for every possible center $c$, with equality only when $c=\bar{x}$. The mean is therefore the unique point that minimizes the total squared distance to the observations.
+
+## A Numerical View of the Minimizing Property
+
+For the dataset
+$$
+\{2,4,6\},
+$$
+the mean is $4$. The total squared separation from $4$ is
+$$
+(2-4)^2+(4-4)^2+(6-4)^2
+=
+4+0+4
+=
+8.
+$$
+Suppose we choose $c=3$ instead:
+$$
+(2-3)^2+(4-3)^2+(6-3)^2
+=
+1+1+9
+=
+11.
+$$
+If we choose $c=5$:
+$$
+(2-5)^2+(4-5)^2+(6-5)^2
+=
+9+1+1
+=
+11.
+$$
+If we choose $c=0$:
+$$
+(2-0)^2+(4-0)^2+(6-0)^2
+=
+4+16+36
+=
+56.
+$$
+| Candidate center $c$ | Total squared separation $\sum(x_i-c)^2$ |
+| -------------------: | ---------------------------------------: |
+|                  $0$ |                                     $56$ |
+|                  $3$ |                                     $11$ |
+|                  $4$ |                                      $8$ |
+|                  $5$ |                                     $11$ |
+
+The total is smallest at $c=4$, the sample mean. Moving the candidate center one unit away from the mean adds
+$$
+n(\bar{x}-c)^2
+=
+3(4-c)^2
+$$
+to the minimum total. At $c=3$ or $c=5$, this adds $3$, producing $8+3=11$. At $c=0$, it adds $48$, producing $8+48=56$.
+
+The calculation exposes a relationship hidden by the finished variance formula. The mean and the square were not selected independently. Once squared separation becomes the desired form of contribution, the mean emerges as the center that makes the total contribution as small as possible. Conversely, using the mean gives squared deviations an especially organized algebraic structure.
+
+## The Mean as a Balance Point
+
+The same center can also be characterized through signed deviations. For any dataset,
+$$
+\sum_{i=1}^{n}(x_i-\bar{x})=0.
+$$
+This follows directly from the definition
+$$
+\bar{x}=\frac{1}{n}\sum_{i=1}^{n}x_i.
+$$
+Expanding the sum gives
+$$
+\sum_{i=1}^{n}(x_i-\bar{x})
+=
+\sum_{i=1}^{n}x_i-n\bar{x}
+=
+\sum_{i=1}^{n}x_i
+-
+n\left(\frac{1}{n}\sum_{i=1}^{n}x_i\right)
+=
+0.
+$$
+The mean is therefore a balance point of signed deviations. The total displacement below it exactly offsets the total displacement above it. In the dataset
+$$
+\{2,4,6\},
+$$
+the deviations are
+$$
+-2,\quad 0,\quad 2,
+$$
+and their sum is zero. In the asymmetric dataset
+$$
+\{1,2,9\},
+$$
+the mean is $4$, and the deviations are
+$$
+-3,\quad -2,\quad 5.
+$$
+The observations are not symmetrically positioned, but their signed deviations still balance:
+$$
+-3-2+5=0.
+$$
+This balancing property explains both the usefulness of the mean and the next problem in constructing variance. The mean provides a natural origin for the data, but the signed deviations around it always sum to zero. Directly adding them therefore cannot distinguish a dataset whose observations lie close to the mean from one whose observations lie far away.
+
+## What Centering Has Prepared
+
+Centering transforms the original observations into a relational description:
+$$
+\{x_1,x_2,\ldots,x_n\}
+\quad\longrightarrow\quad
+\{x_1-\bar{x},x_2-\bar{x},\ldots,x_n-\bar{x}\}.
+$$
+This construction has accomplished three things. It has made the mean the new origin, separated overall location from internal variation, and preserved the spacing among observations. It has also selected the center that minimizes total squared separation.
+
+Yet the centered values retain direction. Observations below the mean contribute negative deviations, while observations above it contribute positive deviations. Because the mean is their balance point, these contributions cancel exactly when summed. A new operation is therefore required—not to repair an error in centering, but to construct a quantity that preserves separation while preventing opposite directions from erasing one another.
+
+The next stage of the variance formula begins with this design requirement:
+
+> Transform each signed deviation into a nonnegative contribution that is zero at the mean and increases as the observation moves farther from the mean.
+
+Both absolute value and squaring satisfy this basic requirement. Understanding why variance adopts the square requires comparing the different geometries and behaviors these alternatives create.
+
+# Why Squaring Is a Deliberate Construction
+
+After centering a dataset, every observation has been converted into a signed deviation:
+$$
+d_i=x_i-\bar{x}.
+$$
+The sign tells us on which side of the mean the observation lies, while the magnitude tells us how far away it lies. If $d_i=-4$, the observation is four units below the mean. If $d_i=4$, it is four units above the mean. These deviations already describe the internal arrangement of the data, but their direct sum cannot measure total spread because
+$$
+\sum_{i=1}^{n}(x_i-\bar{x})=0.
+$$
+The cancellation is not accidental. It follows from the fact that the mean is the balance point of the data. Positive and negative deviations describe opposite directions, and addition combines them as directed quantities. If the intended question concerns net displacement, this cancellation is meaningful. If the intended question concerns total separation from the center, however, cancellation removes precisely the information we want to retain.
+
+The design problem can therefore be stated before any particular operation is selected:
+
+> How can each signed deviation be converted into a contribution that does not cancel with a deviation in the opposite direction, equals zero when the observation is at the mean, and increases as the observation moves farther away?
+
+Once the problem is stated this way, squaring becomes one possible response rather than an unexplained command.
+
+## The Required Behavior of a Spread Contribution
+
+Suppose a function $g(d)$ converts a signed deviation $d$ into a contribution to spread. At minimum, the construction should satisfy several requirements. An observation at the mean should contribute nothing:
+$$
+g(0)=0.
+$$
+Observations equally far from the mean in opposite directions should make equal contributions:
+$$
+g(-d)=g(d).
+$$
+The contribution should not be negative:
+$$
+g(d)\geq 0.
+$$
+Finally, a larger distance from the mean should not produce a smaller contribution. If
+$$
+|d_1|>|d_2|,
+$$
+then we expect
+$$
+g(d_1)>g(d_2).
+$$
+Both absolute value and squaring satisfy these basic conditions:
+$$
+g(d)=|d|
+$$
+and
+$$
+g(d)=d^2.
+$$
+For example:
+
+| Deviation $d$ | Absolute contribution $\lvert d\rvert$ | Squared contribution $d^2$ |
+| ------------: | -------------------------------------: | -------------------------: |
+|          $-4$ |                                    $4$ |                       $16$ |
+|          $-2$ |                                    $2$ |                        $4$ |
+|           $0$ |                                    $0$ |                        $0$ |
+|           $2$ |                                    $2$ |                        $4$ |
+|           $4$ |                                    $4$ |                       $16$ |
+
+Both constructions prevent cancellation, preserve zero separation, and treat opposite directions symmetrically. Therefore, the statement “variance squares deviations because otherwise positive and negative values would cancel” is correct but incomplete. It identifies the problem solved by squaring, but it does not explain why squaring is chosen instead of another operation that solves the same problem.
+
+## What Squaring Preserves and What It Changes
+
+Squaring performs a selective transformation of the information contained in a deviation. Because
+$$
+(-d)^2=d^2,
+$$
+the sign is discarded. Once a deviation has been squared, we cannot determine whether the original observation was above or below the mean. However, squaring preserves whether the observation coincides with the mean:
+$$
+d^2=0
+\quad\Longleftrightarrow\quad
+d=0.
+$$
+It also preserves the ordering of separation magnitudes. If one observation is farther from the mean than another, its squared deviation is larger:
+$$
+|d_1|>|d_2|
+\quad\Longrightarrow\quad
+d_1^2>d_2^2.
+$$
+Squaring does not preserve the original numerical magnitude. A deviation of $3$ becomes a squared contribution of $9$, and a deviation of $5$ becomes a contribution of $25$. What it preserves is the ordering of magnitudes and their systematic relationship to the original deviations.
+
+Its preservation contract can therefore be stated as follows:
+
+> Direction may be discarded, but zero separation must remain zero, equal distances on opposite sides must contribute equally, and greater distances must produce greater nonnegative contributions.
+
+The result is a new quantity:
+$$
+d_i^2=(x_i-\bar{x})^2.
+$$
+It should not be called the distance itself. The ordinary distance from an observation to the mean is
+$$
+|x_i-\bar{x}|.
+$$
+The expression
+$$
+(x_i-\bar{x})^2
+$$
+is the **squared distance**. The distinction matters because distance and squared distance respond differently when separation increases.
+
+## Squaring Changes the Weight of Separation
+
+Absolute value grows linearly. If the magnitude of a deviation doubles, its absolute contribution doubles:
+$$
+|2d|=2|d|.
+$$
+Squaring grows quadratically. If the magnitude doubles, the squared contribution becomes four times as large:
+$$
+(2d)^2=4d^2.
+$$
+If the magnitude triples, the squared contribution becomes nine times as large:
+$$
+(3d)^2=9d^2.
+$$
+This behavior means that squaring gives relatively greater influence to observations that lie farther from the center. Consider two deviations with magnitudes $2$ and $4$. Under absolute value, their contributions are $2$ and $4$, so the second contributes twice as much. Under squaring, their contributions are $4$ and $16$, so the second contributes four times as much.
+
+```{mermaid}
+%%| fig-cap: "Absolute and squared contributions both increase with distance, but squaring assigns proportionally greater influence to larger deviations."
+%%| label: fig-linear-quadratic-growth
+
+flowchart LR
+    A["Distance doubles<br/>2 → 4"] --> B["Absolute contribution<br/>2 → 4"]
+    A --> C["Squared contribution<br/>4 → 16"]
+    B --> D["Contribution doubles"]
+    C --> E["Contribution quadruples"]
+```
+
+This is not an accidental side effect. It is part of the meaning of squared spread. Variance is sensitive to observations far from the mean because large deviations contribute disproportionately to the total. This property can be desirable when large errors or large departures from a center should receive special importance. It can also make variance sensitive to extreme observations. The operation therefore brings both a capability and a cost.
+
+A mathematical operation should not be judged as though every consequence were independently good or bad. Its suitability depends on the intended question. If large deviations should receive increasing emphasis and the algebraic properties of squares are valuable, squared deviation is appropriate. If each additional unit of separation should contribute equally regardless of how far the observation already lies from the center, absolute deviation may be more appropriate.
+
+## The Elementary Geometrical Meaning
+
+There is a simple geometrical interpretation of a squared deviation. On a number line, the distance between an observation $x_i$ and the mean $\bar{x}$ is the length
+$$
+|x_i-\bar{x}|.
+$$
+Imagine constructing a square whose side has this length. Its area is
+$$
+|x_i-\bar{x}|^2.
+$$
+Since squaring removes the effect of the sign,
+$$
+|x_i-\bar{x}|^2=(x_i-\bar{x})^2.
+$$
+Thus, the squared deviation can be represented as the area of a square whose side length equals the distance between the observation and the mean. A deviation of magnitude $2$ corresponds to a square of area $4$, while a deviation of magnitude $4$ corresponds to a square of area $16$. This picture makes quadratic growth visible: doubling the side length quadruples the area.
+
+This interpretation is useful, but it must be understood carefully. Variance does not claim that the dataset literally contains physical squares. The square is a geometrical representation of how the numerical contribution grows. It also explains why the unit changes. If observations are measured in metres, deviations are measured in metres, while squared deviations are measured in square metres:
+$$
+(\text{metres})^2=\text{square metres}.
+$$
+This change of unit is one cost of using squared distance. The standard deviation later applies a square root to the variance, returning the summary to the original measurement unit. The squared unit is therefore not evidence that variance is meaningless; it is evidence that variance is measuring a quadratic quantity rather than ordinary linear distance.
+
+## The Deeper Geometry of the Dataset
+
+The geometrical meaning becomes more substantial when the entire dataset is viewed as a point in a multidimensional space. A dataset containing $n$ observations can be represented by the vector
+$$
+\mathbf{x}
+=
+(x_1,x_2,\ldots,x_n).
+$$
+The mean can be repeated in every coordinate to form the vector
+$$
+\bar{x}\mathbf{1}
+=
+(\bar{x},\bar{x},\ldots,\bar{x}).
+$$
+Subtracting these vectors produces the centered data vector:
+$$
+\mathbf{x}-\bar{x}\mathbf{1}
+=
+(x_1-\bar{x},x_2-\bar{x},\ldots,x_n-\bar{x}).
+$$
+The squared Euclidean length of a vector
+$$
+\mathbf{v}=(v_1,v_2,\ldots,v_n)
+$$
+is defined as
+$$
+\|\mathbf{v}\|^2
+=
+v_1^2+v_2^2+\cdots+v_n^2.
+$$
+Applying this to the centered data vector gives
+$$
+\|\mathbf{x}-\bar{x}\mathbf{1}\|^2
+=
+\sum_{i=1}^{n}(x_i-\bar{x})^2.
+$$
+Therefore, the sum of squared deviations is the squared Euclidean length of the centered dataset. It measures how far the complete data vector lies from the vector in which every observation equals the mean.
+
+For the dataset
+$$
+\{2,4,6\},
+$$
+the mean vector is
+$$
+(4,4,4),
+$$
+and the centered vector is
+$$
+(2,4,6)-(4,4,4)=(-2,0,2).
+$$
+Its squared length is
+$$
+(-2)^2+0^2+2^2=8.
+$$
+Its ordinary Euclidean length is
+$$
+\sqrt{8}.
+$$
+The sum of squared deviations is therefore not merely a collection of unrelated squares. It is one geometrically unified quantity: the squared length of the deviation vector.
+
+```{mermaid}
+%%| fig-cap: "The individual deviations form one centered data vector, and their squared sum is its squared Euclidean length."
+%%| label: fig-centered-vector-length
+
+flowchart TD
+    A["Dataset vector<br/>(x₁, x₂, …, xₙ)"] --> B["Subtract mean vector<br/>(x̄, x̄, …, x̄)"]
+    B --> C["Centered vector<br/>(x₁−x̄, x₂−x̄, …, xₙ−x̄)"]
+    C --> D["Square coordinates and add"]
+    D --> E["Squared length<br/>Σ(xᵢ−x̄)²"]
+```
+
+This construction is related to the Pythagorean theorem. In two dimensions, a displacement with horizontal component $a$ and vertical component $b$ has length
+$$
+\sqrt{a^2+b^2}.
+$$
+Its squared length is
+$$
+a^2+b^2.
+$$
+In $n$ dimensions, the same principle gives
+$$
+\|\mathbf{v}\|^2
+=
+v_1^2+v_2^2+\cdots+v_n^2.
+$$
+The individual deviations act as coordinate components of one multidimensional displacement. Squaring and summing combine these components without allowing opposite signs in different coordinates to cancel.
+
+This is the deeper geometrical reason that squares occur throughout statistics, geometry, optimization, and machine learning. Squared quantities allow separate coordinate contributions to combine into a single notion of Euclidean size.
+
+## Why Squares Are Algebraically Powerful
+
+Squaring also has properties that make mathematical analysis unusually tractable. The function
+$$
+g(d)=d^2
+$$
+is smooth: it has no sharp corner at zero. Its derivative is
+$$
+g'(d)=2d,
+$$
+which changes continuously as $d$ changes. Absolute value,
+$$
+g(d)=|d|,
+$$
+has a corner at zero and is not differentiable there in the ordinary sense. Absolute-deviation methods remain mathematically valid and important, but optimization with squares often leads to equations that can be manipulated and solved more directly.
+
+The mean-minimization identity from the previous section is one example of the algebraic structure produced by squares:
+$$
+\sum_{i=1}^{n}(x_i-c)^2
+=
+\sum_{i=1}^{n}(x_i-\bar{x})^2
++
+n(\bar{x}-c)^2.
+$$
+The total squared distance from any candidate center separates cleanly into the minimum squared distance around the mean plus a nonnegative penalty for moving the center away from the mean. This decomposition is possible because expanding a square produces terms that can be combined with the balancing identity
+$$
+\sum_{i=1}^{n}(x_i-\bar{x})=0.
+$$
+Similar decompositions appear in least-squares regression, analysis of variance, probability theory, and machine learning. Squaring is therefore useful not only because it makes every contribution nonnegative, but also because it creates structures that can be decomposed, differentiated, and optimized.
+
+## Why Absolute Deviation Remains a Valid Alternative
+
+The existence of these advantages should not lead to the conclusion that every measure of spread must use squares. We can construct the total absolute deviation from a center $c$:
+$$
+\sum_{i=1}^{n}|x_i-c|.
+$$
+This construction treats each additional unit of separation proportionally. It is less sensitive than squared deviation to observations lying far from the center. The value of $c$ that minimizes total absolute deviation is generally a median, whereas the value that minimizes total squared deviation is the mean.
+
+This gives two coherent center-and-measure pairings:
+
+| Center | Deviation contribution                      | Quantity minimized       |
+| ------ | ------------------------------------------- | ------------------------ |
+| Mean   | $(x_i-\bar{x})^2$                           | Total squared deviation  |
+| Median | $\lvert x_i-\operatorname{median}(x)\rvert$ | Total absolute deviation |
+
+Neither pairing is universally superior. They embody different judgments about how separation should contribute. Squared deviation produces quadratic growth and strong algebraic structure. Absolute deviation produces linear growth and greater resistance to extreme observations.
+
+The comparison reveals an important feature of mathematical construction: the operation partly defines the concept being measured. There is no operation-independent quantity called “spread” waiting to be uncovered in only one possible way. Different measures formalize different aspects of spread. Variance defines spread through average squared separation from the mean. Another measure may define it through absolute separation from the median or through the distance between selected percentiles.
+
+## From Individual Squares to a Measure of the Dataset
+
+Squaring has transformed every signed deviation into a nonnegative contribution:
+$$
+x_i-\bar{x}
+\quad\longrightarrow\quad
+(x_i-\bar{x})^2.
+$$
+The transformation intentionally discards direction, preserves zero separation, assigns equal contributions to equal distances on opposite sides of the mean, and gives increasing emphasis to larger deviations. Geometrically, each term is a squared distance, while their sum is the squared Euclidean length of the complete centered data vector.
+
+The individual squared deviations do not yet constitute variance. They still describe separate observations. To construct one measure for the entire dataset, their contributions must be aggregated and then normalized:
+$$
+(x_1-\bar{x})^2,\ldots,(x_n-\bar{x})^2
+\quad\longrightarrow\quad
+\sum_{i=1}^{n}(x_i-\bar{x})^2
+\quad\longrightarrow\quad
+s^2.
+$$
+The next section will reconstruct these remaining decisions. It will show why the squared deviations are added, what is lost and preserved during aggregation, and why sample variance divides by $n-1$ rather than simply reporting the total squared spread.
+
+# Building Sample Variance One Decision at a Time
+
+The construction has now reached the individual squared deviation
+$$
+(x_i-\bar{x})^2.
+$$
+This quantity describes how much one observation contributes to squared spread around the sample mean. A dataset, however, contains several observations. To obtain a single description of the complete dataset, the separate contributions must be combined. The remaining operations in the sample-variance formula—summation and division by $n-1$—perform this aggregation and normalization:
+$$
+s^2
+=
+\frac{1}{n-1}
+\sum_{i=1}^{n}(x_i-\bar{x})^2.
+$$
+The formula should not be interpreted as one indivisible instruction. It is the endpoint of several constructions, each of which answers a different question and changes the represented quantity in a controlled way.
+
+## From Individual Contributions to Total Squared Spread
+
+Suppose the dataset is
+$$
+\{2,4,6\}.
+$$
+Its sample mean is
+$$
+\bar{x}
+=
+\frac{2+4+6}{3}
+=
+4.
+$$
+Subtracting the mean produces the deviations
+$$
+-2,\quad 0,\quad 2.
+$$
+Squaring them produces
+$$
+4,\quad 0,\quad 4.
+$$
+At this stage, each value still belongs to one particular observation. The first observation contributes $4$ units of squared separation, the second contributes $0$, and the third contributes $4$. Adding the contributions gives
+$$
+4+0+4=8.
+$$
+In general, the sum is written as
+$$
+\sum_{i=1}^{n}(x_i-\bar{x})^2.
+$$
+This quantity is called the **sum of squared deviations**, or more briefly the **sum of squares** around the mean. It answers the question:
+
+> How much squared separation is present across all observations combined?
+
+| Observation $x_i$ | Deviation $x_i-\bar{x}$ | Squared deviation $(x_i-\bar{x})^2$ |
+| ----------------: | ----------------------: | ----------------------------------: |
+|               $2$ |                    $-2$ |                                 $4$ |
+|               $4$ |                     $0$ |                                 $0$ |
+|               $6$ |                     $2$ |                                 $4$ |
+|         **Total** |                     $0$ |                             **$8$** |
+
+Summation preserves the total contribution but compresses the individual contributions into one number. After seeing only the total $8$, we cannot reconstruct which observations produced it. Different datasets can have the same sum of squared deviations. This is another example of deliberate information loss: the purpose of the sum is to summarize total squared spread, not to preserve the identity of every observation.
+
+The sum of squares is also affected by the number of observations. If every observation and its deviation were duplicated, the internal pattern would remain the same, but the sum of squares would double because twice as many contributions would be added. A total is therefore not sufficient when we want a measure that can be compared across datasets of different sizes.
+
+## Why the Total Must Be Normalized
+
+Consider these two centered datasets:
+$$
+A={-2,0,2}
+$$
+and
+$$
+B={-2,0,2,-2,0,2}.
+$$
+Their sums of squared deviations are
+$$
+4+0+4=8
+$$
+and
+$$
+4+0+4+4+0+4=16.
+$$
+Dataset $B$ has twice the total squared deviation only because it repeats the same pattern twice. Its observations are not individually farther from the center. To describe the typical squared contribution rather than the accumulated total, we must divide by a quantity related to the number of observations.
+
+If the observations constitute the complete population we intend to describe, the population variance is
+$$
+\sigma^2
+=
+\frac{1}{N}
+\sum_{i=1}^{N}(x_i-\mu)^2,
+$$
+where $\mu$ is the population mean and $N$ is the population size. Dividing by $N$ gives the average squared distance from the population mean.
+
+For the complete population
+$$
+\{2,4,6\},
+$$
+the population variance is
+$$
+\sigma^2
+=
+\frac{(2-4)^2+(4-4)^2+(6-4)^2}{3}
+=
+\frac{8}{3}.
+$$
+This value can be interpreted as the average squared deviation of the three population members from their population mean.
+
+Sample variance has a different purpose. A sample is commonly observed because the larger population is unavailable. The sample mean $\bar{x}$ is then used to estimate the unknown population mean $\mu$, while the sample variance is used to estimate the unknown population variance $\sigma^2$. This change of purpose changes the appropriate denominator.
+
+## The Same Data Can Support Different Questions
+
+It is important not to turn the choice between $n$ and $n-1$ into a mechanical rule based only on whether the word *sample* appears. The denominator depends on the inferential role assigned to the data.
+
+If the dataset $\{2,4,6\}$ is the complete collection we wish to describe, dividing by $3$ gives its average squared deviation around its own mean:
+$$
+\frac{8}{3}.
+$$
+If the same three values are treated as a random sample from a larger population and we want to estimate that population’s variance, the conventional sample-variance estimator divides by $3-1$:
+$$
+s^2
+=
+\frac{8}{2}
+=
+4.
+$$
+The arithmetic data have not changed. The statistical question has changed.
+
+| Role of the observations                           | Intended quantity                                | Denominator |
+| -------------------------------------------------- | ------------------------------------------------ | ----------: |
+| Complete population being described                | Average squared deviation within that population |         $N$ |
+| Random sample used to estimate population variance | Unbiased estimator of population squared spread  |       $n-1$ |
+
+This distinction reflects the central thesis of the article: an expression receives its meaning from the question it is constructed to answer. Dividing by $n$ and dividing by $n-1$ are not competing calculations of one context-free quantity. They correspond to different statistical purposes.
+
+## Why Using the Sample Mean Produces Underestimation
+
+Suppose a random sample
+$$
+X_1,X_2,\ldots,X_n
+$$
+is drawn from a population with unknown mean $\mu$ and variance $\sigma^2$. If $\mu$ were known, we could measure the sample observations around the true population center:
+$$
+\sum_{i=1}^{n}(X_i-\mu)^2.
+$$
+On average, each term contributes $\sigma^2$, so the expected total is
+$$
+\mathbb{E}
+\left[
+\sum_{i=1}^{n}(X_i-\mu)^2
+\right]
+=
+n\sigma^2.
+$$
+In practice, however, $\mu$ is usually unknown. We replace it with the sample mean $\bar{X}$ and calculate
+$$
+\sum_{i=1}^{n}(X_i-\bar{X})^2.
+$$
+The sample mean is computed from the same observations whose spread is being measured. It moves toward those observations and is therefore fitted more closely to the sample than the unknown population mean generally would be. Consequently, the observations tend to appear slightly less dispersed around $\bar{X}$ than they are around $\mu$.
+
+The relationship can be made exact. For every observation,
+$$
+X_i-\mu
+=
+(X_i-\bar{X})+(\bar{X}-\mu).
+$$
+Squaring and summing produces the identity
+$$
+\sum_{i=1}^{n}(X_i-\mu)^2
+=
+\sum_{i=1}^{n}(X_i-\bar{X})^2
++
+n(\bar{X}-\mu)^2.
+$$
+Rearranging gives
+$$
+\sum_{i=1}^{n}(X_i-\bar{X})^2
+=
+\sum_{i=1}^{n}(X_i-\mu)^2
+-
+n(\bar{X}-\mu)^2.
+$$
+The second term on the right is nonnegative. Measuring around the fitted sample mean therefore removes some squared separation from the total that would have been measured around the population mean.
+
+Take expectations:
+$$
+\mathbb{E}
+\left[
+\sum_{i=1}^{n}(X_i-\bar{X})^2
+\right]
+=
+\mathbb{E}
+\left[
+\sum_{i=1}^{n}(X_i-\mu)^2
+\right]
+-
+n\mathbb{E}\left[(\bar{X}-\mu)^2\right].
+$$
+The first expected value is
+$$
+n\sigma^2.
+$$
+Because $\bar{X}$ is an unbiased estimator of $\mu$, the expected squared difference between them equals the variance of the sample mean:
+$$
+\mathbb{E}\left[(\bar{X}-\mu)^2\right]
+=
+\operatorname{Var}(\bar{X})
+=
+\frac{\sigma^2}{n}.
+$$
+Substituting these results gives
+$$
+\mathbb{E}
+\left[
+\sum_{i=1}^{n}(X_i-\bar{X})^2
+\right]
+=
+n\sigma^2
+-
+n\left(\frac{\sigma^2}{n}\right),
+$$
+and therefore
+$$
+\boxed{
+\mathbb{E}
+\left[
+\sum_{i=1}^{n}(X_i-\bar{X})^2
+\right]
+=
+(n-1)\sigma^2.
+}
+$$
+This is the direct mathematical reason for the denominator $n-1$. The expected sum of squared deviations around the sample mean contains only $(n-1)\sigma^2$, not $n\sigma^2$. Dividing by $n-1$ therefore produces
+$$
+\mathbb{E}[s^2]
+=
+\mathbb{E}
+\left[
+\frac{1}{n-1}
+\sum_{i=1}^{n}(X_i-\bar{X})^2
+\right]
+=
+\sigma^2.
+$$
+The estimator is called **unbiased** because, across repeated random samples, its average value equals the population variance it is intended to estimate.
+
+## How Degrees of Freedom Explain the Structure
+
+The denominator $n-1$ is also associated with the number of independent deviations remaining after the sample mean has been estimated. The centered deviations satisfy the constraint
+$$
+\sum_{i=1}^{n}(x_i-\bar{x})=0.
+$$
+If $n-1$ deviations are known, the final deviation is determined automatically. For example, suppose four deviations have the form
+$$
+-3,\quad 1,\quad 4,\quad d_4.
+$$
+Because they must sum to zero,
+$$
+-3+1+4+d_4=0,
+$$
+so
+$$
+d_4=-2.
+$$
+Only three of the four deviations can vary freely. The fourth must take the value needed to preserve the zero-sum constraint. We therefore say that the deviations have
+$$
+n-1
+$$
+**degrees of freedom**.
+
+```{mermaid}
+%%| fig-cap: 'Estimating the mean imposes a zero-sum constraint, so after $n-1$ deviations are chosen, the final deviation is determined.'
+%%| label: fig-degrees-of-freedom
+
+flowchart TD
+    A["n observations"] --> B["Estimate one mean from the same data"]
+    B --> C["Centered deviations must sum to zero"]
+    C --> D["Choose n−1 deviations freely"]
+    D --> E["Final deviation is determined"]
+    E --> F["n−1 degrees of freedom"]
+```
+
+Degrees of freedom provide an important structural interpretation, but they should not be used as the entire proof that division by $n-1$ is correct. The zero-sum constraint explains why one independent component has been consumed by estimating the mean. The expectation calculation explains why dividing by $n-1$ specifically corrects the estimator so that its long-run average equals $\sigma^2$. The two explanations illuminate the same construction from different directions.
+
+## Reconstructing the Complete Formula
+
+We can now read the sample-variance formula as a sequence of semantically controlled decisions:
+$$
+s^2
+=
+\frac{1}{n-1}
+\sum_{i=1}^{n}(x_i-\bar{x})^2.
+$$
+The observation $x_i$ is first described relative to the sample center:
+$$
+x_i
+\quad\longrightarrow\quad
+x_i-\bar{x}.
+$$
+The signed deviation is transformed into a nonnegative quadratic contribution:
+$$
+x_i-\bar{x}
+\quad\longrightarrow\quad
+(x_i-\bar{x})^2.
+$$
+The individual contributions are aggregated into total squared spread:
+$$
+(x_1-\bar{x})^2,\ldots,(x_n-\bar{x})^2
+\quad\longrightarrow\quad
+\sum_{i=1}^{n}(x_i-\bar{x})^2.
+$$
+Finally, the total is normalized by the expected amount of population variance represented after estimating the mean:
+$$
+\sum_{i=1}^{n}(x_i-\bar{x})^2
+\quad\longrightarrow\quad
+\frac{1}{n-1}
+\sum_{i=1}^{n}(x_i-\bar{x})^2.
+$$
+These stages can be summarized by the following table:
+
+| Stage                | Expression                         | Question answered                                                            | Information changed                             |
+| -------------------- | ---------------------------------- | ---------------------------------------------------------------------------- | ----------------------------------------------- |
+| Original observation | $x_i$                              | Where is this observation on the original scale?                             | None                                            |
+| Centered deviation   | $x_i-\bar{x}$                      | Where is it relative to the sample mean?                                     | Absolute location removed                       |
+| Squared deviation    | $(x_i-\bar{x})^2$                  | How much quadratic separation does it contribute?                            | Direction removed; larger deviations emphasized |
+| Sum of squares       | $\sum (x_i-\bar{x})^2$             | How much squared spread is present in total?                                 | Individual contributions aggregated             |
+| Sample variance      | $\frac{1}{n-1}\sum(x_i-\bar{x})^2$ | What unbiased estimate of population squared spread does the sample provide? | Total normalized for inferential use            |
+
+```{mermaid}
+%%| fig-cap: "Sample variance is constructed through successive changes of reference, contribution, aggregation, and normalization."
+%%| label: fig-building-sample-variance
+
+flowchart TD
+    A["Observations<br/>xᵢ"] --> B["Center<br/>xᵢ − x̄"]
+    B --> C["Square<br/>(xᵢ − x̄)²"]
+    C --> D["Aggregate<br/>Σ(xᵢ − x̄)²"]
+    D --> E["Normalize<br/>divide by n−1"]
+    E --> F["Sample variance<br/>s²"]
+```
+
+## What the Formula Means as a Whole
+
+Sample variance is not the original dataset written in a more convenient form. It is a derived estimate constructed from the dataset. It preserves selected information about spread while discarding location, direction, observation order, and individual identity. Two different samples can therefore have the same variance even when their observations are not the same.
+
+The formula also does not reveal every property of dispersion. Because it uses squares, it gives relatively greater influence to large deviations. Because it aggregates all contributions, it does not report where those deviations occurred. Because it estimates population squared spread, its denominator reflects an inferential purpose rather than merely the number of observed values.
+
+The complete meaning can be stated as follows:
+
+> Sample variance is the total squared separation of the observations from their fitted sample center, normalized so that across repeated random samples it correctly estimates the population’s average squared separation from its mean.
+
+Once the formula is reconstructed in this way, none of its operations needs to be accepted as an isolated trick. Each operation solves a specific design problem created by the previous stage. Subtraction establishes a reference, squaring prevents directional cancellation and defines quadratic contribution, summation constructs total spread, and division by $n-1$ corrects the total for estimation.
+
+The construction of variance therefore illustrates a general method of mathematical invention. Begin with the property to be measured, identify the behavior the measure must possess, introduce operations that produce that behavior, and track what each operation preserves or discards. The next section will turn this method into a reusable framework for interpreting unfamiliar mathematical expressions beyond the particular case of variance.
+
+# A Framework for Understanding Constructed Expressions
+
+The construction of sample variance reveals a method that extends beyond statistics. A completed formula often compresses a sequence of decisions into one line of notation. The learner sees the operations but not the requirements that caused those operations to be selected. As a result, a purposeful construction can appear to be an arbitrary manipulation.
+
+The appropriate response is not to memorize a separate explanation for every formula. It is to develop a method for reconstructing the reasoning through which expressions are designed. Such a method must examine both formal validity and semantic purpose. Formal analysis asks whether an operation is mathematically permitted. Semantic analysis asks what quantity the operation creates, what role that quantity plays, and whether its behavior corresponds to the intended question.
+
+## Begin With the Question, Not the Operations
+
+When encountering an unfamiliar expression, the most tempting approach is to read it from left to right and name each operation. For sample variance, this produces a procedural description: subtract, square, add, and divide. Although correct, this description does not explain why those operations belong together.
+
+A more useful analysis begins by asking:
+
+> What property was this expression constructed to represent?
+
+For sample variance, the answer is not simply “the data.” It is the population’s squared spread around its mean, estimated through a sample. Once this target is identified, the operations can be evaluated according to whether they contribute to that purpose.
+
+The same principle applies elsewhere. Consider the formula for average speed:
+$$
+\text{average speed}
+=
+\frac{\text{total distance}}{\text{total time}}.
+$$
+Naming the operation as division does not explain the formula. The intended question is how much distance corresponds, on average, to one unit of time. Division is selected because it constructs a per-unit relationship.
+
+Likewise, the expression
+$$
+\frac{x-\mu}{\sigma}
+$$
+used in statistical standardization cannot be understood merely as subtraction followed by division. Subtracting $\mu$ expresses $x$ relative to the mean, while dividing by $\sigma$ expresses that relative position in units of standard deviation. The final quantity answers the question: how many standard deviations above or below the mean is the observation?
+
+Operations become intelligible when read as responses to an intended question.
+
+## Identify the Original Objects and Their Roles
+
+Before analyzing a transformation, the learner must determine what the original symbols represent. A symbol is not fully understood merely because its possible numerical value is known. Its meaning also includes the kind of object it represents and the role that object performs.
+
+In
+$$
+x_i-\bar{x},
+$$
+both $x_i$ and $\bar{x}$ are measured on the same scale, but they do not perform the same role. The value $x_i$ is the observation being described, whereas $\bar{x}$ is the reference from which it is described. In
+$$
+\frac{\text{distance}}{\text{time}},
+$$
+the numerator represents an accumulated quantity, while the denominator supplies the unit across which that quantity is distributed. In
+$$
+\text{final value}-\text{initial value},
+$$
+the two values represent different temporal states.
+
+A useful initial table is:
+
+| Symbol or component | Referent              | Mathematical role              | Measurement unit   |
+| ------------------- | --------------------- | ------------------------------ | ------------------ |
+| $x_i$               | The $i$th observation | Object being described         | Original data unit |
+| $\bar{x}$           | Sample mean           | Reference center               | Original data unit |
+| $x_i-\bar{x}$       | Signed deviation      | Relative position              | Original data unit |
+| $(x_i-\bar{x})^2$   | Squared deviation     | Contribution to squared spread | Squared data unit  |
+
+Restoring referents, roles, and units protects against treating the expression as a sequence of detachable symbols.
+
+## Classify the Mathematical Change
+
+The next question is whether the step is intended to preserve an existing quantity or construct a new one. This distinction can be tested by asking whether equality is being asserted between the old and new expressions.
+
+In
+$$
+x^2-1=(x-1)(x+1),
+$$
+the equality claims that both forms have the same value. The step is an equivalent rewriting.
+
+In
+$$
+d=x_i-\bar{x},
+$$
+the equation defines a new quantity $d$ from two existing quantities. It does not claim that $d=x_i$. This is a derived construction.
+
+In
+$$
+\hat{y}=b_0+b_1x,
+$$
+a model constructs a predicted value from an input and estimated parameters. The prediction is related to the observation but is not assumed to equal it.
+
+In
+$$
+\pi\approx3.14,
+$$
+the new representation is an approximation. Exact equality is not preserved, but numerical closeness is controlled.
+
+The classification can be summarized as follows:
+
+| Kind of change          | Central question                                                     |
+| ----------------------- | -------------------------------------------------------------------- |
+| Equivalent rewriting    | What remains exactly equal?                                          |
+| Equation transformation | Is the solution set preserved?                                       |
+| Derived construction    | What new quantity is being defined?                                  |
+| Approximation           | How much accuracy is lost?                                           |
+| Model construction      | Which features of the original situation are represented or omitted? |
+| Change of coordinates   | Which relationships remain invariant under the new reference system? |
+
+This classification prevents the learner from applying the wrong standard of judgment. A derived quantity should not be rejected because it is unequal to its source, and an alleged equivalent transformation should not be accepted merely because its new form is useful.
+
+## State the Preservation Contract
+
+Every mathematical change should be examined through three connected questions:
+
+1. What must remain preserved?
+2. What may change or be discarded?
+3. What new property should become visible, measurable, or easier to use?
+
+For centering a dataset, the preservation contract is:
+
+| Requirement               | Consequence                           |
+| ------------------------- | ------------------------------------- |
+| Preserve internal spacing | Pairwise differences remain unchanged |
+| Remove overall location   | The mean becomes zero                 |
+| Expose relative position  | Each value becomes a signed deviation |
+
+For squaring a deviation:
+
+| Requirement                         | Consequence                                       |
+| ----------------------------------- | ------------------------------------------------- |
+| Preserve zero separation            | $d=0$ exactly when $d^2=0$                        |
+| Treat opposite directions equally   | $(-d)^2=d^2$                                      |
+| Increase contribution with distance | Larger $\lvert d\rvert$ gives larger $d^2$        |
+| Permit quadratic aggregation        | Contributions combine as squared Euclidean length |
+| Discard direction                   | The sign of $d$ cannot be recovered from $d^2$    |
+
+An operation is justified when this pattern of preservation and change matches the intended question. The framework does not demand that no information be lost. It demands that the loss be understood and relevant to the purpose.
+
+## Read the Expression as a Sequence of Questions
+
+A complicated expression should be decomposed according to the order in which its quantities are constructed. Consider the standardized value
+$$
+z=\frac{x-\mu}{\sigma}.
+$$
+Its structure can be reconstructed in two stages. First,
+$$
+x-\mu
+$$
+asks where the observation lies relative to the population mean. Then,
+$$
+\frac{x-\mu}{\sigma}
+$$
+asks how large that displacement is when measured in units of population standard deviation.
+
+The construction can be represented as:
+
+```{mermaid}
+%%| fig-cap: "A standardized value is constructed by first changing the reference and then changing the unit."
+%%| label: fig-standardization-construction
+
+flowchart TD
+    A["Observation<br/>x"] --> B["Subtract mean<br/>x − μ"]
+    B --> C["Position relative to center"]
+    C --> D["Divide by standard deviation<br/>(x − μ)/σ"]
+    D --> E["Position measured in standard-deviation units"]
+```
+
+Each operation changes a different feature. Subtraction changes the reference point; division changes the unit. If $\mu=100$, $\sigma=10$, and $x=120$, then
+$$
+x-\mu=20
+$$
+says that the observation is twenty original units above the mean, while
+$$
+\frac{x-\mu}{\sigma}
+=
+\frac{20}{10}
+=
+2
+$$
+says that it is two standard deviations above the mean.
+
+Reading an expression in this way transforms a formula from a command into a chain of constructed meanings.
+
+## Test the Construction With Boundary and Contrast Cases
+
+A proposed interpretation should be tested against cases whose expected behavior is clear. These tests do not replace a proof, but they reveal whether the expression behaves according to its claimed meaning.
+
+For a deviation $x_i-\bar{x}$, useful tests include:
+
+* If $x_i=\bar{x}$, the deviation should be zero.
+* If $x_i$ lies above the mean, the deviation should be positive.
+* If $x_i$ lies below the mean, the deviation should be negative.
+* If every observation is shifted by the same constant, its centered deviation should remain unchanged.
+
+For squared deviation:
+
+* A value at the mean should contribute zero.
+* Equal distances on opposite sides should contribute equally.
+* A larger distance should produce a larger contribution.
+* Doubling the distance should quadruple the contribution.
+
+These checks can be organized into four general categories:
+
+| Test                           | Question                                                         |
+| ------------------------------ | ---------------------------------------------------------------- |
+| Zero or identity case          | What happens when there is no difference, change, or separation? |
+| Directional contrast           | What happens on opposite sides of the reference?                 |
+| Scale change                   | What happens when the input doubles or triples?                  |
+| Translation or invariance test | What happens when irrelevant background conditions change?       |
+
+For example, if a proposed measure of spread changes when the same constant is added to every observation, it is partly measuring location rather than spread. The failure of an invariance test reveals a mismatch between the formula and its claimed purpose.
+
+## Compare Plausible Alternatives
+
+An operation becomes more understandable when compared with other operations that could have been chosen. The question is not merely “Why does this formula use a square?” but also “What would happen if another construction were used?”
+
+For a signed deviation $d$, several nonnegative contributions are possible:
+$$
+|d|,\qquad d^2,\qquad d^4.
+$$
+All three remove directional cancellation, but they produce different responses to separation:
+
+| Magnitude of $d$ | $\lvert d\rvert$ | $d^2$ | $d^4$ |
+| ---------------: | ---------------: | ----: | ----: |
+|              $1$ |              $1$ |   $1$ |   $1$ |
+|              $2$ |              $2$ |   $4$ |  $16$ |
+|              $3$ |              $3$ |   $9$ |  $81$ |
+
+Absolute value produces linear growth. Squaring produces quadratic growth. Raising to the fourth power produces much stronger sensitivity to large deviations. The alternatives reveal that the exponent is not cosmetic; it determines how the measure judges increasing separation.
+
+Comparing alternatives also prevents explanations from presenting one formula as though nature itself dictated every symbol. Mathematical definitions are constrained choices. They are evaluated by the properties they produce, the problems they solve, and the theoretical structures they support.
+
+## Restore Units and Referents
+
+Symbolic notation often hides information that becomes visible when units and referents are restored. Suppose $x_i$ is measured in centimetres. Then
+$$
+x_i-\bar{x}
+$$
+is also measured in centimetres because quantities can be subtracted only when they belong to a compatible measurement scale. Its square is measured in square centimetres:
+$$
+(x_i-\bar{x})^2
+\quad\text{has unit}\quad
+\text{cm}^2.
+$$
+This unit change confirms that squared deviation is a new kind of quantity rather than another representation of ordinary distance.
+
+Units can also expose invalid constructions. Adding a length to an area,
+$$
+3\text{ m}+4\text{ m}^2,
+$$
+does not produce a meaningful physical total because the quantities have incompatible dimensions. Multiplication and division, by contrast, deliberately construct new units:
+$$
+\frac{\text{distance}}{\text{time}}
+=
+\text{speed},
+$$
+and
+$$
+\text{mass}\times\text{acceleration}
+=
+\text{force}.
+$$
+Dimensional analysis therefore acts as a form of semantic supervision. It checks whether the operations are compatible with the kinds of quantities represented.
+
+Restoring referents performs a similar function when formal units are absent. Writing
+$$
+\frac{120\text{ kilometres}}{2\text{ hours}}
+=
+60\text{ kilometres per hour}
+$$
+makes the per-unit meaning of division more visible than the compressed expression $120/2=60$.
+
+## Distinguish Reversibility From Usefulness
+
+Some transformations can be reversed exactly. From
+$$
+d=x_i-\bar{x},
+$$
+we can recover the observation if the mean is retained:
+$$
+x_i=d+\bar{x}.
+$$
+Centering alone therefore does not destroy the original observation when the reference remains known.
+
+Squaring is not fully reversible without additional information. From
+$$
+d^2=9,
+$$
+we can infer only
+$$
+d=3
+\quad\text{or}\quad
+d=-3.
+$$
+The sign has been discarded. Summing the squared deviations loses still more information because the individual contributions are combined. From a variance alone, the original dataset cannot generally be reconstructed.
+
+Irreversibility is not the same as invalidity. A summary is useful precisely because it compresses information. The relevant question is whether the discarded information is unnecessary for the current purpose. Direction is unnecessary when variance measures nondirectional squared spread, but it would be essential if the intended quantity were systematic bias above or below a target.
+
+## The Complete Reconstruction Procedure
+
+The framework can now be stated as a connected procedure:
+
+```{mermaid}
+%%| fig-cap: "Understanding a constructed expression requires reconstructing its purpose, roles, preservation requirements, and behavior."
+%%| label: fig-constructed-expression-framework
+
+flowchart TD
+    A["Identify the intended question"] --> B["Bind symbols to objects, roles, and units"]
+    B --> C["Classify each mathematical change"]
+    C --> D["State what is preserved and discarded"]
+    D --> E["Test boundary, contrast, and invariance cases"]
+    E --> F["Compare plausible alternatives"]
+    F --> G["Evaluate whether the construction serves its purpose"]
+```
+
+The corresponding questions are:
+
+1. What property or relationship is the expression intended to represent?
+2. What original objects and quantities are available?
+3. What does each symbol refer to, and what role does it perform?
+4. Is each step an equivalent rewriting, a derived construction, an approximation, or a change of model?
+5. What must remain invariant?
+6. What information is changed or discarded?
+7. What new behavior does the chosen operation introduce?
+8. Do zero, directional, scale, and translation tests behave as expected?
+9. What alternative operations were possible, and how would they change the result?
+10. Does the final expression answer the original question?
+
+This method adds design analysis to procedural knowledge. A learner should still know how to manipulate the expression, but manipulation is no longer the whole task. The learner also reconstructs why the expression has its particular form.
+
+## From Formula Recognition to Mathematical Design
+
+A beginner often encounters a formula as an authority: it is used because it has been supplied by a textbook, teacher, or software library. An experienced mathematician is more likely to see a formula as a designed object whose behavior can be inspected. The difference is not merely greater memory. It is the ability to ask what constraints the expression satisfies and how its operations work together.
+
+For sample variance, the reconstruction is now visible:
+
+* The intended property is squared spread around a population center.
+* The sample supplies observations but not the unknown population parameters.
+* The sample mean provides an estimated reference.
+* Subtraction constructs signed relative positions.
+* Squaring removes directional cancellation and creates quadratic contributions.
+* Summation aggregates the contributions.
+* Division by $n-1$ corrects the systematic underestimation created by fitting the center from the same sample.
+
+The finished expression is therefore not an arbitrary string of operations:
+$$
+\frac{1}{n-1}\sum_{i=1}^{n}(x_i-\bar{x})^2.
+$$
+It is a compressed record of the design problem and its solution.
+
+The remaining question is how a learner can begin producing such constructions rather than merely explaining them after they have been revealed. The next section will examine mathematical creativity as a process of designing under constraints. It will show why operations such as subtraction and squaring become thinkable once the required behavior of the unknown expression has been stated clearly.
+
+# Mathematical Creativity as Design Under Constraints
+
+The completed variance formula can create an uncomfortable contrast between the learner and its apparent inventor. Once the formula has been explained, the learner may understand why subtraction, squaring, summation, and normalization are useful. Before seeing the formula, however, it may never have occurred to the learner to construct
+$$
+(x_i-\bar{x})^2.
+$$
+This difference can be interpreted incorrectly. The learner may conclude that mathematical creativity is an unexplained ability possessed by people who somehow see the correct operation immediately. Yet the difficulty often arises because the learner and the inventor are not confronting the same visible problem. The learner is shown a completed solution and asked to infer the problem that shaped it. The mathematical designer begins, instead, with requirements that the unknown expression must satisfy.
+
+## A Finished Formula Hides the Search That Produced It
+
+Textbooks usually present mathematical knowledge in a compressed order. A definition is stated, its notation is introduced, examples are calculated, and its properties are proved. This order is efficient for communicating an established result, but it conceals the uncertainty that precedes construction. Alternative definitions, failed attempts, competing objectives, and decisions about what should be preserved are largely absent.
+
+The learner therefore encounters
+$$
+s^2
+=
+\frac{1}{n-1}
+\sum_{i=1}^{n}(x_i-\bar{x})^2
+$$
+as though the problem had always contained a mean, a difference, a square, a sum, and the number $n-1$. In reality, the original observations contain none of these operations explicitly. They enter because a measure is being designed to possess particular properties.
+
+The appropriate question is not:
+
+> How could someone look at a dataset and immediately imagine the complete variance formula?
+
+A more realistic question is:
+
+> What sequence of requirements would make the operations in the variance formula reasonable candidates?
+
+The distinction matters because invention rarely begins by guessing an entire finished expression. It proceeds by reducing uncertainty one requirement at a time.
+
+## Constraints Make Operations Thinkable
+
+Suppose we want to construct a measure of spread. Without further conditions, the problem is too open. Infinitely many expressions could be formed from the observations. We could add them, multiply them, square them, take logarithms, compare selected pairs, or introduce arbitrary constants. Creativity cannot search this unlimited space intelligently.
+
+The search becomes manageable when the desired behavior is specified. A spread measure should not change merely because the same constant is added to every observation. It should be zero when all observations coincide. It should increase when observations move farther from their center. Values lying equally far on opposite sides of the center should contribute equally. The individual contributions should combine into one dataset-level quantity.
+
+Each requirement eliminates unsuitable constructions:
+
+| Requirement                        | Consequence for the design                      |
+| ---------------------------------- | ----------------------------------------------- |
+| Ignore overall location            | Work with values relative to a center           |
+| Preserve internal separation       | Subtract the same center from every observation |
+| Treat opposite directions equally  | Remove the signs of deviations                  |
+| Give no contribution at the center | Use a transformation satisfying $g(0)=0$        |
+| Increase with distance             | Choose $g(d)$ that grows with $\lvert d\rvert$  |
+| Produce one summary                | Aggregate contributions                         |
+| Permit comparison or estimation    | Normalize the aggregate                         |
+
+Once signs must be removed while zero and magnitude ordering are preserved, absolute value and even powers become natural candidates. Once useful Euclidean geometry, algebraic decomposition, and smooth optimization are also desired, squaring becomes especially attractive. The operation has not appeared from nowhere. The constraints have reduced a vast search space to a small family of plausible constructions.
+
+```{mermaid}
+%%| fig-cap: "Mathematical design becomes possible when desired behavior progressively restricts the space of candidate expressions."
+%%| label: fig-creativity-constrained-search
+
+flowchart TD
+    A["Many possible expressions"] --> B["State required behavior"]
+    B --> C["Eliminate incompatible operations"]
+    C --> D["Compare remaining candidates"]
+    D --> E["Test consequences and invariants"]
+    E --> F["Select and refine a construction"]
+```
+
+Creativity remains necessary because the constraints do not always determine one unique expression. Absolute deviation and squared deviation both satisfy the initial requirement of preventing cancellation. The designer must compare the additional behavior they produce. Mathematical creativity therefore combines generation and criticism: propose a construction, derive its consequences, compare it with alternatives, and decide whether those consequences serve the intended purpose.
+
+## Discovery and Justification Are Different
+
+A further distinction is needed between how an idea is discovered and how it is justified. A mathematician might first encounter a useful square through geometry, an analogy with another problem, experimental calculation, a previously known identity, or even an initially unprincipled guess. The final justification may then organize the idea through properties that were not consciously listed at the moment of discovery.
+
+The explanation developed in this article is therefore a **rational reconstruction** of the formula. It shows how the operations can be justified as responses to connected requirements. It does not claim that sample variance was historically invented in one clean sequence beginning with subtraction and ending with $n-1$. Historical discovery is often distributed across multiple problems, people, notations, and purposes.
+
+This distinction protects us from two errors. We should not assume that a logically organized explanation reproduces the inventor’s private thought process. But we should also not conclude that, because discovery can be irregular, mathematical constructions require no systematic justification. The path of discovery may wander; the final expression must still be evaluated by its mathematical behavior.
+
+## Why Experts Generate Better Candidates
+
+An experienced mathematician usually has a larger collection of meaningful operations available for reuse. Subtraction may be recognized as a change of origin, division as normalization, squaring as Euclidean measurement or quadratic penalty, logarithms as converting multiplication into addition, and summation as aggregation. These operations are not stored merely as procedures. They are connected to patterns of behavior.
+
+A beginner may know how to square a number without possessing the association
+$$
+\text{squaring}
+\quad\longleftrightarrow\quad
+\text{nonnegative quadratic contribution}.
+$$
+The expert can propose squaring because previous experience has organized the operation around its consequences. The difference is therefore partly a difference in the structure of prior knowledge. Experts do not search through every operation equally. They recognize families of operations associated with the requirements of the problem.
+
+This means that mathematical creativity can be trained. The learner must study operations not only in terms of how they are performed but also in terms of what they do to meaning and structure. For every operation, useful questions include: What distinctions does it preserve? What distinctions does it erase? How does it respond when the input changes scale? Is it reversible? What units does it produce? What geometrical or relational interpretation does it have?
+
+Subtraction then becomes more than “taking away.” It can change a reference point, form a comparison, or express a directed displacement. Squaring becomes more than multiplying a number by itself. It can remove sign, emphasize magnitude, construct area, produce squared length, and define a penalty whose growth accelerates with error.
+
+## Practising Construction Before Seeing the Formula
+
+A learner who wants to become capable of inventing expressions should sometimes delay looking at the established formula. The task is not necessarily to rediscover the historically accepted expression exactly. It is to practise moving from desired behavior to candidate constructions.
+
+For a measure of spread, the exercise could proceed as follows:
+
+1. State what should happen if all observations are equal.
+2. State what should happen if every observation is shifted by the same amount.
+3. Decide whether direction from the center matters.
+4. Decide how strongly large separations should influence the result.
+5. Propose more than one possible contribution function.
+6. Test the candidates on small contrasting datasets.
+7. Identify what each candidate preserves, discards, and emphasizes.
+8. Compare the results with the established measure.
+
+Suppose the centered deviations are
+$$
+-3,\quad -1,\quad 1,\quad 3.
+$$
+Their direct sum is zero, so direct addition fails as a measure of total separation. Absolute values produce
+$$
+3+1+1+3=8,
+$$
+while squares produce
+$$
+9+1+1+9=20.
+$$
+Neither result is inherently wrong. They encode different responses to the same pattern. The learner’s task is to explain those responses and connect them to possible purposes. This exercise develops design judgment even if the learner does not independently reproduce variance.
+
+## From “What Operation Should I Use?” to “What Behavior Do I Need?”
+
+The question “What operation should I use?” is often asked too early. Without an intended behavior, there is no principled basis for choosing among operations. A better sequence is:
+
+> What relationship or property do I need the output to express? What behavior must the output have in important cases? Which operations produce that behavior?
+
+This reversal is central to mathematical design. It moves attention from the available symbols to the requirements of the unknown construction.
+
+For subtraction, one does not begin by deciding mechanically which quantity should be $a$ and which should be $b$. One first decides what is being described, what supplies the reference, and what positive and negative results should mean. For squaring, one does not begin with a desire to use an exponent. One begins with the requirement that opposite directions should not cancel and then investigates the consequences of candidate transformations.
+
+The ability to construct expressions therefore grows from semantic control. The learner must be able to move between the intended phenomenon, the behavior required of a measure, and the operations capable of producing that behavior.
+
+## Creativity as Responsible Selection
+
+Mathematical creativity is not freedom from rules. It is the ability to design within constraints while remaining responsible for the consequences of every choice. A creative expression must still preserve the required invariants, use compatible quantities, behave correctly in boundary cases, and answer the question for which it was constructed.
+
+The learner who could not initially imagine squared deviation was not necessarily lacking mathematical ability. The design problem had been hidden. Once only the finished formula is visible, squaring appears to be an isolated act of inspiration. Once the required behavior is made visible, squaring becomes one candidate whose strengths and costs can be investigated.
+
+The deeper training principle can therefore be stated as follows:
+
+> To learn how mathematicians construct expressions, do not practise guessing finished formulas. Practise identifying required behavior, generating candidate operations, and evaluating what each candidate preserves, discards, and makes possible.
+
+This principle brings the article back to its original concern. Mathematical expressions can change without becoming arbitrary because their construction is supervised by meaning. The conclusion will gather the complete argument and state what a learner should now see when encountering a transformed or newly constructed expression.
+
+# Conclusion
+
+The investigation began with a suspicion about mathematical expressions. If an expression represents the meaning of a problem, then transforming it or introducing new operations appears to risk changing that meaning. The sample-variance formula makes this concern especially visible:
+$$
+s^2
+=
+\frac{1}{n-1}
+\sum_{i=1}^{n}(x_i-\bar{x})^2.
+$$
+The original dataset does not visibly contain a subtraction, a square, a summation symbol, or the denominator $n-1$. These components are introduced by mathematics. It is therefore reasonable to ask whether the formula preserves the original problem or replaces it with something created merely for computational convenience.
+
+The answer requires distinguishing two forms of mathematical change. An equivalence-preserving transformation changes the representation of an existing quantity while preserving a specified property, such as numerical value or solution set. Factoring
+$$
+x^2-1
+$$
+as
+$$
+(x-1)(x+1)
+$$
+changes the visible structure but preserves the value for every admissible $x$. A derived construction performs a different task. It creates a new quantity from existing quantities because the original form does not directly represent the property we want to study. The deviation
+$$
+x_i-\bar{x}
+$$
+and the squared deviation
+$$
+(x_i-\bar{x})^2
+$$
+belong to this second category. Neither is claimed to be equivalent to the original observation $x_i$.
+
+The meaning therefore does change during the construction of variance. This change is not a defect that must be concealed. It is the purpose of the construction. An observation becomes a signed position relative to a center; that position becomes a nonnegative quadratic contribution; the individual contributions become a total; and the total becomes an estimator of population spread. Mathematical responsibility does not require every stage to mean the same thing. It requires the transition from one meaning to the next to be explicit, systematic, and justified.
+
+Subtraction provides the first transition. The expression
+$$
+a-b=d
+$$
+means that $d$ is the quantity that must be added to $b$ to reach $a$:
+$$
+b+d=a.
+$$
+Depending on the conceptual model, this relationship can describe removal, comparison, change, displacement, deviation, or error. When subtraction expresses relative position, a useful pattern is
+$$
+\text{object}-\text{reference}.
+$$
+Thus,
+$$
+x_i-\bar{x}
+$$
+describes observation $x_i$ relative to the sample mean. A positive result places the observation above the mean, a negative result places it below the mean, and zero places it at the mean. Reversing the subtraction is not arithmetically invalid, but it reverses the directed relationship:
+$$
+\bar{x}-x_i=-(x_i-\bar{x}).
+$$
+The two expressions represent opposite displacements. Their ordinary distances are nevertheless equal:
+$$
+|x_i-\bar{x}|
+=
+|\bar{x}-x_i|.
+$$
+The order of subtraction should therefore not be chosen by mechanically placing the larger number first. It should be chosen by deciding what quantity is being described, what supplies the reference, and what positive and negative results should mean.
+
+Subtracting the mean centers the dataset. It changes the coordinate system so that the mean becomes zero, removes overall location, and preserves every pairwise difference:
+$$
+(x_i-\bar{x})-(x_j-\bar{x})
+=
+x_i-x_j.
+$$
+This is why datasets located in different regions of a measurement scale can possess the same centered structure. Centering does not destroy their internal arrangement; it makes that arrangement available independently of absolute location. The mean is particularly appropriate because it is both the balance point of signed deviations and the unique value that minimizes total squared separation.
+
+Squaring performs the next controlled change. It removes direction because
+$$
+(-d)^2=d^2,
+$$
+preserves zero separation because
+$$
+d^2=0
+\quad\Longleftrightarrow\quad
+d=0,
+$$
+and preserves the ordering of separation magnitudes while giving larger deviations proportionally greater influence. Squared deviation is not ordinary distance. It is the square of distance:
+$$
+(x_i-\bar{x})^2
+=
+|x_i-\bar{x}|^2.
+$$
+Geometrically, it can be represented as the area of a square whose side is the distance between the observation and the mean. More deeply, the complete sum
+$$
+\sum_{i=1}^{n}(x_i-\bar{x})^2
+$$
+is the squared Euclidean length of the centered data vector. Squaring is therefore connected to geometry, algebraic decomposition, and optimization rather than being a trick introduced only to eliminate negative signs.
+
+Absolute value could also prevent cancellation. Its existence demonstrates that mathematical requirements may permit more than one valid construction. Absolute deviations grow linearly and are naturally associated with the median; squared deviations grow quadratically and are naturally associated with the mean. The choice of operation partly defines the kind of spread being measured. Mathematical formulas do not merely uncover properties that already possess one inevitable representation. They formalize selected properties through operations whose consequences match an intended purpose.
+
+The remaining stages of variance continue this selection. Summation preserves total squared contribution while discarding the identities of the individual contributions. Division normalizes the total. When the observations form a random sample used to estimate population variance, dividing by $n-1$ corrects the systematic underestimation created by fitting the sample mean from the same observations. The completed formula is therefore a compressed record of several design decisions:
+
+```{mermaid}
+%%| fig-cap: "The construction of sample variance changes meaning in controlled stages, with each operation answering a new question."
+%%| label: fig-final-controlled-construction
+
+flowchart TD
+    A["Observation<br/>Where is xᵢ?"] --> B["Deviation<br/>Where is xᵢ relative to x̄?"]
+    B --> C["Squared deviation<br/>How much quadratic separation does it contribute?"]
+    C --> D["Sum of squares<br/>How much squared spread exists in total?"]
+    D --> E["Sample variance<br/>What population spread does the sample estimate?"]
+```
+
+This reconstruction also answers why it may be difficult for a learner to invent the square independently. The learner is usually shown the completed formula after the design problem has disappeared. Without knowing the required behavior, almost any operation is imaginable and no operation is especially motivated. Once the requirements are stated—remove location, preserve internal spacing, prevent directional cancellation, assign increasing nonnegative contributions, aggregate them, and support useful algebraic structure—the search becomes constrained. Squaring becomes thinkable because its consequences correspond to those requirements.
+
+Mathematical creativity should therefore not be understood as guessing surprising operations without guidance. It is the ability to move between a desired behavior and an expression capable of producing it. This ability develops when operations are learned not merely as procedures but as transformations with recognizable consequences. Subtraction changes a reference or constructs a comparison. Absolute value removes direction while retaining ordinary magnitude. Squaring removes direction and introduces quadratic growth. Summation aggregates, while division can normalize or construct a per-unit relationship.
+
+The framework developed in this article can be applied whenever a mathematical expression changes:
+
+1. Identify the question the new expression is intended to answer.
+2. Determine whether the step rewrites an existing quantity or constructs a new one.
+3. Bind every symbol to its referent, role, and unit.
+4. State what the operation preserves.
+5. State what it changes or discards.
+6. Examine the behavior introduced by the operation.
+7. Compare plausible alternatives.
+8. Test whether the final expression still serves the original purpose.
+
+The deepest lesson is not that mathematical meaning must never change. If meaning could never change, mathematics could not construct distance from position, speed from distance and time, error from prediction and observation, or variance from a dataset. The requirement is that meaning must not change silently or arbitrarily. Every new quantity should remain connected to the objects from which it was constructed, and every operation should be accountable for the behavior it introduces.
+
+The central principle of the article can therefore be stated in its final form:
+
+> When mathematics changes an expression, determine whether it is preserving an existing quantity or constructing a new one. Then identify what the change preserves, what it discards, and why the resulting behavior belongs to the question being answered.
+
+Once this principle becomes habitual, a formula no longer appears as a mysterious arrangement of symbols. It becomes a designed structure whose decisions can be reconstructed, tested, compared, and eventually created.

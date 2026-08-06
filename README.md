@@ -30,6 +30,14 @@ This article reconstructs the reasoning hidden inside a seemingly simple probabi
 
 **[Read The Reasoning Hidden Inside a Probability Calculation](https://hafizarslanamjad.github.io/mathematical-understanding/articles/structuring-probability-problem/)**
 
+### When Mathematics Changes the Expression
+
+**Equivalence, Derived Quantities, and the Construction of Sample Variance**
+
+This article investigates how mathematics rewrites existing quantities and constructs new ones without losing semantic control. Using sample variance as its central case, it explains subtraction as relative position, centering as a change of reference, squaring as quadratic measurement, and mathematical creativity as design under constraints.
+
+**[Read When Mathematics Changes the Expression](https://hafizarslanamjad.github.io/mathematical-understanding/articles/when-mathematics-change-the-expression/)**
+
 ## Repository structure
 
 ```text
@@ -40,6 +48,12 @@ mathematical-understanding/
 ├── articles/
 │   ├── before-mathematics-begins/
 │   │   ├── figures/
+│   │   └── index.qmd
+│   ├── structuring-probability-problem/
+│   │   ├── figures/
+│   │   │   └── spinner-probability-problem.png
+│   │   └── index.qmd
+│   ├── when-mathematics-change-the-expression/
 │   │   └── index.qmd
 │   └── when-symbols-stay-the-same/
 │       └── index.qmd
@@ -126,7 +140,7 @@ The Quarto files are the authoritative article sources. Generated HTML files sho
 
 ## Project status
 
-The repository currently contains two article projects. *Before Mathematics Begins* has a complete conceptual draft. *When Symbols Stay the Same but Meaning Changes* has a complete structural draft and is undergoing source-level verification of mathematical rendering and presentation. Future revisions will add scholarly citations, refine visual explanations, consolidate repeated arguments where necessary, and prepare the blogs for possible publication in longer academic or book-length forms.
+The repository currently contains four long-form articles examining mathematical understanding from complementary perspectives: explanatory representation, contextual preservation, the organization of probability problems, and the construction of mathematical expressions. Future revisions may add scholarly citations, refine visual explanations, and prepare selected articles for longer academic or book-length forms.
 
 ## Repository
 
