@@ -706,3 +706,478 @@ $$
 Subtraction has successfully centered the data and exposed the position of every observation relative to the mean. The same feature that makes deviations informative individually—their signs—prevents their direct sum from measuring total spread. The next design problem is therefore not caused by a failure of subtraction. It arises because the information produced by subtraction contains more structure than the intended measure should retain.
 
 To construct a measure of spread, mathematics must preserve the magnitude of separation while preventing opposite directions from cancelling. This requirement leads to a choice between several possible constructions, including absolute values and squares. Understanding why variance chooses the square requires first examining what is preserved when a dataset is centered and why the mean is the particular reference naturally associated with squared separation.
+
+# Centering the Data: Why Subtract the Mean?
+
+The previous section established that $x_i-\bar{x}$ describes an observation relative to the sample mean. This explains the order of subtraction, but it leaves another question unresolved: why should the mean be chosen as the reference? A reference point cannot be justified merely by saying that it is “the average.” Zero, the median, the smallest observation, or any other value could also be subtracted from every data point. To understand why variance uses $\bar{x}$, we must first identify what centering is intended to accomplish and then examine why the mean is especially compatible with squared separation.
+
+## Separating Location from Spread
+
+A collection of observations contains several kinds of structure at once. It has a location on the measurement scale, but it also has an internal arrangement. Consider the two datasets
+
+$$
+A={8,10,12}
+$$
+
+and
+
+$$
+B={98,100,102}.
+$$
+
+The datasets occupy very different regions of the number line. Dataset $A$ is centered around $10$, whereas dataset $B$ is centered around $100$. Nevertheless, their observations possess the same internal spacing. In each dataset, the lowest value lies two units below the center, one value lies at the center, and the highest value lies two units above it.
+
+If the purpose is to describe where the datasets are located, their difference matters. If the purpose is to describe how dispersed they are around their respective centers, their absolute locations should not matter. A measure of spread should recognize that these two datasets have the same internal pattern even though one has been shifted ninety units to the right.
+
+Their means are
+
+$$
+\bar{x}_A=10
+$$
+
+and
+
+$$
+\bar{x}_B=100.
+$$
+
+Subtracting the corresponding mean from every observation gives
+
+$$
+A-\bar{x}_A
+===========
+
+{-2,0,2}
+$$
+
+and
+
+$$
+B-\bar{x}_B
+===========
+
+{-2,0,2}.
+$$
+
+The absolute locations have disappeared, while the common internal arrangement has become visible.
+
+| Dataset | Original observations |  Mean | Centered observations |
+| ------- | --------------------- | ----: | --------------------- |
+| (A)     | ({8,10,12})           |  (10) | ({-2,0,2})            |
+| (B)     | ({98,100,102})        | (100) | ({-2,0,2})            |
+
+Centering therefore performs a form of information separation. It removes the component that tells us where the dataset is located and retains the component that tells us where each observation lies relative to the center. This is useful because location and spread answer different questions. The mean describes a central location; the deviations describe the arrangement around that location.
+
+The operation does not claim that $8$ and $98$ are the same observation. It claims that they occupy the same relative position within their respective datasets:
+
+$$
+8-10=-2
+$$
+
+and
+
+$$
+98-100=-2.
+$$
+
+Both values are two units below their dataset’s mean. Centering allows observations with different absolute positions to be compared through a common relational description.
+
+## Centering as a Translation of Coordinates
+
+The geometrical meaning of centering can be understood as a translation of the coordinate system. Suppose an observation lies at position $x_i$ and the mean lies at position $\bar{x}$ on a number line. In the original coordinate system, zero is the reference from which both positions are measured. After subtracting $\bar{x}$ from every position, the mean receives the new coordinate
+
+$$
+\bar{x}-\bar{x}=0,
+$$
+
+while the observation receives the coordinate
+
+$$
+x_i-\bar{x}.
+$$
+
+The data points have not moved relative to one another. Instead, the coordinate system has been shifted so that the mean becomes the new origin.
+
+```{mermaid}
+%%| fig-cap: "Centering translates the coordinate system so that the mean becomes zero while the internal spacing of the observations remains unchanged."
+%%| label: fig-centering-translation
+
+flowchart TD
+    A["Original coordinates<br/>8, 10, 12"] --> B["Subtract the mean<br/>10 from every coordinate"]
+    B --> C["Centered coordinates<br/>−2, 0, 2"]
+    A --> D["Center located at 10"]
+    C --> E["Center located at 0"]
+    D --> F["Internal gaps: 2 and 2"]
+    E --> F
+```
+
+The preservation of internal spacing can be demonstrated algebraically. If two observations are $x_i$ and $x_j$, their original signed separation is
+
+$$
+x_i-x_j.
+$$
+
+After centering, their separation becomes
+
+$$
+(x_i-\bar{x})-(x_j-\bar{x}).
+$$
+
+Simplifying gives
+
+$$
+(x_i-\bar{x})-(x_j-\bar{x})
+===========================
+
+# x_i-\bar{x}-x_j+\bar{x}
+
+x_i-x_j.
+$$
+
+Thus,
+
+$$
+\boxed{(x_i-\bar{x})-(x_j-\bar{x})=x_i-x_j.}
+$$
+
+The equation expresses the preservation contract of centering. Absolute coordinates may change, but every pairwise difference remains invariant. Because distances are absolute values of these differences, every pairwise distance also remains unchanged:
+
+$$
+\left|(x_i-\bar{x})-(x_j-\bar{x})\right|
+========================================
+
+|x_i-x_j|.
+$$
+
+This is why translating a dataset does not alter its spread. If the same constant $k$ is added to every observation,
+
+$$
+y_i=x_i+k,
+$$
+
+then the new mean is
+
+$$
+\bar{y}=\bar{x}+k.
+$$
+
+The centered value in the translated dataset becomes
+
+$$
+y_i-\bar{y}
+===========
+
+# (x_i+k)-(\bar{x}+k)
+
+x_i-\bar{x}.
+$$
+
+The shift $k$ disappears. Consequently, a spread measure built from centered values can remain unaffected by a change in the dataset’s overall location. This property is known as **translation invariance**.
+
+## Why Not Use Zero as the Reference?
+
+One might ask why the original zero of the measurement scale cannot serve as the reference. If we square and add the raw observations, we obtain
+
+$$
+\sum_{i=1}^{n}x_i^2.
+$$
+
+This quantity measures squared separation from zero, not dispersion around the dataset’s own center. It therefore mixes location and spread.
+
+Consider again
+
+$$
+A={8,10,12}
+$$
+
+and
+
+$$
+B={98,100,102}.
+$$
+
+Their sums of squares relative to zero are
+
+$$
+8^2+10^2+12^2=308
+$$
+
+and
+
+$$
+98^2+100^2+102^2=30008.
+$$
+
+The second value is vastly larger, although the datasets have identical internal spacing. The difference arises because dataset $B$ is farther from zero, not because it is more dispersed.
+
+After centering, both datasets have the same squared deviations:
+
+$$
+(-2)^2+0^2+2^2=8.
+$$
+
+This demonstrates why a reference appropriate for measuring spread must move with the data. The ordinary zero of the scale may have physical meaning—for example, zero metres or zero degrees on a particular temperature scale—but it is not automatically the center around which the observations vary.
+
+## Could Any Other Center Be Used?
+
+A deviation can be formed relative to any chosen value $c$:
+
+$$
+x_i-c.
+$$
+
+If $c$ is the median, the expression describes each observation relative to the median. If $c$ is a target value, it describes deviation from the target. If $c$ is a prediction, it describes prediction error. There is nothing mathematically invalid about these choices. The appropriate center depends on the question and on the way deviations will be measured.
+
+This point is essential. The mean is not the universally correct center for every purpose. It is the center naturally associated with **squared** deviations. The median, by contrast, is naturally associated with **absolute** deviations. Different constructions define different notions of what it means for a value to be central.
+
+To see the special relationship between the mean and squared deviations, consider the total squared separation from an arbitrary reference $c$:
+
+$$
+S(c)=\sum_{i=1}^{n}(x_i-c)^2.
+$$
+
+The expression $S(c)$ asks how much total squared separation the observations have from the candidate center $c$. We can compare this total with the squared separation from the mean by writing
+
+$$
+x_i-c=(x_i-\bar{x})+(\bar{x}-c).
+$$
+
+Squaring gives
+
+$$
+(x_i-c)^2
+=========
+
+(x_i-\bar{x})^2
++
+2(x_i-\bar{x})(\bar{x}-c)
++
+(\bar{x}-c)^2.
+$$
+
+Now sum over all observations:
+
+$$
+\sum_{i=1}^{n}(x_i-c)^2
+=======================
+
+\sum_{i=1}^{n}(x_i-\bar{x})^2
++
+2(\bar{x}-c)\sum_{i=1}^{n}(x_i-\bar{x})
++
+\sum_{i=1}^{n}(\bar{x}-c)^2.
+$$
+
+The deviations from the mean sum to zero:
+
+$$
+\sum_{i=1}^{n}(x_i-\bar{x})=0.
+$$
+
+Because $\bar{x}-c$ is constant across all $n$ observations,
+
+$$
+\sum_{i=1}^{n}(\bar{x}-c)^2
+===========================
+
+n(\bar{x}-c)^2.
+$$
+
+The complete relationship is therefore
+
+$$
+\boxed{
+\sum_{i=1}^{n}(x_i-c)^2
+=======================
+
+\sum_{i=1}^{n}(x_i-\bar{x})^2
++
+n(\bar{x}-c)^2.
+}
+$$
+
+This identity explains why the mean is the center of squared deviation. The first term on the right,
+
+$$
+\sum_{i=1}^{n}(x_i-\bar{x})^2,
+$$
+
+does not depend on $c$. The second term,
+
+$$
+n(\bar{x}-c)^2,
+$$
+
+is always nonnegative. It reaches its smallest possible value, zero, only when
+
+$$
+c=\bar{x}.
+$$
+
+Consequently,
+
+$$
+\sum_{i=1}^{n}(x_i-c)^2
+\geq
+\sum_{i=1}^{n}(x_i-\bar{x})^2
+$$
+
+for every possible center $c$, with equality only when $c=\bar{x}$. The mean is therefore the unique point that minimizes the total squared distance to the observations.
+
+## A Numerical View of the Minimizing Property
+
+For the dataset
+
+$$
+{2,4,6},
+$$
+
+the mean is $4$. The total squared separation from $4$ is
+
+$$
+(2-4)^2+(4-4)^2+(6-4)^2
+=======================
+
+# 4+0+4
+
+8.
+
+$$
+
+Suppose we choose $c=3$ instead:
+
+$$
+(2-3)^2+(4-3)^2+(6-3)^2
+=======================
+
+# 1+1+9
+
+11.
+
+$$
+
+If we choose $c=5$:
+
+$$
+(2-5)^2+(4-5)^2+(6-5)^2
+=======================
+
+# 9+1+1
+
+11.
+
+$$
+
+If we choose $c=0$:
+
+$$
+(2-0)^2+(4-0)^2+(6-0)^2
+=======================
+
+# 4+16+36
+
+56.
+
+$$
+
+| Candidate center (c) | Total squared separation (\sum(x_i-c)^2) |
+| -------------------: | ---------------------------------------: |
+|                  (0) |                                     (56) |
+|                  (3) |                                     (11) |
+|                  (4) |                                      (8) |
+|                  (5) |                                     (11) |
+
+The total is smallest at $c=4$, the sample mean. Moving the candidate center one unit away from the mean adds
+
+$$
+n(\bar{x}-c)^2
+==============
+
+3(4-c)^2
+$$
+
+to the minimum total. At $c=3$ or $c=5$, this adds $3$, producing $8+3=11$. At $c=0$, it adds $48$, producing $8+48=56$.
+
+The calculation exposes a relationship hidden by the finished variance formula. The mean and the square were not selected independently. Once squared separation becomes the desired form of contribution, the mean emerges as the center that makes the total contribution as small as possible. Conversely, using the mean gives squared deviations an especially organized algebraic structure.
+
+## The Mean as a Balance Point
+
+The same center can also be characterized through signed deviations. For any dataset,
+
+$$
+\sum_{i=1}^{n}(x_i-\bar{x})=0.
+$$
+
+This follows directly from the definition
+
+$$
+\bar{x}=\frac{1}{n}\sum_{i=1}^{n}x_i.
+$$
+
+Expanding the sum gives
+
+$$
+\sum_{i=1}^{n}(x_i-\bar{x})
+===========================
+
+# \sum_{i=1}^{n}x_i-n\bar{x}
+
+## \sum_{i=1}^{n}x_i
+
+# n\left(\frac{1}{n}\sum_{i=1}^{n}x_i\right)
+
+0.
+
+$$
+
+The mean is therefore a balance point of signed deviations. The total displacement below it exactly offsets the total displacement above it. In the dataset
+
+$$
+{2,4,6},
+$$
+
+the deviations are
+
+$$
+-2,\quad 0,\quad 2,
+$$
+
+and their sum is zero. In the asymmetric dataset
+
+$$
+{1,2,9},
+$$
+
+the mean is $4$, and the deviations are
+
+$$
+-3,\quad -2,\quad 5.
+$$
+
+The observations are not symmetrically positioned, but their signed deviations still balance:
+
+$$
+-3-2+5=0.
+$$
+
+This balancing property explains both the usefulness of the mean and the next problem in constructing variance. The mean provides a natural origin for the data, but the signed deviations around it always sum to zero. Directly adding them therefore cannot distinguish a dataset whose observations lie close to the mean from one whose observations lie far away.
+
+## What Centering Has Prepared
+
+Centering transforms the original observations into a relational description:
+
+$$
+{x_1,x_2,\ldots,x_n}
+\quad\longrightarrow\quad
+{x_1-\bar{x},x_2-\bar{x},\ldots,x_n-\bar{x}}.
+$$
+
+This construction has accomplished three things. It has made the mean the new origin, separated overall location from internal variation, and preserved the spacing among observations. It has also selected the center that minimizes total squared separation.
+
+Yet the centered values retain direction. Observations below the mean contribute negative deviations, while observations above it contribute positive deviations. Because the mean is their balance point, these contributions cancel exactly when summed. A new operation is therefore required—not to repair an error in centering, but to construct a quantity that preserves separation while preventing opposite directions from erasing one another.
+
+The next stage of the variance formula begins with this design requirement:
+
+> Transform each signed deviation into a nonnegative contribution that is zero at the mean and increases as the observation moves farther from the mean.
+
+Both absolute value and squaring satisfy this basic requirement. Understanding why variance adopts the square requires comparing the different geometries and behaviors these alternatives create.
