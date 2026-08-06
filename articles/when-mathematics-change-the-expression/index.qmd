@@ -363,3 +363,346 @@ flowchart TD
 The idea of a preservation contract also clarifies the difference between mathematical creativity and arbitrary manipulation. Creativity does not consist of attaching operations to quantities without restriction. It consists of finding a representation or construction that satisfies a collection of requirements. Once those requirements are visible, the operation becomes open to investigation: alternatives can be proposed, consequences can be compared, and the final choice can be justified.
 
 In sample variance, subtraction is the first major construction that requires such justification. It converts an observation from an absolute position into a position relative to a chosen center. To understand why the expression is written as $x_i-\bar{x}$, we must therefore investigate subtraction more deeply—not merely as taking one amount away from another, but as an operation that can construct comparisons, changes, and directed displacements.
+
+# What Subtraction Contributes
+
+The first constructed quantity inside the variance formula is not the square but the difference
+
+$$
+x_i-\bar{x}.
+$$
+
+Before asking why this difference is squared, we must understand why subtraction appears at all and why its two quantities are written in this order. These questions can be difficult because subtraction is commonly introduced through only one physical interpretation: taking something away. If a collection contains eight objects and three are removed, then
+
+$$
+8-3=5
+$$
+
+describes the quantity that remains. This model is valid, but it represents only one situation in which subtraction is useful. Later mathematical applications use subtraction to describe comparison, change, directed displacement, deviation, error, deficit, and position relative to a reference. A learner who possesses only the removal model may correctly perform these calculations while finding no conceptual reason for why subtraction was selected.
+
+## The Relationship Underlying Subtraction
+
+A more general understanding begins with the connection between subtraction and addition. The statement
+
+$$
+a-b=d
+$$
+
+means that $d$ is the quantity which, when added to $b$, produces $a$:
+
+$$
+b+d=a.
+$$
+
+For example,
+
+$$
+8-3=5
+$$
+
+because
+
+$$
+3+5=8.
+$$
+
+This relationship can support several interpretations. If eight objects were present and three were removed, five remain. If one person possesses eight objects and another possesses three, the first possesses five more than the second. If one position is $3$ and another is $8$, a displacement of $5$ moves from the first position to the second. The situations differ, but all of them use the same structural question:
+
+> What must be added to $b$ to reach $a$?
+
+This question explains why subtraction can describe both removal and comparison. In the removal interpretation, we know the original quantity $a$ and the removed quantity $b$, and we seek the remainder $d$. In the comparison interpretation, we know two quantities $a$ and $b$, and we seek the difference $d$ that connects them. The same numerical relationship is being used, but the numbers perform different roles in the surrounding model.
+
+| Interpretation | Meaning of (a)                 | Meaning of (b)                 | Meaning of (a-b)                                |
+| -------------- | ------------------------------ | ------------------------------ | ----------------------------------------------- |
+| Removal        | Original quantity              | Quantity removed               | Quantity remaining                              |
+| Comparison     | Quantity being compared        | Comparison quantity            | Signed amount by which they differ              |
+| Change         | Final state                    | Initial state                  | Signed change                                   |
+| Position       | Destination or object position | Starting or reference position | Directed displacement                           |
+| Deviation      | Observation                    | Chosen center                  | Signed position relative to the center          |
+| Residual       | Observed or target value       | Predicted value                | Signed discrepancy, under one common convention |
+
+The table does not imply that subtraction possesses several unrelated definitions. The underlying inverse relationship remains
+
+$$
+b+(a-b)=a.
+$$
+
+What changes is the conceptual role assigned to each quantity. Subtraction becomes meaningful only after those roles have been identified.
+
+## Subtraction as Directed Displacement
+
+Suppose two points lie on a number line. Let the reference point be located at $2$ and the object we want to describe be located at $5$. The difference
+
+$$
+5-2=3
+$$
+
+means that a displacement of $3$ units carries us from the reference position to the object position:
+
+$$
+2+3=5.
+$$
+
+If we reverse the subtraction, we obtain
+
+$$
+2-5=-3.
+$$
+
+This result means that a displacement of $-3$ units carries us from the position $5$ to the position $2$:
+
+$$
+5+(-3)=2.
+$$
+
+The two differences describe the same pair of points, but they describe opposite journeys between them. Their magnitudes are equal, while their signs differ because their starting and ending roles have been reversed.
+
+| Expression | Starting reference | Position being described | Directed displacement |
+| ---------- | -----------------: | -----------------------: | --------------------: |
+| (5-2)      |                (2) |                      (5) |                  (+3) |
+| (2-5)      |                (5) |                      (2) |                  (-3) |
+
+This gives us a useful pattern for subtraction used as comparison or displacement:
+
+$$
+\boxed{\text{object}-\text{reference}
+=====================================
+
+\text{position of the object relative to the reference}.}
+$$
+
+The second quantity establishes the temporary origin from which the first quantity is described. Subtracting the reference shifts that reference to zero. In the example,
+
+$$
+2-2=0
+$$
+
+and
+
+$$
+5-2=3.
+$$
+
+After subtracting $2$ from every position, the original reference point $2$ is represented by $0$, while the point $5$ is represented by $3$. The physical or conceptual separation between the points has not changed. Only the coordinate system used to describe them has changed.
+
+This is an instance of the preservation contract introduced in the previous section. Subtracting the same reference from all positions changes their absolute coordinates while preserving their relative separation. If two original positions are $a$ and $b$, and the same reference $r$ is subtracted from both, then
+
+$$
+(a-r)-(b-r)=a-r-b+r=a-b.
+$$
+
+The reference $r$ cancels. Consequently, translating every point by the same amount does not change the difference between any pair of points.
+
+## Distance and Displacement Are Not the Same Quantity
+
+The word *difference* is sometimes used as though it automatically meant distance. This can conceal an important distinction. The expression
+
+$$
+a-b
+$$
+
+is a signed difference or directed displacement. It records both the amount of separation and the direction from $b$ toward $a$. The ordinary distance between the two values is
+
+$$
+|a-b|.
+$$
+
+Distance has no direction, which is why reversing the order does not affect it:
+
+$$
+|a-b|=|b-a|.
+$$
+
+For example, if an observation is $13$ and the mean is $10$, then
+
+$$
+13-10=3
+$$
+
+means that the observation is three units above the mean. Reversing the order gives
+
+$$
+10-13=-3,
+$$
+
+which means that the mean is three units below the observation. These are opposite directed descriptions of the same two positions. Their distance is the same:
+
+$$
+|13-10|=|10-13|=3.
+$$
+
+Therefore, the statement “the distance of the observation from the mean and the distance of the mean from the observation are different” requires refinement. The two **directed displacements** are different because they have opposite orientations. The two **distances** are equal because distance ignores orientation.
+
+This distinction will later explain part of what squaring accomplishes. Since
+
+$$
+(a-b)^2=(b-a)^2,
+$$
+
+squaring removes the directional distinction just as absolute value does. Before squaring, however, the order of subtraction still determines the interpretation of the sign.
+
+## How the Order of Subtraction Is Chosen
+
+The order in $a-b$ should not normally be selected by looking only at the numbers. It should be selected by examining the question and assigning semantic roles. A useful procedure is to identify four things: the quantity being described, the reference or starting quantity, the meaning desired for a positive result, and the meaning desired for a negative result.
+
+Suppose the question concerns temperature change. If the initial temperature was $18^\circ\text{C}$ and the final temperature is $23^\circ\text{C}$, then writing
+
+$$
+\text{final}-\text{initial}
+===========================
+
+# 23-18
+
+5
+$$
+
+produces a positive result for an increase. Reversing the order gives
+
+$$
+18-23=-5,
+$$
+
+which describes the initial temperature relative to the final temperature rather than the final change relative to the initial state. The arithmetic is valid in both cases, but only the first order matches the chosen convention that increases should be positive.
+
+If the temperature later falls from $23^\circ\text{C}$ to $20^\circ\text{C}$, the same ordering produces
+
+$$
+20-23=-3.
+$$
+
+The negative sign now communicates a decrease. The usefulness of the formula comes from preserving the semantic role of the sign across different cases:
+
+$$
+\boxed{\text{change}=\text{final state}-\text{initial state}.}
+$$
+
+A similar choice appears in financial calculations:
+
+$$
+\text{profit}=\text{revenue}-\text{cost}.
+$$
+
+Here, a positive result is intended to mean that revenue exceeds cost, while a negative result indicates a loss. If the order were reversed, the numerical magnitude would remain related to the same two quantities, but the sign would communicate the opposite interpretation. The formula is designed so that its output behaves in accordance with the concept being measured.
+
+Prediction errors demonstrate that more than one convention can be legitimate. Some contexts define a residual as
+
+$$
+\text{observed value}-\text{predicted value},
+$$
+
+while an error may sometimes be written as
+
+$$
+\text{prediction}-\text{target}.
+$$
+
+Neither order is universally correct without a definition. The order determines what a positive value means. Under the first convention, a positive residual indicates that the observation lies above the prediction. Under the second, a positive error indicates that the prediction lies above the target. Mathematical communication therefore requires the convention to be stated and then used consistently.
+
+The general principle is not simply “larger number minus smaller number.” That procedure guarantees a nonnegative result but removes information about direction. Nor is “object minus reference” a universal replacement for every interpretation of subtraction. It is a powerful pattern when the problem concerns comparison, position, deviation, or change. In a removal problem, the roles may instead be original quantity and removed quantity. The correct order follows from the relationship being modeled and the meaning assigned to the sign.
+
+A disciplined analysis of $a-b$ can therefore use the following questions:
+
+1. What relationship is the subtraction intended to represent?
+2. Which quantity is being described or produced?
+3. Which quantity supplies the reference, baseline, starting state, prediction, or amount removed?
+4. What should a positive result mean?
+5. What should a negative result mean?
+6. Does the proposed order preserve these meanings in simple test cases?
+
+These questions convert the order of subtraction from a memorized arrangement into a semantic design decision.
+
+## Applying the Principle to Deviations from the Mean
+
+In a dataset, let $x_i$ represent the $i$th observation and let $\bar{x}$ represent the sample mean. The expression
+
+$$
+x_i-\bar{x}
+$$
+
+asks:
+
+> Where is observation $x_i$ relative to the mean of the data?
+
+The observation is the quantity being described, while the mean supplies the reference. This produces the following interpretation:
+
+$$
+x_i-\bar{x}
+\begin{cases}
+
+> 0, & \text{if the observation lies above the mean},\
+> =0, & \text{if the observation equals the mean},\
+> <0, & \text{if the observation lies below the mean}.
+> \end{cases}
+> $$
+
+Suppose the dataset is
+
+$$
+{8,10,12}.
+$$
+
+Its mean is
+
+$$
+\bar{x}=\frac{8+10+12}{3}=10.
+$$
+
+The deviations are therefore
+
+$$
+8-10=-2,\qquad 10-10=0,\qquad 12-10=2.
+$$
+
+These values do not merely report that the observations are different from the mean. They reorganize the dataset around a new origin. The mean becomes zero, the value $8$ becomes a position two units below the center, and the value $12$ becomes a position two units above it:
+
+| Original observation (x_i) | Mean (\bar{x}) | Deviation (x_i-\bar{x}) | Interpretation           |
+| -------------------------: | -------------: | ----------------------: | ------------------------ |
+|                        (8) |           (10) |                    (-2) | Two units below the mean |
+|                       (10) |           (10) |                     (0) | At the mean              |
+|                       (12) |           (10) |                     (2) | Two units above the mean |
+
+If we used the reverse order,
+
+$$
+\bar{x}-x_i,
+$$
+
+the resulting values would be
+
+$$
+2,\qquad 0,\qquad -2.
+$$
+
+This would not be mathematically invalid. It would describe the mean relative to each observation rather than each observation relative to the mean. The signs would carry the opposite meaning. However, once the deviations are squared, both conventions produce the same values:
+
+$$
+(x_i-\bar{x})^2=(\bar{x}-x_i)^2.
+$$
+
+The standard expression $x_i-\bar{x}$ is therefore not required by the final squared calculation. It is preferred because its unsquared form follows the natural semantic pattern
+
+$$
+\text{observation}-\text{reference center}.
+$$
+
+It lets a positive deviation mean that the observation lies above the center and a negative deviation mean that it lies below the center.
+
+## What Subtraction Has and Has Not Accomplished
+
+Subtracting the mean has now produced a useful representation of the data, but it has not yet produced a measure of spread. Each deviation records two kinds of information: magnitude and direction. A deviation of $-5$ and a deviation of $5$ indicate equal separation from the mean but opposite positions relative to it.
+
+If the deviations are added directly, their directional information causes observations on opposite sides of the mean to cancel. For the dataset ${8,10,12}$,
+
+$$
+(-2)+0+2=0.
+$$
+
+Yet a total of zero does not mean that the data have no spread. It means that the signed displacements balance around the mean. Indeed, this balance is guaranteed by the definition of the sample mean:
+
+$$
+\sum_{i=1}^{n}(x_i-\bar{x})=0.
+$$
+
+Subtraction has successfully centered the data and exposed the position of every observation relative to the mean. The same feature that makes deviations informative individually—their signs—prevents their direct sum from measuring total spread. The next design problem is therefore not caused by a failure of subtraction. It arises because the information produced by subtraction contains more structure than the intended measure should retain.
+
+To construct a measure of spread, mathematics must preserve the magnitude of separation while preventing opposite directions from cancelling. This requirement leads to a choice between several possible constructions, including absolute values and squares. Understanding why variance chooses the square requires first examining what is preserved when a dataset is centered and why the mean is the particular reference naturally associated with squared separation.
