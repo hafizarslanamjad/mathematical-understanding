@@ -17,3 +17,15 @@ An investigation into the representational work that occurs before formal mathem
 **A Cognitive Framework for Preserving Context in Mathematical Reasoning**
 
 An examination of how learners silently change the conceptual interpretation of a mathematical expression while its visible symbols remain unchanged.
+
+### [Structuring Probability Problem](articles/structuring-probability-problem/index.qmd)
+
+**Fractions Needed for Probability**
+
+An investigation into the reasoning hidden inside a probability calculation, including how quantities acquire mathematical roles, how units preserve meaning, and how multiplication represents proportional scaling across repeated trials.
+
+### [When Mathematics Changes the Expression](articles/when-mathematics-change-the-expression/index.qmd)
+
+**Equivalence, Derived Quantities, and the Construction of Sample Variance**
+
+An examination of how mathematics rewrites existing quantities and constructs new ones without losing semantic control, using subtraction, centering, squared deviations, and sample variance as its central case.
