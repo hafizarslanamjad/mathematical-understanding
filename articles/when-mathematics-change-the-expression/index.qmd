@@ -1,0 +1,101 @@
+---
+title: "When Mathematics Changes the Expression"
+subtitle: "Equivalence, Derived Quantities, and the Construction of Sample Variance"
+author: "Hafiz Arslan Amjad"
+date: 2026-08-06
+bibliography: ../../references.bib
+---
+
+# Introduction
+
+A mathematical formula often appears to the learner as a finished object. Every symbol has already been selected, every operation has already been placed, and the complete expression is presented as though its structure followed immediately from the problem. Consider the formula for sample variance:
+
+$$
+s^2=\frac{1}{n-1}\sum_{i=1}^{n}(x_i-\bar{x})^2.
+$$
+
+A learner is usually taught how to use this formula. First calculate the sample mean $\bar{x}$. Then subtract the mean from every observation $x_i$, square each difference, add the squared differences, and divide their sum by $n-1$. These instructions make the calculation reproducible, but they do not explain why this particular sequence of operations was constructed. Why should the mean be subtracted from every observation? Why is the difference written as $x_i-\bar{x}$ rather than $\bar{x}-x_i$? Why should the difference be squared? Why should the resulting quantities be added, and why should their total be divided afterward? None of these operations is visibly contained in the original dataset. Each has been introduced by the designer of the measure.
+
+This can create a legitimate conceptual suspicion. If a mathematical expression represents the meaning of a problem, then changing the expression appears to risk changing the problem itself. An observation $x_i$ is not equal to its difference from the mean:
+
+$$
+x_i\neq x_i-\bar{x}.
+$$
+
+The difference is also not equal to its square:
+
+$$
+x_i-\bar{x}\neq(x_i-\bar{x})^2
+$$
+
+in general. The construction of variance therefore cannot be justified by claiming that every stage is merely another equivalent form of the original observation. Something more deliberate is happening. Mathematics is successively constructing new quantities from the original data, and each new quantity is intended to reveal a particular relationship that the original values do not display directly.
+
+This situation belongs to a broader pattern in mathematical reasoning. Sometimes an expression is difficult to calculate, compare, or interpret, so it is rewritten into another form while its value is preserved. For example,
+
+$$
+x^2-1=(x-1)(x+1)
+$$
+
+replaces one visible structure with another, but both expressions have the same value for every admissible value of $x$. The transformation changes the representation without changing the represented quantity. At other times, however, mathematics introduces a genuinely new quantity. If a temperature is $27^\circ\text{C}$ and the reference temperature is $20^\circ\text{C}$, then
+
+$$
+27-20=7
+$$
+
+does not provide another representation of the original temperature. It constructs a signed difference that answers a new question: where is the observed temperature relative to the chosen reference? The value $27$ describes a position on the temperature scale, whereas the value $7$ describes a relationship between two positions.
+
+These two mathematical activities can look similar because both alter the visible expression. Their purposes, however, are different. An **equivalence-preserving transformation** rewrites an existing quantity while preserving a specified value or relationship. A **derived construction** creates a new quantity from existing quantities so that a different property can be investigated. Confusing these activities makes mathematical invention appear arbitrary. If every alteration is assumed to preserve exactly the same meaning, the construction of variance seems illegitimate. If every mathematically permitted operation is assumed to be meaningful, then almost any invented expression seems acceptable. Neither conclusion is correct.
+
+```{mermaid}
+%%| fig-cap: "A change in mathematical form may either preserve an existing quantity or construct a new quantity for a new purpose."
+%%| label: fig-two-kinds-of-mathematical-change
+
+flowchart TD
+    A["Original expression or quantities"] --> B{"Purpose of the change"}
+    B --> C["Represent the same quantity differently"]
+    B --> D["Construct a quantity that measures another property"]
+    C --> E["Equivalence-preserving transformation"]
+    D --> F["Derived mathematical quantity"]
+    E --> G["Example: x² − 1 = (x − 1)(x + 1)"]
+    F --> H["Example: observation → deviation → squared deviation"]
+```
+
+A derived construction is not arbitrary merely because it changes the quantity being considered. Its legitimacy depends on the question it is designed to answer and on the behavior produced by its operations. Suppose we want to describe how dispersed a collection of observations is. The original observations tell us where the data points are, but they do not separately display their spread around a center. To study that spread, we first choose a reference point and express every observation relative to it. If the reference is the sample mean, the resulting quantity is
+
+$$
+x_i-\bar{x}.
+$$
+
+This difference is called a deviation. It is not an alternative representation of $x_i$ alone. It is a new relational quantity constructed from the observation and the mean. Its sign indicates the side of the mean on which the observation lies, while its magnitude indicates the amount of separation between them.
+
+The next operation changes the quantity again:
+
+$$
+x_i-\bar{x}
+\quad\longrightarrow\quad
+(x_i-\bar{x})^2.
+$$
+
+Squaring removes the distinction between deviations lying on opposite sides of the mean and makes larger deviations contribute more strongly. This is useful when the intended measure concerns total separation rather than direction. Yet squaring also discards information: after observing the squared deviation, we can no longer determine whether the original observation was above or below the mean. It changes the unit of measurement as well. If the observations are measured in metres, the deviations are measured in metres, but the squared deviations are measured in square metres. Squaring is therefore not an invisible computational convenience. It is a mathematical design decision with identifiable consequences.
+
+This observation reveals a more precise way to evaluate a constructed expression. Instead of asking only, “Has the meaning changed?”, we must ask: **What meaning has changed, why was the change introduced, what information has been preserved, what information has been discarded, and does the resulting quantity behave in the way required by the intended question?** Mathematical control does not require every stage to mean the same thing. It requires every transition in meaning to be explicit and justified.
+
+This principle connects the present investigation to the problem of mathematical representation developed in the preceding articles. A visible expression does not carry its complete meaning independently of a conceptual model. Its symbols must be connected to objects, roles, relationships, and an intended question. In the variance formula, the symbol $x_i$ represents an observation, $\bar{x}$ represents a chosen center, subtraction constructs a directed comparison, squaring converts that comparison into a nonnegative quadratic contribution, summation combines the individual contributions, and division normalizes their total. A learner who receives only the finished formula must reconstruct these roles after the fact. The formula may therefore be computationally usable while its design remains conceptually hidden.
+
+The hidden design is also what makes mathematical creativity appear inaccessible. Looking at the completed formula, a learner may wonder how anyone could have thought to square the deviations and may conclude that such an idea depends on an unusual creative gift. But the finished formula conceals the sequence of constraints that made squaring a reasonable candidate. Signed deviations above and below the mean cancel when added. A measure of spread must treat separation on either side of the center as contributing to dispersion. It must assign zero contribution to an observation located exactly at the center, and its contribution should increase as the observation moves farther away. Squaring satisfies these requirements and also possesses powerful algebraic and geometric properties. Once the design problem becomes visible, the square no longer appears as an operation invented without reason.
+
+This does not mean that squaring is the only possible choice. Absolute values also prevent positive and negative deviations from cancelling:
+
+$$
+\lvert x_i-\bar{x}\rvert.
+$$
+
+Absolute deviations and squared deviations produce different measures because they respond differently to increasing separation. A deviation of $4$ contributes twice as much as a deviation of $2$ under absolute value, but four times as much under squaring. Choosing between these constructions therefore depends on what behavior the measure is intended to possess. Mathematical creativity does not consist merely of finding an operation that makes a calculation possible. It consists of designing an expression whose properties correspond to the structure of the question.
+
+The purpose of this article is to reconstruct that design process. Sample variance will serve as the central case study, but the deeper subject is how mathematics moves from an original object to a deliberately constructed expression. We will distinguish equivalent rewriting from the creation of derived quantities, investigate subtraction as a way of expressing one quantity relative to another, examine centering as a change of reference, and determine what squaring preserves, removes, and emphasizes. We will then rebuild the variance formula one decision at a time so that its operations appear not as unexplained instructions but as responses to a sequence of mathematical requirements.
+
+The guiding question of the article is therefore:
+
+> How can mathematicians change or construct an expression without losing control of the meaning of the problem, and how can a learner reconstruct the reasoning that makes such a construction necessary?
+
+Answering this question requires moving behind the completed formula. Before asking how variance is calculated, we must first distinguish the different kinds of mathematical change that a calculation can contain.
