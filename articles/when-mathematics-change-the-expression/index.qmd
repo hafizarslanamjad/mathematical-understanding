@@ -1585,3 +1585,451 @@ s^2.
 $$
 
 The next section will reconstruct these remaining decisions. It will show why the squared deviations are added, what is lost and preserved during aggregation, and why sample variance divides by $n-1$ rather than simply reporting the total squared spread.
+
+# Building Sample Variance One Decision at a Time
+
+The construction has now reached the individual squared deviation
+
+$$
+(x_i-\bar{x})^2.
+$$
+
+This quantity describes how much one observation contributes to squared spread around the sample mean. A dataset, however, contains several observations. To obtain a single description of the complete dataset, the separate contributions must be combined. The remaining operations in the sample-variance formula—summation and division by $n-1$—perform this aggregation and normalization:
+
+$$
+s^2
+===
+
+\frac{1}{n-1}
+\sum_{i=1}^{n}(x_i-\bar{x})^2.
+$$
+
+The formula should not be interpreted as one indivisible instruction. It is the endpoint of several constructions, each of which answers a different question and changes the represented quantity in a controlled way.
+
+## From Individual Contributions to Total Squared Spread
+
+Suppose the dataset is
+
+$$
+{2,4,6}.
+$$
+
+Its sample mean is
+
+$$
+\bar{x}
+=======
+
+# \frac{2+4+6}{3}
+
+4.
+
+$$
+
+Subtracting the mean produces the deviations
+
+$$
+-2,\quad 0,\quad 2.
+$$
+
+Squaring them produces
+
+$$
+4,\quad 0,\quad 4.
+$$
+
+At this stage, each value still belongs to one particular observation. The first observation contributes $4$ units of squared separation, the second contributes $0$, and the third contributes $4$. Adding the contributions gives
+
+$$
+4+0+4=8.
+$$
+
+In general, the sum is written as
+
+$$
+\sum_{i=1}^{n}(x_i-\bar{x})^2.
+$$
+
+This quantity is called the **sum of squared deviations**, or more briefly the **sum of squares** around the mean. It answers the question:
+
+> How much squared separation is present across all observations combined?
+
+| Observation (x_i) | Deviation (x_i-\bar{x}) | Squared deviation ((x_i-\bar{x})^2) |
+| ----------------: | ----------------------: | ----------------------------------: |
+|               (2) |                    (-2) |                                 (4) |
+|               (4) |                     (0) |                                 (0) |
+|               (6) |                     (2) |                                 (4) |
+|         **Total** |                     (0) |                             **(8)** |
+
+Summation preserves the total contribution but compresses the individual contributions into one number. After seeing only the total $8$, we cannot reconstruct which observations produced it. Different datasets can have the same sum of squared deviations. This is another example of deliberate information loss: the purpose of the sum is to summarize total squared spread, not to preserve the identity of every observation.
+
+The sum of squares is also affected by the number of observations. If every observation and its deviation were duplicated, the internal pattern would remain the same, but the sum of squares would double because twice as many contributions would be added. A total is therefore not sufficient when we want a measure that can be compared across datasets of different sizes.
+
+## Why the Total Must Be Normalized
+
+Consider these two centered datasets:
+
+$$
+A={-2,0,2}
+$$
+
+and
+
+$$
+B={-2,0,2,-2,0,2}.
+$$
+
+Their sums of squared deviations are
+
+$$
+4+0+4=8
+$$
+
+and
+
+$$
+4+0+4+4+0+4=16.
+$$
+
+Dataset $B$ has twice the total squared deviation only because it repeats the same pattern twice. Its observations are not individually farther from the center. To describe the typical squared contribution rather than the accumulated total, we must divide by a quantity related to the number of observations.
+
+If the observations constitute the complete population we intend to describe, the population variance is
+
+$$
+\sigma^2
+========
+
+\frac{1}{N}
+\sum_{i=1}^{N}(x_i-\mu)^2,
+$$
+
+where $\mu$ is the population mean and $N$ is the population size. Dividing by $N$ gives the average squared distance from the population mean.
+
+For the complete population
+
+$$
+{2,4,6},
+$$
+
+the population variance is
+
+$$
+\sigma^2
+========
+
+# \frac{(2-4)^2+(4-4)^2+(6-4)^2}{3}
+
+\frac{8}{3}.
+$$
+
+This value can be interpreted as the average squared deviation of the three population members from their population mean.
+
+Sample variance has a different purpose. A sample is commonly observed because the larger population is unavailable. The sample mean $\bar{x}$ is then used to estimate the unknown population mean $\mu$, while the sample variance is used to estimate the unknown population variance $\sigma^2$. This change of purpose changes the appropriate denominator.
+
+## The Same Data Can Support Different Questions
+
+It is important not to turn the choice between $n$ and $n-1$ into a mechanical rule based only on whether the word *sample* appears. The denominator depends on the inferential role assigned to the data.
+
+If the dataset ${2,4,6}$ is the complete collection we wish to describe, dividing by $3$ gives its average squared deviation around its own mean:
+
+$$
+\frac{8}{3}.
+$$
+
+If the same three values are treated as a random sample from a larger population and we want to estimate that population’s variance, the conventional sample-variance estimator divides by $3-1$:
+
+$$
+s^2
+===
+
+# \frac{8}{2}
+
+4.
+
+$$
+
+The arithmetic data have not changed. The statistical question has changed.
+
+| Role of the observations                           | Intended quantity                                | Denominator |
+| -------------------------------------------------- | ------------------------------------------------ | ----------: |
+| Complete population being described                | Average squared deviation within that population |         (N) |
+| Random sample used to estimate population variance | Unbiased estimator of population squared spread  |       (n-1) |
+
+This distinction reflects the central thesis of the article: an expression receives its meaning from the question it is constructed to answer. Dividing by $n$ and dividing by $n-1$ are not competing calculations of one context-free quantity. They correspond to different statistical purposes.
+
+## Why Using the Sample Mean Produces Underestimation
+
+Suppose a random sample
+
+$$
+X_1,X_2,\ldots,X_n
+$$
+
+is drawn from a population with unknown mean $\mu$ and variance $\sigma^2$. If $\mu$ were known, we could measure the sample observations around the true population center:
+
+$$
+\sum_{i=1}^{n}(X_i-\mu)^2.
+$$
+
+On average, each term contributes $\sigma^2$, so the expected total is
+
+$$
+\mathbb{E}
+\left[
+\sum_{i=1}^{n}(X_i-\mu)^2
+\right]
+=======
+
+n\sigma^2.
+$$
+
+In practice, however, $\mu$ is usually unknown. We replace it with the sample mean $\bar{X}$ and calculate
+
+$$
+\sum_{i=1}^{n}(X_i-\bar{X})^2.
+$$
+
+The sample mean is computed from the same observations whose spread is being measured. It moves toward those observations and is therefore fitted more closely to the sample than the unknown population mean generally would be. Consequently, the observations tend to appear slightly less dispersed around $\bar{X}$ than they are around $\mu$.
+
+The relationship can be made exact. For every observation,
+
+$$
+X_i-\mu
+=======
+
+(X_i-\bar{X})+(\bar{X}-\mu).
+$$
+
+Squaring and summing produces the identity
+
+$$
+\sum_{i=1}^{n}(X_i-\mu)^2
+=========================
+
+\sum_{i=1}^{n}(X_i-\bar{X})^2
++
+n(\bar{X}-\mu)^2.
+$$
+
+Rearranging gives
+
+$$
+\sum_{i=1}^{n}(X_i-\bar{X})^2
+=============================
+
+## \sum_{i=1}^{n}(X_i-\mu)^2
+
+n(\bar{X}-\mu)^2.
+$$
+
+The second term on the right is nonnegative. Measuring around the fitted sample mean therefore removes some squared separation from the total that would have been measured around the population mean.
+
+Take expectations:
+
+$$
+\mathbb{E}
+\left[
+\sum_{i=1}^{n}(X_i-\bar{X})^2
+\right]
+=======
+
+\mathbb{E}
+\left[
+\sum_{i=1}^{n}(X_i-\mu)^2
+\right]
+-------
+
+n\mathbb{E}\left[(\bar{X}-\mu)^2\right].
+$$
+
+The first expected value is
+
+$$
+n\sigma^2.
+$$
+
+Because $\bar{X}$ is an unbiased estimator of $\mu$, the expected squared difference between them equals the variance of the sample mean:
+
+$$
+\mathbb{E}\left[(\bar{X}-\mu)^2\right]
+======================================
+
+# \operatorname{Var}(\bar{X})
+
+\frac{\sigma^2}{n}.
+$$
+
+Substituting these results gives
+
+$$
+\mathbb{E}
+\left[
+\sum_{i=1}^{n}(X_i-\bar{X})^2
+\right]
+=======
+
+## n\sigma^2
+
+n\left(\frac{\sigma^2}{n}\right),
+$$
+
+and therefore
+
+$$
+\boxed{
+\mathbb{E}
+\left[
+\sum_{i=1}^{n}(X_i-\bar{X})^2
+\right]
+=======
+
+(n-1)\sigma^2.
+}
+$$
+
+This is the direct mathematical reason for the denominator $n-1$. The expected sum of squared deviations around the sample mean contains only $(n-1)\sigma^2$, not $n\sigma^2$. Dividing by $n-1$ therefore produces
+
+$$
+\mathbb{E}[s^2]
+===============
+
+\mathbb{E}
+\left[
+\frac{1}{n-1}
+\sum_{i=1}^{n}(X_i-\bar{X})^2
+\right]
+=======
+
+\sigma^2.
+$$
+
+The estimator is called **unbiased** because, across repeated random samples, its average value equals the population variance it is intended to estimate.
+
+## How Degrees of Freedom Explain the Structure
+
+The denominator $n-1$ is also associated with the number of independent deviations remaining after the sample mean has been estimated. The centered deviations satisfy the constraint
+
+$$
+\sum_{i=1}^{n}(x_i-\bar{x})=0.
+$$
+
+If $n-1$ deviations are known, the final deviation is determined automatically. For example, suppose four deviations have the form
+
+$$
+-3,\quad 1,\quad 4,\quad d_4.
+$$
+
+Because they must sum to zero,
+
+$$
+-3+1+4+d_4=0,
+$$
+
+so
+
+$$
+d_4=-2.
+$$
+
+Only three of the four deviations can vary freely. The fourth must take the value needed to preserve the zero-sum constraint. We therefore say that the deviations have
+
+$$
+n-1
+$$
+
+**degrees of freedom**.
+
+```{mermaid}
+%%| fig-cap: "Estimating the mean imposes a zero-sum constraint, so after \(n-1\) deviations are chosen, the final deviation is determined."
+%%| label: fig-degrees-of-freedom
+
+flowchart TD
+    A["n observations"] --> B["Estimate one mean from the same data"]
+    B --> C["Centered deviations must sum to zero"]
+    C --> D["Choose n−1 deviations freely"]
+    D --> E["Final deviation is determined"]
+    E --> F["n−1 degrees of freedom"]
+```
+
+Degrees of freedom provide an important structural interpretation, but they should not be used as the entire proof that division by $n-1$ is correct. The zero-sum constraint explains why one independent component has been consumed by estimating the mean. The expectation calculation explains why dividing by $n-1$ specifically corrects the estimator so that its long-run average equals $\sigma^2$. The two explanations illuminate the same construction from different directions.
+
+## Reconstructing the Complete Formula
+
+We can now read the sample-variance formula as a sequence of semantically controlled decisions:
+
+$$
+s^2
+===
+
+\frac{1}{n-1}
+\sum_{i=1}^{n}(x_i-\bar{x})^2.
+$$
+
+The observation $x_i$ is first described relative to the sample center:
+
+$$
+x_i
+\quad\longrightarrow\quad
+x_i-\bar{x}.
+$$
+
+The signed deviation is transformed into a nonnegative quadratic contribution:
+
+$$
+x_i-\bar{x}
+\quad\longrightarrow\quad
+(x_i-\bar{x})^2.
+$$
+
+The individual contributions are aggregated into total squared spread:
+
+$$
+(x_1-\bar{x})^2,\ldots,(x_n-\bar{x})^2
+\quad\longrightarrow\quad
+\sum_{i=1}^{n}(x_i-\bar{x})^2.
+$$
+
+Finally, the total is normalized by the expected amount of population variance represented after estimating the mean:
+
+$$
+\sum_{i=1}^{n}(x_i-\bar{x})^2
+\quad\longrightarrow\quad
+\frac{1}{n-1}
+\sum_{i=1}^{n}(x_i-\bar{x})^2.
+$$
+
+These stages can be summarized by the following table:
+
+| Stage                | Expression                         | Question answered                                                            | Information changed                             |
+| -------------------- | ---------------------------------- | ---------------------------------------------------------------------------- | ----------------------------------------------- |
+| Original observation | (x_i)                              | Where is this observation on the original scale?                             | None                                            |
+| Centered deviation   | (x_i-\bar{x})                      | Where is it relative to the sample mean?                                     | Absolute location removed                       |
+| Squared deviation    | ((x_i-\bar{x})^2)                  | How much quadratic separation does it contribute?                            | Direction removed; larger deviations emphasized |
+| Sum of squares       | (\sum (x_i-\bar{x})^2)             | How much squared spread is present in total?                                 | Individual contributions aggregated             |
+| Sample variance      | (\frac{1}{n-1}\sum(x_i-\bar{x})^2) | What unbiased estimate of population squared spread does the sample provide? | Total normalized for inferential use            |
+
+```{mermaid}
+%%| fig-cap: "Sample variance is constructed through successive changes of reference, contribution, aggregation, and normalization."
+%%| label: fig-building-sample-variance
+
+flowchart TD
+    A["Observations<br/>xᵢ"] --> B["Center<br/>xᵢ − x̄"]
+    B --> C["Square<br/>(xᵢ − x̄)²"]
+    C --> D["Aggregate<br/>Σ(xᵢ − x̄)²"]
+    D --> E["Normalize<br/>divide by n−1"]
+    E --> F["Sample variance<br/>s²"]
+```
+
+## What the Formula Means as a Whole
+
+Sample variance is not the original dataset written in a more convenient form. It is a derived estimate constructed from the dataset. It preserves selected information about spread while discarding location, direction, observation order, and individual identity. Two different samples can therefore have the same variance even when their observations are not the same.
+
+The formula also does not reveal every property of dispersion. Because it uses squares, it gives relatively greater influence to large deviations. Because it aggregates all contributions, it does not report where those deviations occurred. Because it estimates population squared spread, its denominator reflects an inferential purpose rather than merely the number of observed values.
+
+The complete meaning can be stated as follows:
+
+> Sample variance is the total squared separation of the observations from their fitted sample center, normalized so that across repeated random samples it correctly estimates the population’s average squared separation from its mean.
+
+Once the formula is reconstructed in this way, none of its operations needs to be accepted as an isolated trick. Each operation solves a specific design problem created by the previous stage. Subtraction establishes a reference, squaring prevents directional cancellation and defines quadratic contribution, summation constructs total spread, and division by $n-1$ corrects the total for estimation.
+
+The construction of variance therefore illustrates a general method of mathematical invention. Begin with the property to be measured, identify the behavior the measure must possess, introduce operations that produce that behavior, and track what each operation preserves or discards. The next section will turn this method into a reusable framework for interpreting unfamiliar mathematical expressions beyond the particular case of variance.
