@@ -2033,3 +2033,559 @@ The complete meaning can be stated as follows:
 Once the formula is reconstructed in this way, none of its operations needs to be accepted as an isolated trick. Each operation solves a specific design problem created by the previous stage. Subtraction establishes a reference, squaring prevents directional cancellation and defines quadratic contribution, summation constructs total spread, and division by $n-1$ corrects the total for estimation.
 
 The construction of variance therefore illustrates a general method of mathematical invention. Begin with the property to be measured, identify the behavior the measure must possess, introduce operations that produce that behavior, and track what each operation preserves or discards. The next section will turn this method into a reusable framework for interpreting unfamiliar mathematical expressions beyond the particular case of variance.
+
+# A Framework for Understanding Constructed Expressions
+
+The construction of sample variance reveals a method that extends beyond statistics. A completed formula often compresses a sequence of decisions into one line of notation. The learner sees the operations but not the requirements that caused those operations to be selected. As a result, a purposeful construction can appear to be an arbitrary manipulation.
+
+The appropriate response is not to memorize a separate explanation for every formula. It is to develop a method for reconstructing the reasoning through which expressions are designed. Such a method must examine both formal validity and semantic purpose. Formal analysis asks whether an operation is mathematically permitted. Semantic analysis asks what quantity the operation creates, what role that quantity plays, and whether its behavior corresponds to the intended question.
+
+## Begin With the Question, Not the Operations
+
+When encountering an unfamiliar expression, the most tempting approach is to read it from left to right and name each operation. For sample variance, this produces a procedural description: subtract, square, add, and divide. Although correct, this description does not explain why those operations belong together.
+
+A more useful analysis begins by asking:
+
+> What property was this expression constructed to represent?
+
+For sample variance, the answer is not simply “the data.” It is the population’s squared spread around its mean, estimated through a sample. Once this target is identified, the operations can be evaluated according to whether they contribute to that purpose.
+
+The same principle applies elsewhere. Consider the formula for average speed:
+
+$$
+\text{average speed}
+====================
+
+\frac{\text{total distance}}{\text{total time}}.
+$$
+
+Naming the operation as division does not explain the formula. The intended question is how much distance corresponds, on average, to one unit of time. Division is selected because it constructs a per-unit relationship.
+
+Likewise, the expression
+
+$$
+\frac{x-\mu}{\sigma}
+$$
+
+used in statistical standardization cannot be understood merely as subtraction followed by division. Subtracting $\mu$ expresses $x$ relative to the mean, while dividing by $\sigma$ expresses that relative position in units of standard deviation. The final quantity answers the question: how many standard deviations above or below the mean is the observation?
+
+Operations become intelligible when read as responses to an intended question.
+
+## Identify the Original Objects and Their Roles
+
+Before analyzing a transformation, the learner must determine what the original symbols represent. A symbol is not fully understood merely because its possible numerical value is known. Its meaning also includes the kind of object it represents and the role that object performs.
+
+In
+
+$$
+x_i-\bar{x},
+$$
+
+both $x_i$ and $\bar{x}$ are measured on the same scale, but they do not perform the same role. The value $x_i$ is the observation being described, whereas $\bar{x}$ is the reference from which it is described. In
+
+$$
+\frac{\text{distance}}{\text{time}},
+$$
+
+the numerator represents an accumulated quantity, while the denominator supplies the unit across which that quantity is distributed. In
+
+$$
+\text{final value}-\text{initial value},
+$$
+
+the two values represent different temporal states.
+
+A useful initial table is:
+
+| Symbol or component | Referent              | Mathematical role              | Measurement unit   |
+| ------------------- | --------------------- | ------------------------------ | ------------------ |
+| (x_i)               | The (i)th observation | Object being described         | Original data unit |
+| (\bar{x})           | Sample mean           | Reference center               | Original data unit |
+| (x_i-\bar{x})       | Signed deviation      | Relative position              | Original data unit |
+| ((x_i-\bar{x})^2)   | Squared deviation     | Contribution to squared spread | Squared data unit  |
+
+Restoring referents, roles, and units protects against treating the expression as a sequence of detachable symbols.
+
+## Classify the Mathematical Change
+
+The next question is whether the step is intended to preserve an existing quantity or construct a new one. This distinction can be tested by asking whether equality is being asserted between the old and new expressions.
+
+In
+
+$$
+x^2-1=(x-1)(x+1),
+$$
+
+the equality claims that both forms have the same value. The step is an equivalent rewriting.
+
+In
+
+$$
+d=x_i-\bar{x},
+$$
+
+the equation defines a new quantity $d$ from two existing quantities. It does not claim that $d=x_i$. This is a derived construction.
+
+In
+
+$$
+\hat{y}=b_0+b_1x,
+$$
+
+a model constructs a predicted value from an input and estimated parameters. The prediction is related to the observation but is not assumed to equal it.
+
+In
+
+$$
+\pi\approx3.14,
+$$
+
+the new representation is an approximation. Exact equality is not preserved, but numerical closeness is controlled.
+
+The classification can be summarized as follows:
+
+| Kind of change          | Central question                                                     |
+| ----------------------- | -------------------------------------------------------------------- |
+| Equivalent rewriting    | What remains exactly equal?                                          |
+| Equation transformation | Is the solution set preserved?                                       |
+| Derived construction    | What new quantity is being defined?                                  |
+| Approximation           | How much accuracy is lost?                                           |
+| Model construction      | Which features of the original situation are represented or omitted? |
+| Change of coordinates   | Which relationships remain invariant under the new reference system? |
+
+This classification prevents the learner from applying the wrong standard of judgment. A derived quantity should not be rejected because it is unequal to its source, and an alleged equivalent transformation should not be accepted merely because its new form is useful.
+
+## State the Preservation Contract
+
+Every mathematical change should be examined through three connected questions:
+
+1. What must remain preserved?
+2. What may change or be discarded?
+3. What new property should become visible, measurable, or easier to use?
+
+For centering a dataset, the preservation contract is:
+
+| Requirement               | Consequence                           |
+| ------------------------- | ------------------------------------- |
+| Preserve internal spacing | Pairwise differences remain unchanged |
+| Remove overall location   | The mean becomes zero                 |
+| Expose relative position  | Each value becomes a signed deviation |
+
+For squaring a deviation:
+
+| Requirement                         | Consequence                                       |
+| ----------------------------------- | ------------------------------------------------- |
+| Preserve zero separation            | (d=0) exactly when (d^2=0)                        |
+| Treat opposite directions equally   | ((-d)^2=d^2)                                      |
+| Increase contribution with distance | Larger (\lvert d\rvert) gives larger (d^2)        |
+| Permit quadratic aggregation        | Contributions combine as squared Euclidean length |
+| Discard direction                   | The sign of (d) cannot be recovered from (d^2)    |
+
+An operation is justified when this pattern of preservation and change matches the intended question. The framework does not demand that no information be lost. It demands that the loss be understood and relevant to the purpose.
+
+## Read the Expression as a Sequence of Questions
+
+A complicated expression should be decomposed according to the order in which its quantities are constructed. Consider the standardized value
+
+$$
+z=\frac{x-\mu}{\sigma}.
+$$
+
+Its structure can be reconstructed in two stages. First,
+
+$$
+x-\mu
+$$
+
+asks where the observation lies relative to the population mean. Then,
+
+$$
+\frac{x-\mu}{\sigma}
+$$
+
+asks how large that displacement is when measured in units of population standard deviation.
+
+The construction can be represented as:
+
+```{mermaid}
+%%| fig-cap: "A standardized value is constructed by first changing the reference and then changing the unit."
+%%| label: fig-standardization-construction
+
+flowchart TD
+    A["Observation<br/>x"] --> B["Subtract mean<br/>x − μ"]
+    B --> C["Position relative to center"]
+    C --> D["Divide by standard deviation<br/>(x − μ)/σ"]
+    D --> E["Position measured in standard-deviation units"]
+```
+
+Each operation changes a different feature. Subtraction changes the reference point; division changes the unit. If $\mu=100$, $\sigma=10$, and $x=120$, then
+
+$$
+x-\mu=20
+$$
+
+says that the observation is twenty original units above the mean, while
+
+$$
+\frac{x-\mu}{\sigma}
+====================
+
+# \frac{20}{10}
+
+2
+$$
+
+says that it is two standard deviations above the mean.
+
+Reading an expression in this way transforms a formula from a command into a chain of constructed meanings.
+
+## Test the Construction With Boundary and Contrast Cases
+
+A proposed interpretation should be tested against cases whose expected behavior is clear. These tests do not replace a proof, but they reveal whether the expression behaves according to its claimed meaning.
+
+For a deviation $x_i-\bar{x}$, useful tests include:
+
+* If $x_i=\bar{x}$, the deviation should be zero.
+* If $x_i$ lies above the mean, the deviation should be positive.
+* If $x_i$ lies below the mean, the deviation should be negative.
+* If every observation is shifted by the same constant, its centered deviation should remain unchanged.
+
+For squared deviation:
+
+* A value at the mean should contribute zero.
+* Equal distances on opposite sides should contribute equally.
+* A larger distance should produce a larger contribution.
+* Doubling the distance should quadruple the contribution.
+
+These checks can be organized into four general categories:
+
+| Test                           | Question                                                         |
+| ------------------------------ | ---------------------------------------------------------------- |
+| Zero or identity case          | What happens when there is no difference, change, or separation? |
+| Directional contrast           | What happens on opposite sides of the reference?                 |
+| Scale change                   | What happens when the input doubles or triples?                  |
+| Translation or invariance test | What happens when irrelevant background conditions change?       |
+
+For example, if a proposed measure of spread changes when the same constant is added to every observation, it is partly measuring location rather than spread. The failure of an invariance test reveals a mismatch between the formula and its claimed purpose.
+
+## Compare Plausible Alternatives
+
+An operation becomes more understandable when compared with other operations that could have been chosen. The question is not merely “Why does this formula use a square?” but also “What would happen if another construction were used?”
+
+For a signed deviation $d$, several nonnegative contributions are possible:
+
+$$
+|d|,\qquad d^2,\qquad d^4.
+$$
+
+All three remove directional cancellation, but they produce different responses to separation:
+
+| Magnitude of (d) | (\lvert d\rvert) | (d^2) | (d^4) |
+| ---------------: | ---------------: | ----: | ----: |
+|              (1) |              (1) |   (1) |   (1) |
+|              (2) |              (2) |   (4) |  (16) |
+|              (3) |              (3) |   (9) |  (81) |
+
+Absolute value produces linear growth. Squaring produces quadratic growth. Raising to the fourth power produces much stronger sensitivity to large deviations. The alternatives reveal that the exponent is not cosmetic; it determines how the measure judges increasing separation.
+
+Comparing alternatives also prevents explanations from presenting one formula as though nature itself dictated every symbol. Mathematical definitions are constrained choices. They are evaluated by the properties they produce, the problems they solve, and the theoretical structures they support.
+
+## Restore Units and Referents
+
+Symbolic notation often hides information that becomes visible when units and referents are restored. Suppose $x_i$ is measured in centimetres. Then
+
+$$
+x_i-\bar{x}
+$$
+
+is also measured in centimetres because quantities can be subtracted only when they belong to a compatible measurement scale. Its square is measured in square centimetres:
+
+$$
+(x_i-\bar{x})^2
+\quad\text{has unit}\quad
+\text{cm}^2.
+$$
+
+This unit change confirms that squared deviation is a new kind of quantity rather than another representation of ordinary distance.
+
+Units can also expose invalid constructions. Adding a length to an area,
+
+$$
+3\text{ m}+4\text{ m}^2,
+$$
+
+does not produce a meaningful physical total because the quantities have incompatible dimensions. Multiplication and division, by contrast, deliberately construct new units:
+
+$$
+\frac{\text{distance}}{\text{time}}
+===================================
+
+\text{speed},
+$$
+
+and
+
+$$
+\text{mass}\times\text{acceleration}
+====================================
+
+\text{force}.
+$$
+
+Dimensional analysis therefore acts as a form of semantic supervision. It checks whether the operations are compatible with the kinds of quantities represented.
+
+Restoring referents performs a similar function when formal units are absent. Writing
+
+$$
+\frac{120\text{ kilometres}}{2\text{ hours}}
+============================================
+
+60\text{ kilometres per hour}
+$$
+
+makes the per-unit meaning of division more visible than the compressed expression $120/2=60$.
+
+## Distinguish Reversibility From Usefulness
+
+Some transformations can be reversed exactly. From
+
+$$
+d=x_i-\bar{x},
+$$
+
+we can recover the observation if the mean is retained:
+
+$$
+x_i=d+\bar{x}.
+$$
+
+Centering alone therefore does not destroy the original observation when the reference remains known.
+
+Squaring is not fully reversible without additional information. From
+
+$$
+d^2=9,
+$$
+
+we can infer only
+
+$$
+d=3
+\quad\text{or}\quad
+d=-3.
+$$
+
+The sign has been discarded. Summing the squared deviations loses still more information because the individual contributions are combined. From a variance alone, the original dataset cannot generally be reconstructed.
+
+Irreversibility is not the same as invalidity. A summary is useful precisely because it compresses information. The relevant question is whether the discarded information is unnecessary for the current purpose. Direction is unnecessary when variance measures nondirectional squared spread, but it would be essential if the intended quantity were systematic bias above or below a target.
+
+## The Complete Reconstruction Procedure
+
+The framework can now be stated as a connected procedure:
+
+```{mermaid}
+%%| fig-cap: "Understanding a constructed expression requires reconstructing its purpose, roles, preservation requirements, and behavior."
+%%| label: fig-constructed-expression-framework
+
+flowchart TD
+    A["Identify the intended question"] --> B["Bind symbols to objects, roles, and units"]
+    B --> C["Classify each mathematical change"]
+    C --> D["State what is preserved and discarded"]
+    D --> E["Test boundary, contrast, and invariance cases"]
+    E --> F["Compare plausible alternatives"]
+    F --> G["Evaluate whether the construction serves its purpose"]
+```
+
+The corresponding questions are:
+
+1. What property or relationship is the expression intended to represent?
+2. What original objects and quantities are available?
+3. What does each symbol refer to, and what role does it perform?
+4. Is each step an equivalent rewriting, a derived construction, an approximation, or a change of model?
+5. What must remain invariant?
+6. What information is changed or discarded?
+7. What new behavior does the chosen operation introduce?
+8. Do zero, directional, scale, and translation tests behave as expected?
+9. What alternative operations were possible, and how would they change the result?
+10. Does the final expression answer the original question?
+
+This method adds design analysis to procedural knowledge. A learner should still know how to manipulate the expression, but manipulation is no longer the whole task. The learner also reconstructs why the expression has its particular form.
+
+## From Formula Recognition to Mathematical Design
+
+A beginner often encounters a formula as an authority: it is used because it has been supplied by a textbook, teacher, or software library. An experienced mathematician is more likely to see a formula as a designed object whose behavior can be inspected. The difference is not merely greater memory. It is the ability to ask what constraints the expression satisfies and how its operations work together.
+
+For sample variance, the reconstruction is now visible:
+
+* The intended property is squared spread around a population center.
+* The sample supplies observations but not the unknown population parameters.
+* The sample mean provides an estimated reference.
+* Subtraction constructs signed relative positions.
+* Squaring removes directional cancellation and creates quadratic contributions.
+* Summation aggregates the contributions.
+* Division by $n-1$ corrects the systematic underestimation created by fitting the center from the same sample.
+
+The finished expression is therefore not an arbitrary string of operations:
+
+$$
+\frac{1}{n-1}\sum_{i=1}^{n}(x_i-\bar{x})^2.
+$$
+
+It is a compressed record of the design problem and its solution.
+
+The remaining question is how a learner can begin producing such constructions rather than merely explaining them after they have been revealed. The next section will examine mathematical creativity as a process of designing under constraints. It will show why operations such as subtraction and squaring become thinkable once the required behavior of the unknown expression has been stated clearly.
+
+# Mathematical Creativity as Design Under Constraints
+
+The completed variance formula can create an uncomfortable contrast between the learner and its apparent inventor. Once the formula has been explained, the learner may understand why subtraction, squaring, summation, and normalization are useful. Before seeing the formula, however, it may never have occurred to the learner to construct
+
+$$
+(x_i-\bar{x})^2.
+$$
+
+This difference can be interpreted incorrectly. The learner may conclude that mathematical creativity is an unexplained ability possessed by people who somehow see the correct operation immediately. Yet the difficulty often arises because the learner and the inventor are not confronting the same visible problem. The learner is shown a completed solution and asked to infer the problem that shaped it. The mathematical designer begins, instead, with requirements that the unknown expression must satisfy.
+
+## A Finished Formula Hides the Search That Produced It
+
+Textbooks usually present mathematical knowledge in a compressed order. A definition is stated, its notation is introduced, examples are calculated, and its properties are proved. This order is efficient for communicating an established result, but it conceals the uncertainty that precedes construction. Alternative definitions, failed attempts, competing objectives, and decisions about what should be preserved are largely absent.
+
+The learner therefore encounters
+
+$$
+s^2
+===
+
+\frac{1}{n-1}
+\sum_{i=1}^{n}(x_i-\bar{x})^2
+$$
+
+as though the problem had always contained a mean, a difference, a square, a sum, and the number $n-1$. In reality, the original observations contain none of these operations explicitly. They enter because a measure is being designed to possess particular properties.
+
+The appropriate question is not:
+
+> How could someone look at a dataset and immediately imagine the complete variance formula?
+
+A more realistic question is:
+
+> What sequence of requirements would make the operations in the variance formula reasonable candidates?
+
+The distinction matters because invention rarely begins by guessing an entire finished expression. It proceeds by reducing uncertainty one requirement at a time.
+
+## Constraints Make Operations Thinkable
+
+Suppose we want to construct a measure of spread. Without further conditions, the problem is too open. Infinitely many expressions could be formed from the observations. We could add them, multiply them, square them, take logarithms, compare selected pairs, or introduce arbitrary constants. Creativity cannot search this unlimited space intelligently.
+
+The search becomes manageable when the desired behavior is specified. A spread measure should not change merely because the same constant is added to every observation. It should be zero when all observations coincide. It should increase when observations move farther from their center. Values lying equally far on opposite sides of the center should contribute equally. The individual contributions should combine into one dataset-level quantity.
+
+Each requirement eliminates unsuitable constructions:
+
+| Requirement                        | Consequence for the design                      |
+| ---------------------------------- | ----------------------------------------------- |
+| Ignore overall location            | Work with values relative to a center           |
+| Preserve internal separation       | Subtract the same center from every observation |
+| Treat opposite directions equally  | Remove the signs of deviations                  |
+| Give no contribution at the center | Use a transformation satisfying (g(0)=0)        |
+| Increase with distance             | Choose (g(d)) that grows with (\lvert d\rvert)  |
+| Produce one summary                | Aggregate contributions                         |
+| Permit comparison or estimation    | Normalize the aggregate                         |
+
+Once signs must be removed while zero and magnitude ordering are preserved, absolute value and even powers become natural candidates. Once useful Euclidean geometry, algebraic decomposition, and smooth optimization are also desired, squaring becomes especially attractive. The operation has not appeared from nowhere. The constraints have reduced a vast search space to a small family of plausible constructions.
+
+```{mermaid}
+%%| fig-cap: "Mathematical design becomes possible when desired behavior progressively restricts the space of candidate expressions."
+%%| label: fig-creativity-constrained-search
+
+flowchart TD
+    A["Many possible expressions"] --> B["State required behavior"]
+    B --> C["Eliminate incompatible operations"]
+    C --> D["Compare remaining candidates"]
+    D --> E["Test consequences and invariants"]
+    E --> F["Select and refine a construction"]
+```
+
+Creativity remains necessary because the constraints do not always determine one unique expression. Absolute deviation and squared deviation both satisfy the initial requirement of preventing cancellation. The designer must compare the additional behavior they produce. Mathematical creativity therefore combines generation and criticism: propose a construction, derive its consequences, compare it with alternatives, and decide whether those consequences serve the intended purpose.
+
+## Discovery and Justification Are Different
+
+A further distinction is needed between how an idea is discovered and how it is justified. A mathematician might first encounter a useful square through geometry, an analogy with another problem, experimental calculation, a previously known identity, or even an initially unprincipled guess. The final justification may then organize the idea through properties that were not consciously listed at the moment of discovery.
+
+The explanation developed in this article is therefore a **rational reconstruction** of the formula. It shows how the operations can be justified as responses to connected requirements. It does not claim that sample variance was historically invented in one clean sequence beginning with subtraction and ending with $n-1$. Historical discovery is often distributed across multiple problems, people, notations, and purposes.
+
+This distinction protects us from two errors. We should not assume that a logically organized explanation reproduces the inventor’s private thought process. But we should also not conclude that, because discovery can be irregular, mathematical constructions require no systematic justification. The path of discovery may wander; the final expression must still be evaluated by its mathematical behavior.
+
+## Why Experts Generate Better Candidates
+
+An experienced mathematician usually has a larger collection of meaningful operations available for reuse. Subtraction may be recognized as a change of origin, division as normalization, squaring as Euclidean measurement or quadratic penalty, logarithms as converting multiplication into addition, and summation as aggregation. These operations are not stored merely as procedures. They are connected to patterns of behavior.
+
+A beginner may know how to square a number without possessing the association
+
+$$
+\text{squaring}
+\quad\longleftrightarrow\quad
+\text{nonnegative quadratic contribution}.
+$$
+
+The expert can propose squaring because previous experience has organized the operation around its consequences. The difference is therefore partly a difference in the structure of prior knowledge. Experts do not search through every operation equally. They recognize families of operations associated with the requirements of the problem.
+
+This means that mathematical creativity can be trained. The learner must study operations not only in terms of how they are performed but also in terms of what they do to meaning and structure. For every operation, useful questions include: What distinctions does it preserve? What distinctions does it erase? How does it respond when the input changes scale? Is it reversible? What units does it produce? What geometrical or relational interpretation does it have?
+
+Subtraction then becomes more than “taking away.” It can change a reference point, form a comparison, or express a directed displacement. Squaring becomes more than multiplying a number by itself. It can remove sign, emphasize magnitude, construct area, produce squared length, and define a penalty whose growth accelerates with error.
+
+## Practising Construction Before Seeing the Formula
+
+A learner who wants to become capable of inventing expressions should sometimes delay looking at the established formula. The task is not necessarily to rediscover the historically accepted expression exactly. It is to practise moving from desired behavior to candidate constructions.
+
+For a measure of spread, the exercise could proceed as follows:
+
+1. State what should happen if all observations are equal.
+2. State what should happen if every observation is shifted by the same amount.
+3. Decide whether direction from the center matters.
+4. Decide how strongly large separations should influence the result.
+5. Propose more than one possible contribution function.
+6. Test the candidates on small contrasting datasets.
+7. Identify what each candidate preserves, discards, and emphasizes.
+8. Compare the results with the established measure.
+
+Suppose the centered deviations are
+
+$$
+-3,\quad -1,\quad 1,\quad 3.
+$$
+
+Their direct sum is zero, so direct addition fails as a measure of total separation. Absolute values produce
+
+$$
+3+1+1+3=8,
+$$
+
+while squares produce
+
+$$
+9+1+1+9=20.
+$$
+
+Neither result is inherently wrong. They encode different responses to the same pattern. The learner’s task is to explain those responses and connect them to possible purposes. This exercise develops design judgment even if the learner does not independently reproduce variance.
+
+## From “What Operation Should I Use?” to “What Behavior Do I Need?”
+
+The question “What operation should I use?” is often asked too early. Without an intended behavior, there is no principled basis for choosing among operations. A better sequence is:
+
+> What relationship or property do I need the output to express? What behavior must the output have in important cases? Which operations produce that behavior?
+
+This reversal is central to mathematical design. It moves attention from the available symbols to the requirements of the unknown construction.
+
+For subtraction, one does not begin by deciding mechanically which quantity should be $a$ and which should be $b$. One first decides what is being described, what supplies the reference, and what positive and negative results should mean. For squaring, one does not begin with a desire to use an exponent. One begins with the requirement that opposite directions should not cancel and then investigates the consequences of candidate transformations.
+
+The ability to construct expressions therefore grows from semantic control. The learner must be able to move between the intended phenomenon, the behavior required of a measure, and the operations capable of producing that behavior.
+
+## Creativity as Responsible Selection
+
+Mathematical creativity is not freedom from rules. It is the ability to design within constraints while remaining responsible for the consequences of every choice. A creative expression must still preserve the required invariants, use compatible quantities, behave correctly in boundary cases, and answer the question for which it was constructed.
+
+The learner who could not initially imagine squared deviation was not necessarily lacking mathematical ability. The design problem had been hidden. Once only the finished formula is visible, squaring appears to be an isolated act of inspiration. Once the required behavior is made visible, squaring becomes one candidate whose strengths and costs can be investigated.
+
+The deeper training principle can therefore be stated as follows:
+
+> To learn how mathematicians construct expressions, do not practise guessing finished formulas. Practise identifying required behavior, generating candidate operations, and evaluating what each candidate preserves, discards, and makes possible.
+
+This principle brings the article back to its original concern. Mathematical expressions can change without becoming arbitrary because their construction is supervised by meaning. The conclusion will gather the complete argument and state what a learner should now see when encountering a transformed or newly constructed expression.
