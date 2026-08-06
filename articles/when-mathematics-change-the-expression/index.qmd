@@ -1181,3 +1181,407 @@ The next stage of the variance formula begins with this design requirement:
 > Transform each signed deviation into a nonnegative contribution that is zero at the mean and increases as the observation moves farther from the mean.
 
 Both absolute value and squaring satisfy this basic requirement. Understanding why variance adopts the square requires comparing the different geometries and behaviors these alternatives create.
+
+# Why Squaring Is a Deliberate Construction
+
+After centering a dataset, every observation has been converted into a signed deviation:
+
+$$
+d_i=x_i-\bar{x}.
+$$
+
+The sign tells us on which side of the mean the observation lies, while the magnitude tells us how far away it lies. If $d_i=-4$, the observation is four units below the mean. If $d_i=4$, it is four units above the mean. These deviations already describe the internal arrangement of the data, but their direct sum cannot measure total spread because
+
+$$
+\sum_{i=1}^{n}(x_i-\bar{x})=0.
+$$
+
+The cancellation is not accidental. It follows from the fact that the mean is the balance point of the data. Positive and negative deviations describe opposite directions, and addition combines them as directed quantities. If the intended question concerns net displacement, this cancellation is meaningful. If the intended question concerns total separation from the center, however, cancellation removes precisely the information we want to retain.
+
+The design problem can therefore be stated before any particular operation is selected:
+
+> How can each signed deviation be converted into a contribution that does not cancel with a deviation in the opposite direction, equals zero when the observation is at the mean, and increases as the observation moves farther away?
+
+Once the problem is stated this way, squaring becomes one possible response rather than an unexplained command.
+
+## The Required Behavior of a Spread Contribution
+
+Suppose a function $g(d)$ converts a signed deviation $d$ into a contribution to spread. At minimum, the construction should satisfy several requirements. An observation at the mean should contribute nothing:
+
+$$
+g(0)=0.
+$$
+
+Observations equally far from the mean in opposite directions should make equal contributions:
+
+$$
+g(-d)=g(d).
+$$
+
+The contribution should not be negative:
+
+$$
+g(d)\geq 0.
+$$
+
+Finally, a larger distance from the mean should not produce a smaller contribution. If
+
+$$
+|d_1|>|d_2|,
+$$
+
+then we expect
+
+$$
+g(d_1)>g(d_2).
+$$
+
+Both absolute value and squaring satisfy these basic conditions:
+
+$$
+g(d)=|d|
+$$
+
+and
+
+$$
+g(d)=d^2.
+$$
+
+For example:
+
+| Deviation (d) | Absolute contribution (\lvert d\rvert) | Squared contribution (d^2) |
+| ------------: | -------------------------------------: | -------------------------: |
+|          (-4) |                                    (4) |                       (16) |
+|          (-2) |                                    (2) |                        (4) |
+|           (0) |                                    (0) |                        (0) |
+|           (2) |                                    (2) |                        (4) |
+|           (4) |                                    (4) |                       (16) |
+
+Both constructions prevent cancellation, preserve zero separation, and treat opposite directions symmetrically. Therefore, the statement “variance squares deviations because otherwise positive and negative values would cancel” is correct but incomplete. It identifies the problem solved by squaring, but it does not explain why squaring is chosen instead of another operation that solves the same problem.
+
+## What Squaring Preserves and What It Changes
+
+Squaring performs a selective transformation of the information contained in a deviation. Because
+
+$$
+(-d)^2=d^2,
+$$
+
+the sign is discarded. Once a deviation has been squared, we cannot determine whether the original observation was above or below the mean. However, squaring preserves whether the observation coincides with the mean:
+
+$$
+d^2=0
+\quad\Longleftrightarrow\quad
+d=0.
+$$
+
+It also preserves the ordering of separation magnitudes. If one observation is farther from the mean than another, its squared deviation is larger:
+
+$$
+|d_1|>|d_2|
+\quad\Longrightarrow\quad
+d_1^2>d_2^2.
+$$
+
+Squaring does not preserve the original numerical magnitude. A deviation of $3$ becomes a squared contribution of $9$, and a deviation of $5$ becomes a contribution of $25$. What it preserves is the ordering of magnitudes and their systematic relationship to the original deviations.
+
+Its preservation contract can therefore be stated as follows:
+
+> Direction may be discarded, but zero separation must remain zero, equal distances on opposite sides must contribute equally, and greater distances must produce greater nonnegative contributions.
+
+The result is a new quantity:
+
+$$
+d_i^2=(x_i-\bar{x})^2.
+$$
+
+It should not be called the distance itself. The ordinary distance from an observation to the mean is
+
+$$
+|x_i-\bar{x}|.
+$$
+
+The expression
+
+$$
+(x_i-\bar{x})^2
+$$
+
+is the **squared distance**. The distinction matters because distance and squared distance respond differently when separation increases.
+
+## Squaring Changes the Weight of Separation
+
+Absolute value grows linearly. If the magnitude of a deviation doubles, its absolute contribution doubles:
+
+$$
+|2d|=2|d|.
+$$
+
+Squaring grows quadratically. If the magnitude doubles, the squared contribution becomes four times as large:
+
+$$
+(2d)^2=4d^2.
+$$
+
+If the magnitude triples, the squared contribution becomes nine times as large:
+
+$$
+(3d)^2=9d^2.
+$$
+
+This behavior means that squaring gives relatively greater influence to observations that lie farther from the center. Consider two deviations with magnitudes $2$ and $4$. Under absolute value, their contributions are $2$ and $4$, so the second contributes twice as much. Under squaring, their contributions are $4$ and $16$, so the second contributes four times as much.
+
+```{mermaid}
+%%| fig-cap: "Absolute and squared contributions both increase with distance, but squaring assigns proportionally greater influence to larger deviations."
+%%| label: fig-linear-quadratic-growth
+
+flowchart LR
+    A["Distance doubles<br/>2 → 4"] --> B["Absolute contribution<br/>2 → 4"]
+    A --> C["Squared contribution<br/>4 → 16"]
+    B --> D["Contribution doubles"]
+    C --> E["Contribution quadruples"]
+```
+
+This is not an accidental side effect. It is part of the meaning of squared spread. Variance is sensitive to observations far from the mean because large deviations contribute disproportionately to the total. This property can be desirable when large errors or large departures from a center should receive special importance. It can also make variance sensitive to extreme observations. The operation therefore brings both a capability and a cost.
+
+A mathematical operation should not be judged as though every consequence were independently good or bad. Its suitability depends on the intended question. If large deviations should receive increasing emphasis and the algebraic properties of squares are valuable, squared deviation is appropriate. If each additional unit of separation should contribute equally regardless of how far the observation already lies from the center, absolute deviation may be more appropriate.
+
+## The Elementary Geometrical Meaning
+
+There is a simple geometrical interpretation of a squared deviation. On a number line, the distance between an observation $x_i$ and the mean $\bar{x}$ is the length
+
+$$
+|x_i-\bar{x}|.
+$$
+
+Imagine constructing a square whose side has this length. Its area is
+
+$$
+|x_i-\bar{x}|^2.
+$$
+
+Since squaring removes the effect of the sign,
+
+$$
+|x_i-\bar{x}|^2=(x_i-\bar{x})^2.
+$$
+
+Thus, the squared deviation can be represented as the area of a square whose side length equals the distance between the observation and the mean. A deviation of magnitude $2$ corresponds to a square of area $4$, while a deviation of magnitude $4$ corresponds to a square of area $16$. This picture makes quadratic growth visible: doubling the side length quadruples the area.
+
+This interpretation is useful, but it must be understood carefully. Variance does not claim that the dataset literally contains physical squares. The square is a geometrical representation of how the numerical contribution grows. It also explains why the unit changes. If observations are measured in metres, deviations are measured in metres, while squared deviations are measured in square metres:
+
+$$
+(\text{metres})^2=\text{square metres}.
+$$
+
+This change of unit is one cost of using squared distance. The standard deviation later applies a square root to the variance, returning the summary to the original measurement unit. The squared unit is therefore not evidence that variance is meaningless; it is evidence that variance is measuring a quadratic quantity rather than ordinary linear distance.
+
+## The Deeper Geometry of the Dataset
+
+The geometrical meaning becomes more substantial when the entire dataset is viewed as a point in a multidimensional space. A dataset containing $n$ observations can be represented by the vector
+
+$$
+\mathbf{x}
+==========
+
+(x_1,x_2,\ldots,x_n).
+$$
+
+The mean can be repeated in every coordinate to form the vector
+
+$$
+\bar{x}\mathbf{1}
+=================
+
+(\bar{x},\bar{x},\ldots,\bar{x}).
+$$
+
+Subtracting these vectors produces the centered data vector:
+
+$$
+\mathbf{x}-\bar{x}\mathbf{1}
+============================
+
+(x_1-\bar{x},x_2-\bar{x},\ldots,x_n-\bar{x}).
+$$
+
+The squared Euclidean length of a vector
+
+$$
+\mathbf{v}=(v_1,v_2,\ldots,v_n)
+$$
+
+is defined as
+
+$$
+|\mathbf{v}|^2
+==============
+
+v_1^2+v_2^2+\cdots+v_n^2.
+$$
+
+Applying this to the centered data vector gives
+
+$$
+|\mathbf{x}-\bar{x}\mathbf{1}|^2
+================================
+
+\sum_{i=1}^{n}(x_i-\bar{x})^2.
+$$
+
+Therefore, the sum of squared deviations is the squared Euclidean length of the centered dataset. It measures how far the complete data vector lies from the vector in which every observation equals the mean.
+
+For the dataset
+
+$$
+{2,4,6},
+$$
+
+the mean vector is
+
+$$
+(4,4,4),
+$$
+
+and the centered vector is
+
+$$
+(2,4,6)-(4,4,4)=(-2,0,2).
+$$
+
+Its squared length is
+
+$$
+(-2)^2+0^2+2^2=8.
+$$
+
+Its ordinary Euclidean length is
+
+$$
+\sqrt{8}.
+$$
+
+The sum of squared deviations is therefore not merely a collection of unrelated squares. It is one geometrically unified quantity: the squared length of the deviation vector.
+
+```{mermaid}
+%%| fig-cap: "The individual deviations form one centered data vector, and their squared sum is its squared Euclidean length."
+%%| label: fig-centered-vector-length
+
+flowchart TD
+    A["Dataset vector<br/>(x₁, x₂, …, xₙ)"] --> B["Subtract mean vector<br/>(x̄, x̄, …, x̄)"]
+    B --> C["Centered vector<br/>(x₁−x̄, x₂−x̄, …, xₙ−x̄)"]
+    C --> D["Square coordinates and add"]
+    D --> E["Squared length<br/>Σ(xᵢ−x̄)²"]
+```
+
+This construction is related to the Pythagorean theorem. In two dimensions, a displacement with horizontal component $a$ and vertical component $b$ has length
+
+$$
+\sqrt{a^2+b^2}.
+$$
+
+Its squared length is
+
+$$
+a^2+b^2.
+$$
+
+In $n$ dimensions, the same principle gives
+
+$$
+|\mathbf{v}|^2
+==============
+
+v_1^2+v_2^2+\cdots+v_n^2.
+$$
+
+The individual deviations act as coordinate components of one multidimensional displacement. Squaring and summing combine these components without allowing opposite signs in different coordinates to cancel.
+
+This is the deeper geometrical reason that squares occur throughout statistics, geometry, optimization, and machine learning. Squared quantities allow separate coordinate contributions to combine into a single notion of Euclidean size.
+
+## Why Squares Are Algebraically Powerful
+
+Squaring also has properties that make mathematical analysis unusually tractable. The function
+
+$$
+g(d)=d^2
+$$
+
+is smooth: it has no sharp corner at zero. Its derivative is
+
+$$
+g'(d)=2d,
+$$
+
+which changes continuously as $d$ changes. Absolute value,
+
+$$
+g(d)=|d|,
+$$
+
+has a corner at zero and is not differentiable there in the ordinary sense. Absolute-deviation methods remain mathematically valid and important, but optimization with squares often leads to equations that can be manipulated and solved more directly.
+
+The mean-minimization identity from the previous section is one example of the algebraic structure produced by squares:
+
+$$
+\sum_{i=1}^{n}(x_i-c)^2
+=======================
+
+\sum_{i=1}^{n}(x_i-\bar{x})^2
++
+n(\bar{x}-c)^2.
+$$
+
+The total squared distance from any candidate center separates cleanly into the minimum squared distance around the mean plus a nonnegative penalty for moving the center away from the mean. This decomposition is possible because expanding a square produces terms that can be combined with the balancing identity
+
+$$
+\sum_{i=1}^{n}(x_i-\bar{x})=0.
+$$
+
+Similar decompositions appear in least-squares regression, analysis of variance, probability theory, and machine learning. Squaring is therefore useful not only because it makes every contribution nonnegative, but also because it creates structures that can be decomposed, differentiated, and optimized.
+
+## Why Absolute Deviation Remains a Valid Alternative
+
+The existence of these advantages should not lead to the conclusion that every measure of spread must use squares. We can construct the total absolute deviation from a center $c$:
+
+$$
+\sum_{i=1}^{n}|x_i-c|.
+$$
+
+This construction treats each additional unit of separation proportionally. It is less sensitive than squared deviation to observations lying far from the center. The value of $c$ that minimizes total absolute deviation is generally a median, whereas the value that minimizes total squared deviation is the mean.
+
+This gives two coherent center-and-measure pairings:
+
+| Center | Deviation contribution                      | Quantity minimized       |
+| ------ | ------------------------------------------- | ------------------------ |
+| Mean   | ((x_i-\bar{x})^2)                           | Total squared deviation  |
+| Median | (\lvert x_i-\operatorname{median}(x)\rvert) | Total absolute deviation |
+
+Neither pairing is universally superior. They embody different judgments about how separation should contribute. Squared deviation produces quadratic growth and strong algebraic structure. Absolute deviation produces linear growth and greater resistance to extreme observations.
+
+The comparison reveals an important feature of mathematical construction: the operation partly defines the concept being measured. There is no operation-independent quantity called “spread” waiting to be uncovered in only one possible way. Different measures formalize different aspects of spread. Variance defines spread through average squared separation from the mean. Another measure may define it through absolute separation from the median or through the distance between selected percentiles.
+
+## From Individual Squares to a Measure of the Dataset
+
+Squaring has transformed every signed deviation into a nonnegative contribution:
+
+$$
+x_i-\bar{x}
+\quad\longrightarrow\quad
+(x_i-\bar{x})^2.
+$$
+
+The transformation intentionally discards direction, preserves zero separation, assigns equal contributions to equal distances on opposite sides of the mean, and gives increasing emphasis to larger deviations. Geometrically, each term is a squared distance, while their sum is the squared Euclidean length of the complete centered data vector.
+
+The individual squared deviations do not yet constitute variance. They still describe separate observations. To construct one measure for the entire dataset, their contributions must be aggregated and then normalized:
+
+$$
+(x_1-\bar{x})^2,\ldots,(x_n-\bar{x})^2
+\quad\longrightarrow\quad
+\sum_{i=1}^{n}(x_i-\bar{x})^2
+\quad\longrightarrow\quad
+s^2.
+$$
+
+The next section will reconstruct these remaining decisions. It will show why the squared deviations are added, what is lost and preserved during aggregation, and why sample variance divides by $n-1$ rather than simply reporting the total squared spread.
