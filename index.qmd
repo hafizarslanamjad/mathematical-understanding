@@ -2,7 +2,7 @@
 title: "Mathematical Understanding"
 ---
 
-This website contains long-form articles investigating how mathematical meaning is constructed, preserved, and communicated. The articles examine mathematics not only as a formal system, but also as an activity performed through language, notation, diagrams, conceptual models, and human reasoning.
+This website contains long-form articles and books investigating how mathematical meaning is constructed, preserved, communicated, and translated into computation. The work examines mathematics not only as a formal system, but also as an activity performed through language, notation, diagrams, conceptual models, programming, and human reasoning.
 
 ## Articles
 
@@ -29,3 +29,13 @@ An investigation into the reasoning hidden inside a probability calculation, inc
 **Equivalence, Derived Quantities, and the Construction of Sample Variance**
 
 An examination of how mathematics rewrites existing quantities and constructs new ones without losing semantic control, using subtraction, centering, squared deviations, and sample variance as its central case.
+
+## Books
+
+### [Mathematical Programming](books/mathematical-programming/index.qmd)
+
+**From Computational Meaning to Equations and Code**
+
+A book in progress about discovering the mathematical structures hidden inside ordinary computational problems and learning to translate deliberately between problem meaning, equations, and executable programs.
+
+The book is being written and published one comprehensive mini-section at a time so that its reasoning can be studied, tested, corrected, and refined throughout its development.

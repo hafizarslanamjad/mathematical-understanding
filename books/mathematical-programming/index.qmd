@@ -1,0 +1,51 @@
+---
+title: "Mathematical Programming"
+subtitle: "From Computational Meaning to Equations and Code"
+description: "A book about discovering mathematical structure inside computational problems and translating between meaning, equations, and programs."
+---
+
+Programming is commonly taught as the construction of instructions. A programmer learns what the computer should do first, which condition should be checked, which branch should execute, which operation should repeat, and how stored values should change. Mathematics describes many of the same computations differently: through quantities, relationships, transformations, and structures.
+
+A learner can therefore understand programming and study mathematics while still struggling to connect them. They may be able to follow an equation after someone else has written it, yet find it difficult to construct that equation from an ordinary programming requirement. They may also be able to solve a problem with loops and conditions but fail to recognize the selection, counting, aggregation, weighting, normalization, or state transition hidden inside their code.
+
+This book studies that missing bridge.
+
+$$
+\boxed{
+\text{problem meaning}
+\rightarrow
+\text{computational structure}
+\rightarrow
+\text{mathematical object}
+\rightarrow
+\text{equation}
+\rightarrow
+\text{code}
+}
+$$
+
+The journey begins with familiar programming ideas such as variables, conditions, loops, counting, selection, and updating. Every mathematical idea is constructed from concrete examples before it is generalized. The purpose is not to replace ordinary programming with mathematical-looking code. The purpose is to learn how the same computation can be viewed through instructions, relationships, equations, and executable programs—and how to choose between these representations intelligently.
+
+## Read the Book
+
+### [Chapter 1 — Two Ways of Describing a Computation](chapters/01-two-ways-of-describing-computation/index.qmd)
+
+The opening chapter examines how the same computational task can be expressed through explicit instructions, higher-level programming operations, and mathematical relationships.
+
+## How This Book Is Being Written
+
+This is a book in progress. It is being written and published one comprehensive mini-section at a time. Each mini-section answers one precise conceptual question, begins with concrete examples, and develops its abstraction only after the underlying experience is clear.
+
+The chapter structure is provisional. Chapters may be refined, divided, combined, or reordered as the reasoning develops. Publishing the work incrementally makes the learning process visible while allowing every section to be read, tested, corrected, and improved before the manuscript grows further.
+
+## Intended Journey
+
+The book will progressively connect ordinary programming to mathematical structures such as indicators, masks, summations, reductions, weighted combinations, normalization, recurrence relations, vectors, matrices, probability distributions, and tensor operations. These foundations will eventually be used to read and construct NumPy, PyTorch, machine-learning, and modern AI code mathematically.
+
+The central habit developed throughout the book is:
+
+$$
+\boxed{
+\text{Before choosing the code, determine what relationship the problem describes.}
+}
+$$
