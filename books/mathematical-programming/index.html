@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="A book about discovering mathematical structure inside computational problems and translating between meaning, equations, and programs.">
 
-<title>Mathematical Understanding</title>
+<title>Mathematical Programming – Mathematical Understanding</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -29,23 +30,23 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-e3adbaa939bcd423dddc8c8a834270b4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-e3adbaa939bcd423dddc8c8a834270b4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -74,8 +75,37 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
-<link rel="stylesheet" href="styles.css">
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-fixed quarto-light">
@@ -85,7 +115,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Mathematical Understanding</span>
     </a>
   </div>
@@ -96,11 +126,11 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="../../index.html"> 
 <span class="menu-text">Articles</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./books/mathematical-programming/index.html"> 
+    <a class="nav-link active" href="../../books/mathematical-programming/index.html" aria-current="page"> 
 <span class="menu-text">Mathematical Programming</span></a>
   </li>  
 </ul>
@@ -126,17 +156,12 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#articles" id="toc-articles" class="nav-link active" data-scroll-target="#articles"><span class="header-section-number">1</span> Articles</a>
+  <li><a href="#read-the-book" id="toc-read-the-book" class="nav-link active" data-scroll-target="#read-the-book"><span class="header-section-number">1</span> Read the Book</a>
   <ul class="collapse">
-  <li><a href="#before-mathematics-begins" id="toc-before-mathematics-begins" class="nav-link" data-scroll-target="#before-mathematics-begins"><span class="header-section-number">1.1</span> Before Mathematics Begins</a></li>
-  <li><a href="#when-symbols-stay-the-same-but-meaning-changes" id="toc-when-symbols-stay-the-same-but-meaning-changes" class="nav-link" data-scroll-target="#when-symbols-stay-the-same-but-meaning-changes"><span class="header-section-number">1.2</span> When Symbols Stay the Same but Meaning Changes</a></li>
-  <li><a href="#structuring-probability-problem" id="toc-structuring-probability-problem" class="nav-link" data-scroll-target="#structuring-probability-problem"><span class="header-section-number">1.3</span> Structuring Probability Problem</a></li>
-  <li><a href="#when-mathematics-changes-the-expression" id="toc-when-mathematics-changes-the-expression" class="nav-link" data-scroll-target="#when-mathematics-changes-the-expression"><span class="header-section-number">1.4</span> When Mathematics Changes the Expression</a></li>
+  <li><a href="#chapter-1-two-ways-of-describing-a-computation" id="toc-chapter-1-two-ways-of-describing-a-computation" class="nav-link" data-scroll-target="#chapter-1-two-ways-of-describing-a-computation"><span class="header-section-number">1.1</span> Chapter 1 — Two Ways of Describing a Computation</a></li>
   </ul></li>
-  <li><a href="#books" id="toc-books" class="nav-link" data-scroll-target="#books"><span class="header-section-number">2</span> Books</a>
-  <ul class="collapse">
-  <li><a href="#mathematical-programming" id="toc-mathematical-programming" class="nav-link" data-scroll-target="#mathematical-programming"><span class="header-section-number">2.1</span> Mathematical Programming</a></li>
-  </ul></li>
+  <li><a href="#how-this-book-is-being-written" id="toc-how-this-book-is-being-written" class="nav-link" data-scroll-target="#how-this-book-is-being-written"><span class="header-section-number">2</span> How This Book Is Being Written</a></li>
+  <li><a href="#intended-journey" id="toc-intended-journey" class="nav-link" data-scroll-target="#intended-journey"><span class="header-section-number">3</span> Intended Journey</a></li>
   </ul>
 </nav>
     </div>
@@ -145,9 +170,15 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Mathematical Understanding</h1>
+<h1 class="title">Mathematical Programming</h1>
+<p class="subtitle lead">From Computational Meaning to Equations and Code</p>
 </div>
 
+<div>
+  <div class="description">
+    A book about discovering mathematical structure inside computational problems and translating between meaning, equations, and programs.
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -162,40 +193,46 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>This website contains long-form articles and books investigating how mathematical meaning is constructed, preserved, communicated, and translated into computation. The work examines mathematics not only as a formal system, but also as an activity performed through language, notation, diagrams, conceptual models, programming, and human reasoning.</p>
-<section id="articles" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="articles"><span class="header-section-number">1</span> Articles</h2>
-<section id="before-mathematics-begins" class="level3" data-number="1.1">
-<h3 data-number="1.1" class="anchored" data-anchor-id="before-mathematics-begins"><span class="header-section-number">1.1</span> <a href="./articles/before-mathematics-begins/index.html">Before Mathematics Begins</a></h3>
-<p><strong>How Language and Visual Representation Shape Mathematical Understanding</strong></p>
-<p>An investigation into the representational work that occurs before formal mathematical reasoning can begin.</p>
+<p>Programming is commonly taught as the construction of instructions. A programmer learns what the computer should do first, which condition should be checked, which branch should execute, which operation should repeat, and how stored values should change. Mathematics describes many of the same computations differently: through quantities, relationships, transformations, and structures.</p>
+<p>A learner can therefore understand programming and study mathematics while still struggling to connect them. They may be able to follow an equation after someone else has written it, yet find it difficult to construct that equation from an ordinary programming requirement. They may also be able to solve a problem with loops and conditions but fail to recognize the selection, counting, aggregation, weighting, normalization, or state transition hidden inside their code.</p>
+<p>This book studies that missing bridge.</p>
+<p><span class="math display">\[
+\boxed{
+\text{problem meaning}
+\rightarrow
+\text{computational structure}
+\rightarrow
+\text{mathematical object}
+\rightarrow
+\text{equation}
+\rightarrow
+\text{code}
+}
+\]</span></p>
+<p>The journey begins with familiar programming ideas such as variables, conditions, loops, counting, selection, and updating. Every mathematical idea is constructed from concrete examples before it is generalized. The purpose is not to replace ordinary programming with mathematical-looking code. The purpose is to learn how the same computation can be viewed through instructions, relationships, equations, and executable programs—and how to choose between these representations intelligently.</p>
+<section id="read-the-book" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="read-the-book"><span class="header-section-number">1</span> Read the Book</h2>
+<section id="chapter-1-two-ways-of-describing-a-computation" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="chapter-1-two-ways-of-describing-a-computation"><span class="header-section-number">1.1</span> <a href="../../books/mathematical-programming/chapters/01-two-ways-of-describing-computation/index.html">Chapter 1 — Two Ways of Describing a Computation</a></h3>
+<p>The opening chapter examines how the same computational task can be expressed through explicit instructions, higher-level programming operations, and mathematical relationships.</p>
 </section>
-<section id="when-symbols-stay-the-same-but-meaning-changes" class="level3" data-number="1.2">
-<h3 data-number="1.2" class="anchored" data-anchor-id="when-symbols-stay-the-same-but-meaning-changes"><span class="header-section-number">1.2</span> <a href="./articles/when-symbols-stay-the-same/index.html">When Symbols Stay the Same but Meaning Changes</a></h3>
-<p><strong>A Cognitive Framework for Preserving Context in Mathematical Reasoning</strong></p>
-<p>An examination of how learners silently change the conceptual interpretation of a mathematical expression while its visible symbols remain unchanged.</p>
 </section>
-<section id="structuring-probability-problem" class="level3" data-number="1.3">
-<h3 data-number="1.3" class="anchored" data-anchor-id="structuring-probability-problem"><span class="header-section-number">1.3</span> <a href="./articles/structuring-probability-problem/index.html">Structuring Probability Problem</a></h3>
-<p><strong>Fractions Needed for Probability</strong></p>
-<p>An investigation into the reasoning hidden inside a probability calculation, including how quantities acquire mathematical roles, how units preserve meaning, and how multiplication represents proportional scaling across repeated trials.</p>
+<section id="how-this-book-is-being-written" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="how-this-book-is-being-written"><span class="header-section-number">2</span> How This Book Is Being Written</h2>
+<p>This is a book in progress. It is being written and published one comprehensive mini-section at a time. Each mini-section answers one precise conceptual question, begins with concrete examples, and develops its abstraction only after the underlying experience is clear.</p>
+<p>The chapter structure is provisional. Chapters may be refined, divided, combined, or reordered as the reasoning develops. Publishing the work incrementally makes the learning process visible while allowing every section to be read, tested, corrected, and improved before the manuscript grows further.</p>
 </section>
-<section id="when-mathematics-changes-the-expression" class="level3" data-number="1.4">
-<h3 data-number="1.4" class="anchored" data-anchor-id="when-mathematics-changes-the-expression"><span class="header-section-number">1.4</span> <a href="./articles/when-mathematics-change-the-expression/index.html">When Mathematics Changes the Expression</a></h3>
-<p><strong>Equivalence, Derived Quantities, and the Construction of Sample Variance</strong></p>
-<p>An examination of how mathematics rewrites existing quantities and constructs new ones without losing semantic control, using subtraction, centering, squared deviations, and sample variance as its central case.</p>
-</section>
-</section>
-<section id="books" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="books"><span class="header-section-number">2</span> Books</h2>
-<section id="mathematical-programming" class="level3" data-number="2.1">
-<h3 data-number="2.1" class="anchored" data-anchor-id="mathematical-programming"><span class="header-section-number">2.1</span> <a href="./books/mathematical-programming/index.html">Mathematical Programming</a></h3>
-<p><strong>From Computational Meaning to Equations and Code</strong></p>
-<p>A book in progress about discovering the mathematical structures hidden inside ordinary computational problems and learning to translate deliberately between problem meaning, equations, and executable programs.</p>
-<p>The book is being written and published one comprehensive mini-section at a time so that its reasoning can be studied, tested, corrected, and refined throughout its development.</p>
+<section id="intended-journey" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="intended-journey"><span class="header-section-number">3</span> Intended Journey</h2>
+<p>The book will progressively connect ordinary programming to mathematical structures such as indicators, masks, summations, reductions, weighted combinations, normalization, recurrence relations, vectors, matrices, probability distributions, and tensor operations. These foundations will eventually be used to read and construct NumPy, PyTorch, machine-learning, and modern AI code mathematically.</p>
+<p>The central habit developed throughout the book is:</p>
+<p><span class="math display">\[
+\boxed{
+\text{Before choosing the code, determine what relationship the problem describes.}
+}
+\]</span></p>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

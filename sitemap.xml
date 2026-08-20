@@ -1,23 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/index.html</loc>
+    <lastmod>2026-08-20T19:41:35.464Z</lastmod>
+  </url>
+  <url>
     <loc>https://hafizarslanamjad.github.io/mathematical-understanding/articles/when-symbols-stay-the-same/index.html</loc>
-    <lastmod>2026-08-06T11:58:24.935Z</lastmod>
+    <lastmod>2026-08-20T19:41:35.463Z</lastmod>
   </url>
   <url>
     <loc>https://hafizarslanamjad.github.io/mathematical-understanding/articles/structuring-probability-problem/index.html</loc>
-    <lastmod>2026-08-06T11:58:24.934Z</lastmod>
+    <lastmod>2026-08-20T19:41:35.462Z</lastmod>
   </url>
   <url>
     <loc>https://hafizarslanamjad.github.io/mathematical-understanding/index.html</loc>
-    <lastmod>2026-08-06T11:58:24.935Z</lastmod>
+    <lastmod>2026-08-20T19:41:35.464Z</lastmod>
   </url>
   <url>
     <loc>https://hafizarslanamjad.github.io/mathematical-understanding/articles/before-mathematics-begins/index.html</loc>
-    <lastmod>2026-08-06T11:58:24.932Z</lastmod>
+    <lastmod>2026-08-20T19:41:35.460Z</lastmod>
   </url>
   <url>
     <loc>https://hafizarslanamjad.github.io/mathematical-understanding/articles/when-mathematics-change-the-expression/index.html</loc>
-    <lastmod>2026-08-06T11:58:24.934Z</lastmod>
+    <lastmod>2026-08-20T19:41:35.463Z</lastmod>
+  </url>
+  <url>
+    <loc>https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/chapters/01-two-ways-of-describing-computation/index.html</loc>
+    <lastmod>2026-08-20T19:41:35.464Z</lastmod>
   </url>
 </urlset>
