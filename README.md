@@ -1,8 +1,20 @@
 # Mathematical Understanding
 
-**Mathematical Understanding** is a Quarto website containing long-form blogs about how people construct, preserve, and reason with mathematical meaning. The project examines mathematics not only as a formal system of symbols and rules, but also as an activity shaped by language, visual representation, conceptual models, prior knowledge, and explanatory design.
+**Mathematical Understanding** is a Quarto website containing long-form articles and books about how people construct, preserve, communicate, and apply mathematical meaning. The project examines mathematics not only as a formal system of symbols and rules, but also as an activity shaped by language, visual representation, conceptual models, programming, prior knowledge, and explanatory design.
 
-**[Read the blogs online](https://hafizarslanamjad.github.io/mathematical-understanding/)**
+**[Visit Mathematical Understanding](https://hafizarslanamjad.github.io/mathematical-understanding/)**
+
+## Book in Progress
+
+### Mathematical Programming
+
+**From Computational Meaning to Equations and Code**
+
+This book develops the intellectual bridge between ordinary programming and mathematical representation. It begins with concrete computational examples and progressively teaches readers how to discover structures such as selection, counting, aggregation, weighting, normalization, state transitions, vectors, matrices, and tensor operations inside code.
+
+The book is being written and published one comprehensive mini-section at a time. Its chapter structure remains provisional so that explanations, examples, and conceptual dependencies can be refined as the manuscript develops.
+
+**[Read Mathematical Programming](https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/)**
 
 ## Published Blog Posts
 
@@ -57,6 +69,12 @@ mathematical-understanding/
 │   │   └── index.qmd
 │   └── when-symbols-stay-the-same/
 │       └── index.qmd
+├── books/
+│   └── mathematical-programming/
+│       ├── chapters/
+│       │   └── 01-two-ways-of-describing-computation/
+│       │       └── index.qmd
+│       └── index.qmd
 ├── .gitignore
 ├── _quarto.yml
 ├── index.qmd
@@ -65,7 +83,7 @@ mathematical-understanding/
 └── README.md
 ```
 
-The root `index.qmd` is the website homepage. Each article has its own directory under `articles/` and uses `index.qmd` as its source filename, producing a clean directory-based URL when published. Article-specific figures remain with the article that uses them. Shared website configuration is defined in `_quarto.yml`, shared styling belongs in `styles.css`, and bibliographic records belong in `references.bib`.
+The root `index.qmd` is the website homepage. Each article has its own directory under `articles/` and uses `index.qmd` as its source filename, producing a clean directory-based URL when published. Books are stored under `books/`. The `books/mathematical-programming/index.qmd` file is the landing page for the book, while its chapter sources are stored under `books/mathematical-programming/chapters/`. Article-specific figures remain with the article that uses them. Shared website configuration is defined in `_quarto.yml`, shared styling belongs in `styles.css`, and bibliographic records belong in `references.bib`.
 
 The `.quarto/` and `_site/` directories may appear locally after previewing or rendering the website. They contain generated caches and rendered output and are not authoritative source content. They should remain excluded from version control.
 
@@ -140,7 +158,7 @@ The Quarto files are the authoritative article sources. Generated HTML files sho
 
 ## Project status
 
-The repository currently contains four long-form articles examining mathematical understanding from complementary perspectives: explanatory representation, contextual preservation, the organization of probability problems, and the construction of mathematical expressions. Future revisions may add scholarly citations, refine visual explanations, and prepare selected articles for longer academic or book-length forms.
+The repository currently contains four long-form articles and one book in progress. The articles examine mathematical understanding through explanatory representation, contextual preservation, the organization of probability problems, and the construction of mathematical expressions. The developing book, *Mathematical Programming: From Computational Meaning to Equations and Code*, investigates how computational requirements can be transformed into mathematical structures and then into executable programs.
 
 ## Repository
 

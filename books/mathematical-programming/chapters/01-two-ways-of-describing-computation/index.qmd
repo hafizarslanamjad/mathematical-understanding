@@ -1,0 +1,237 @@
+---
+title: "Chapter 1 — Two Ways of Describing a Computation"
+description: "How one computational task can be expressed through instructions, programming abstractions, and mathematical relationships."
+number-sections: false
+---
+
+## 1.1 The Same Task Can Be Described in Different Ways
+
+Suppose we have three item prices:
+
+```text
+10, 25, 15
+```
+
+We want to find the total price. Before thinking about Python or mathematical notation, we can perform the calculation directly:
+
+```text
+10 + 25 + 15 = 50
+```
+
+The task is simple: take the three prices and combine them through addition. The input is the collection $10,25,15$, and the output is $50$.
+
+Now let us write a Python program that performs this task:
+
+```python
+prices = [10, 25, 15]
+
+total = 0
+
+for price in prices:
+    total = total + price
+```
+
+To understand exactly what this program does, we can follow it one step at a time. Before the loop begins, `total` is initialized to zero:
+
+```text
+total = 0
+```
+
+During the first iteration, `price` is `10`, so the program calculates:
+
+```text
+total = 0 + 10 = 10
+```
+
+During the second iteration, `price` is `25`:
+
+```text
+total = 10 + 25 = 35
+```
+
+During the third iteration, `price` is `15`:
+
+```text
+total = 35 + 15 = 50
+```
+
+The changing value of `total` can be displayed as a table:
+
+| Iteration | Current price | Previous total | New total |
+| --------: | ------------: | -------------: | --------: |
+|     Start |             — |              — |         0 |
+|         1 |            10 |              0 |        10 |
+|         2 |            25 |             10 |        35 |
+|         3 |            15 |             35 |        50 |
+
+The loop reaches the correct answer by describing a sequence of actions: begin at zero, visit one price, add it to the current total, store the result, and repeat. This is one way of describing the task.
+
+Python allows us to describe the same task differently:
+
+```python
+prices = [10, 25, 15]
+total = sum(prices)
+```
+
+This program does not show us the intermediate totals `10`, `35`, and `50`. It simply says: compute the sum of the values in `prices`. The detailed repetition still has to happen somewhere inside Python, but those details are hidden from the person reading the code.
+
+We can also describe the task mathematically:
+
+$$
+10+25+15=50.
+$$
+
+If we want a description that works for any number of prices, we can name them $p_1,p_2,\ldots,p_n$ and write:
+
+$$
+T=\sum_{i=1}^{n}p_i.
+$$
+
+The symbols may initially look more difficult than the Python loop, so let us connect every symbol to the concrete example. In our collection, there are three prices, so $n=3$. The prices are:
+
+$$
+p_1=10,\qquad p_2=25,\qquad p_3=15.
+$$
+
+The symbol $T$ represents the total. Substituting the concrete values into the equation gives:
+
+$$
+T=p_1+p_2+p_3
+$$
+
+and therefore:
+
+$$
+T=10+25+15=50.
+$$
+
+We now have four descriptions before us:
+
+```text
+Direct calculation:       10 + 25 + 15 = 50
+```
+
+```python
+# Explicit loop
+total = 0
+
+for price in prices:
+    total = total + price
+```
+
+```python
+# Built-in Python operation
+total = sum(prices)
+```
+
+$$
+T=\sum_{i=1}^{n}p_i.
+$$
+
+These descriptions do not look the same, but they express the same central task: combine all the prices through addition to obtain their total.
+
+The task itself is what we will call the **computation**. In this example, the computation is:
+
+> Transform a collection of prices into one value by adding all the prices.
+
+The loop, `sum(prices)`, and the mathematical summation are different **representations** of that computation. A representation is simply a particular way of expressing something. This meaning of *representation* is not special to mathematics. For example, the time “half past three” can be represented as `3:30`, as the position of hands on an analog clock, or as the number of minutes that have passed since midnight. The representations look different, but they can refer to the same time.
+
+In our price example, the representations reveal different information. The loop reveals the individual actions performed during the process. It shows the total changing from `0` to `10`, then to `35`, and finally to `50`. This is useful when we are learning how accumulation works or when we need to inspect what happens during each iteration.
+
+The loop also has a cost: the reader must mentally simulate several steps before seeing the complete relationship. Consider this code again:
+
+```python
+total = 0
+
+for price in prices:
+    total = total + price
+```
+
+To understand its final purpose, the reader has to notice that `total` starts at zero, that each price is added exactly once, and that the repeated updates eventually produce the sum of the collection. For an experienced programmer, this recognition happens quickly. For a learner, it can require following the variable through each iteration.
+
+The expression `sum(prices)` reveals something else:
+
+```python
+total = sum(prices)
+```
+
+Its advantage is that it names the complete operation directly. A reader familiar with `sum` immediately knows that all the prices are being added. Its disadvantage is that it hides how the result is constructed. If a learner does not yet understand accumulation, the function may produce the correct answer without helping the learner understand the process.
+
+The mathematical expression also emphasizes the complete relationship:
+
+$$
+T=\sum_{i=1}^{n}p_i.
+$$
+
+It says that $T$ is obtained by adding every price from the first price to the $n$th price. This form is useful because it is independent of Python. The same relationship could be implemented in Python, C++, Java, a spreadsheet, a database, or a calculator. However, the equation does not specify important programming details such as where the prices are stored, which data type they use, or how the computer should react if the collection contains invalid data. It describes the mathematical relationship, not the entire software system.
+
+We can now see why learning more than one representation matters. Imagine that an interviewer gives us the following code:
+
+```python
+result = 0
+
+for value in values:
+    result = result + value
+```
+
+If we see only instructions, we may explain the program like this:
+
+> Set `result` to zero. Visit each value. Add the value to `result`. Store the new result. Continue until the loop ends.
+
+That explanation is correct, but it remains very close to the code. It describes each line without identifying the larger idea connecting the lines.
+
+If we recognize the underlying computation, we can also say:
+
+> The program computes the sum of all values.
+
+This second explanation compresses the entire loop into one relationship. The program contains many individual additions, but together those additions form one summation.
+
+The compression is useful because it gives the mind fewer separate pieces to manage. Instead of remembering initialization, iteration, addition, reassignment, and termination as unrelated operations, we can organize all of them under one idea: **summation**. We are not deleting the programming details. We are grouping them according to the larger purpose they collectively serve.
+
+This grouping becomes important when the program grows. Suppose the prices are:
+
+```python
+prices = [10, 25, 15, 30, 12, 18, 40, 22, 17, 11]
+```
+
+Following every intermediate value of `total` is possible, but it creates unnecessary mental work if our only question is what the program computes. Recognizing the structure allows us to say:
+
+$$
+\text{The program adds all ten prices.}
+$$
+
+We can still return to the individual iterations if a bug requires us to inspect them. The larger mathematical description does not prevent detailed reasoning; it gives us a higher level from which we can decide whether that detail is currently necessary.
+
+There is another important consequence. Once we understand that a computation can have multiple representations, we are no longer forced to accept the first implementation that comes to mind. We can ask whether another representation makes the task easier to understand, verify, generalize, or execute.
+
+For the price example, the alternatives can be compared concretely:
+
+| Representation        | What it makes easy to see                                 | What it leaves less visible                       |
+| --------------------- | --------------------------------------------------------- | ------------------------------------------------- |
+| Explicit loop         | How the total changes during every iteration              | The complete summation must be inferred           |
+| `sum(prices)`         | The overall purpose of the code                           | The accumulation steps are hidden                 |
+| $T=\sum_{i=1}^{n}p_i$ | The general relationship between the prices and the total | Programming and data-handling details are omitted |
+
+No representation is automatically the best in every situation. If we are teaching how an accumulator changes, the loop may be best. If we are writing ordinary Python and only need the total, `sum(prices)` may be clearest. If we are analyzing an algorithm or connecting the task to statistics, the mathematical equation may be most useful. The choice depends on what we need the representation to reveal.
+
+This book will train us to move between such descriptions. We will begin with concrete values and ordinary code because they let us observe what actually happens. We will then search for the larger relationship formed by those operations. Finally, we will give that relationship a mathematical expression and translate it back into code.
+
+The recurring journey will therefore be:
+
+$$
+\boxed{
+\text{concrete example}
+\rightarrow
+\text{executed steps}
+\rightarrow
+\text{shared relationship}
+\rightarrow
+\text{mathematical expression}
+\rightarrow
+\text{code}
+}
+$$
+
+In this section, the shared relationship was summation. Later, a group of conditions may reveal selection, a counter may reveal counting, repeated multiplication may reveal weighting, and a changing variable may reveal a state transition. We will not assume these relationships in advance. We will begin with something concrete, examine what happens, and then construct the abstraction from the example.
+
+The central lesson of this section is therefore simple: the code we first write is not the only possible description of the computation. The same task can be represented through explicit instructions, a higher-level programming operation, or a mathematical relationship. Learning to see these alternative descriptions is the first step toward discovering the mathematics already present inside programs.
