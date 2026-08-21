@@ -432,3 +432,398 @@ save_order()
 ```
 
 contain the same two actions but may not be equivalent. If saving fails, the second sequence may send confirmation for an order that was never stored. A simple relationship between input and return value may not capture this externally visible difference.
+
+## 1.3 Finding the Relationship Inside a Program
+
+The central skill required for mathematical programming is the ability to begin with ordinary code and determine what the complete collection of instructions means. Consider the following program:
+
+```python
+values = [2, -3, 4]
+
+total = 0
+
+for value in values:
+    total = total + value * value
+```
+
+Suppose we do not yet know the mathematical expression represented by this loop. We can begin with the concrete values and execute the program:
+
+| Current value | `value * value` | Previous total | New total |
+| ------------: | --------------: | -------------: | --------: |
+|             2 |               4 |              0 |         4 |
+|            -3 |               9 |              4 |        13 |
+|             4 |              16 |             13 |        29 |
+
+The final result is `29`. Merely knowing the result, however, does not tell us the general relationship represented by the program. Therefore, we should start by asking what each instruction contributes to that result. During the first iteration, the program contributes:
+
+$$
+2\times2=2^2=4.
+$$
+
+During the second iteration, it contributes:
+
+$$
+(-3)\times(-3)=(-3)^2=9.
+$$
+
+During the third iteration, it contributes:
+
+$$
+4\times4=4^2=16.
+$$
+
+The variable `total` combines these contributions through addition:
+
+$$
+4+9+16=29.
+$$
+
+Substituting the original values back into this expression gives:
+
+$$
+2^2+(-3)^2+4^2=29.
+$$
+
+We have now moved beyond saying that the program “uses a loop.” The loop is only the mechanism that repeats the instructions. The complete computation is:
+
+> Square every value and add the squared values.
+
+This sentence exposes two different structures hidden inside the loop:
+
+1. Each individual value is transformed into its square.
+2. All the transformed values are combined through addition.
+
+### From Concrete Positions to Indexed Values
+
+The expression
+
+$$
+2^2+(-3)^2+4^2
+$$
+
+describes our iterating over a particular length of list. We now want to describe the same computation for a list of any length. Let the input values be:
+
+$$
+x_1,x_2,\ldots,x_n.
+$$
+
+Here, $x_1$ represents the first value, $x_2$ represents the second value, and $x_n$ represents the final value in a collection containing $n$ values. Now, the general form of contribution made by the first value is:
+
+$$
+x_1^2.
+$$
+
+The contribution made by the second value is:
+
+$$
+x_2^2.
+$$
+
+Continuing in the same way, the complete result is:
+
+$$
+x_1^2+x_2^2+\cdots+x_n^2.
+$$
+
+Summation notation provides a compact representation of this repeated addition:
+
+$$
+S=\sum_{i=1}^{n}x_i^2.
+$$
+
+Every part of the notation corresponds to something already visible in the concrete program:
+
+### The Accumulator Reveals the Combination Rule
+
+The initial value of an accumulator often gives us an important clue about the relationship being constructed. In the sum-of-squares program, the accumulator begins at zero:
+
+```python
+total = 0
+```
+
+and each contribution is added:
+
+```python
+total = total + value * value
+```
+
+Zero is appropriate because adding zero does not change the value being added in zero itself:
+
+$$
+0+a=a.
+$$
+
+If the first squared contribution is $4$, beginning with zero gives:
+
+$$
+0+4=4.
+$$
+
+The initialization allows the same update rule to be used during the first iteration and every later iteration. Now consider a different program:
+
+```python
+values = [2, 3, 4]
+
+product = 1
+
+for value in values:
+    product = product * value
+```
+
+Its execution is:
+
+| Current value | Previous product | New product |
+| ------------: | ---------------: | ----------: |
+|             2 |                1 |           2 |
+|             3 |                2 |           6 |
+|             4 |                6 |          24 |
+
+This accumulator begins at one rather than zero because the contributions are combined through multiplication:
+
+$$
+1\times a=a.
+$$
+
+Beginning at zero would destroy the product immediately:
+
+$$
+0\times2\times3\times4=0.
+$$
+
+The program represents:
+
+$$
+2\times3\times4=24,
+$$
+
+or generally:
+
+$$
+P=\prod_{i=1}^{n}x_i.
+$$
+
+### Separate the Per-Element Transformation from the Combination
+
+Consider another loop:
+
+```python
+values = [2, -3, 4]
+
+total = 0
+
+for value in values:
+    contribution = 2 * value + 1
+    total = total + contribution
+```
+
+Let us trace it:
+
+| $x$ | Contribution $2x+1$ | Previous total | New total |
+| --: | ------------------: | -------------: | --------: |
+|   2 |                   5 |              0 |         5 |
+|  -3 |                  -5 |              5 |         0 |
+|   4 |                   9 |              0 |         9 |
+
+The program performs two conceptually different operations. First, it transforms each value:
+
+$$
+x\longmapsto2x+1.
+$$
+
+For the concrete input, this transformation produces:
+
+```text
+[2, -3, 4] → [5, -5, 9]
+```
+
+Second, it adds the transformed values:
+
+$$
+5+(-5)+9=9.
+$$
+
+The complete relationship is therefore:
+
+$$
+S=\sum_{i=1}^{n}(2x_i+1).
+$$
+
+The parentheses are important. They show that the entire expression $2x_i+1$ is the contribution associated with the $i$th input value. The summation then combines all such contributions. This distinction between **transforming** and **combining** is useful because many loops have this structure:
+
+```python
+accumulator = initial_value
+
+for item in collection:
+    contribution = transform(item)
+    accumulator = combine(accumulator, contribution)
+```
+
+The concrete questions are:
+
+```text
+What does one item become?
+How are the resulting contributions joined?
+```
+
+### Not Every Loop Produces One Accumulated Value
+
+Now consider:
+
+```python
+values = [2, -3, 4]
+transformed_values = []
+
+for value in values:
+    transformed_values.append(2 * value + 1)
+```
+
+The concrete execution produces:
+
+```text
+[2, -3, 4] → [5, -5, 9]
+```
+
+Unlike the earlier program, this loop does not add the transformed values. It preserves each transformed value in a new collection. We can express the relationship between corresponding input and output positions as:
+
+$$
+y_i=2x_i+1.
+$$
+
+For the concrete list:
+
+$$
+\begin{aligned}
+y_1&=2(2)+1=5,\
+y_2&=2(-3)+1=-5,\
+y_3&=2(4)+1=9.
+\end{aligned}
+$$
+
+The earlier program computed one number:
+
+$$
+\sum_{i=1}^{n}(2x_i+1).
+$$
+
+The current program computes a collection:
+
+$$
+[y_1,y_2,\ldots,y_n],
+\qquad
+y_i=2x_i+1.
+$$
+
+This example shows why identifying only the per-element expression is insufficient. We must also inspect what the program does with each result. Compare the two final instructions:
+
+```python
+total = total + contribution
+```
+
+and:
+
+```python
+transformed_values.append(contribution)
+```
+
+The first collapses many contributions into one accumulated value. The second constructs a new collection containing one output for every input. We can now recognize two broad structural patterns:
+
+| Structural pattern     | Concrete behavior         | Result shape                   |
+| ---------------------- | ------------------------- | ------------------------------ |
+| Transform each element | `[2, -3, 4] → [5, -5, 9]` | Many values become many values |
+| Combine contributions  | `[4, 9, 16] → 29`         | Many values become one value   |
+
+Later, these patterns will be connected to vector operations, mapping, reductions, NumPy, and tensor programming. At this stage, their importance is simpler: two loops may both visit every element while representing fundamentally different relationships.
+
+### Conditions Determine Which Values Contribute
+
+Consider a third kind of loop:
+
+```python
+values = [4, -2, 7, -5, 3]
+
+total = 0
+
+for value in values:
+    if value > 0:
+        total = total + value
+```
+
+The execution can be organized by asking whether each value contributes to the total:
+
+| Value | Is it positive? | Contribution |
+| ----: | --------------- | -----------: |
+|     4 | Yes             |            4 |
+|    -2 | No              |      Nothing |
+|     7 | Yes             |            7 |
+|    -5 | No              |      Nothing |
+|     3 | Yes             |            3 |
+
+The values that contribute are:
+
+```text
+4, 7, 3
+```
+
+and the final result is:
+
+$$
+4+7+3=14.
+$$
+
+The complete relationship can currently be stated in words:
+
+> Add all values in the input collection that are greater than zero.
+
+The condition does not merely control whether one line executes. From the relational view, it determines membership in the collection of contributing values.
+
+At this point, we can identify the selection relationship verbally, but we have not yet constructed a compact algebraic expression for it. How can the condition `value > 0` itself become part of a mathematical expression? How can a value contribute when the condition is true and disappear when the condition is false?
+
+Those questions require the next major idea of the book: treating Boolean conditions as mathematical objects. We will develop that idea carefully rather than inserting a completed formula here without explaining where it comes from.
+
+However, In this section, we have learnt to decompose the code into four semantic roles:
+
+```text
+item
+condition
+contribution
+combination
+```
+
+Not every program will contain all four roles. A loop without a condition allows every object to contribute. A transformation that constructs a new list may preserve each contribution rather than combining them. Nevertheless, these questions help us locate the structure before choosing mathematical notation.
+
+### Translating in the Reverse Direction
+
+The translation process must also work from mathematics back to code. Suppose we are given:
+
+$$
+S=\sum_{i=1}^{n}x_i^2.
+$$
+
+Before writing Python, we can unpack the expression.
+
+The symbol $i=1,\ldots,n$ tells us that every input position is involved. The expression $x_i^2$ tells us the contribution associated with one input value. The summation symbol tells us that these contributions are combined through addition. The symbol $S$ names the final result. This interpretation leads naturally to:
+
+```python
+total = 0
+
+for value in values:
+    contribution = value * value
+    total = total + contribution
+```
+
+Now consider:
+
+$$
+y_i=2x_i+1.
+$$
+
+The subscript $i$ appears on both $x$ and $y$. This tells us that every input position has a corresponding output position. The expression does not sum the outputs. It defines each output separately:
+
+```python
+transformed_values = []
+
+for value in values:
+    transformed_values.append(2 * value + 1)
+```
+
+This is why learning mathematical programming cannot consist only of memorizing Python replacements. The notation expresses the organization of the computation. To translate it correctly, we must understand which objects exist, what happens to one object, and how the individual results are organized.
