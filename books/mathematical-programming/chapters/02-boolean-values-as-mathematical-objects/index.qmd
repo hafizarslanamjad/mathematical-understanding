@@ -1,0 +1,870 @@
+---
+title: "Chapter 2 — Boolean Values as Mathematical Objects"
+description: "How conditions become numerical objects, indicators, and mathematical contributions inside equations."
+number-sections: false
+---
+
+## 2.1 A Condition Produces a Value
+
+At the end of Chapter 1, we examined the following program:
+
+```python
+values = [4, -2, 7, -5, 3]
+
+total = 0
+
+for value in values:
+    if value > 0:
+        total = total + value
+```
+
+We described its complete meaning in words:
+
+> Add all values in the input collection that are greater than zero.
+
+The condition
+
+```python
+value > 0
+```
+
+determines whether the current value contributes to the total. When `value` is `4`, the contribution is included. When `value` is `-2`, the contribution is excluded. So far, we have treated the condition as something that directs the `if` statement. We will now examine the condition itself.
+
+Let us remove the `if` statement and evaluate only the comparison:
+
+```python
+value = 4
+value > 0
+```
+
+Python produces:
+
+```text
+True
+```
+
+Now change the value:
+
+```python
+value = -2
+value > 0
+```
+
+Python produces:
+
+```text
+False
+```
+
+The expression `value > 0` therefore does not merely ask Python to choose whether an indented block should execute. Before any choice can be made, Python evaluates the expression and produces a result. This is the first idea of the chapter:
+
+> A condition is an expression that produces a value.
+
+The value it produces is not an integer, string, or floating-point number. It is a **Boolean value**. A Boolean value has two possible forms:
+
+```python
+True
+False
+```
+
+The name *Boolean* identifies the kind of value being produced, just as *integer* identifies values such as `4` and `-2`, and *string* identifies values such as `"passing"` and `"failing"`.
+
+### A Comparison Is a Value-Producing Expression
+
+A condition has an input-output relationship of its own. For the expression
+
+```python
+value > 0
+```
+
+the input is the current numerical value, and the output is Boolean:
+
+| Input `value` | Output of `value > 0` |
+| ------------: | --------------------- |
+|             4 | `True`                |
+|            -2 | `False`               |
+|             7 | `True`                |
+|            -5 | `False`               |
+|             3 | `True`                |
+|             0 | `False`               |
+
+The final row is important. The expression asks whether the value is strictly greater than zero. Zero is equal to zero, not greater than zero, so the result is `False`. The condition can therefore be viewed as a transformation:
+
+```text
+number → Boolean value
+```
+
+### The Condition and Its Result Are Different Things
+
+Consider:
+
+```python
+score >= 50
+```
+
+This is a comparison expression. It describes the question to be evaluated:
+
+> Is the current score greater than or equal to 50?
+
+Now suppose:
+
+```python
+score = 70
+```
+
+Substituting the current value gives:
+
+```python
+70 >= 50
+```
+
+Python evaluates the comparison and produces:
+
+```python
+True
+```
+
+The expression and its result should not be confused:
+
+```text
+Expression: score >= 50
+Result:     True
+```
+
+If the score changes, the expression remains the same while its result may change.
+
+### The Boolean Result Exists Before `if` Uses It
+
+Return to the familiar statement:
+
+```python
+if score >= 50:
+    print("Pass")
+```
+
+It is tempting to treat `score >= 50` and the `if` statement as one indivisible operation. However, Python must conceptually perform two steps. First, it evaluates the comparison:
+
+```python
+score >= 50
+```
+
+Suppose `score` is `70`. The comparison produces:
+
+```python
+True
+```
+
+The statement can then be understood as:
+
+```python
+if True:
+    print("Pass")
+```
+
+The `if` statement does not create the Boolean value. The comparison expression creates it. The `if` statement uses that value to determine whether its body should execute. This distinction matters because the comparison can exist and produce a result without any `if` statement. This proves something important: a condition is not inseparably attached to control flow. Its result can be calculated, named, stored, inspected, returned from a function, or placed inside a larger data structure. The `if` statement is only one possible consumer of that result. Because a condition produces a value, we can inspect the result directly:
+
+```python
+score = 49
+passed = score >= 50
+
+print(passed)
+```
+
+The output is:
+
+```text
+False
+```
+
+In Chapter 1, we learned to ask what relationship connects an input to an output. A comparison has precisely such a relationship. The Boolean result may then be consumed by `if`, stored in a variable, printed, returned, tested, or collected with other Boolean results. The next step is to ask whether these two outcomes can be represented numerically. If `True` becomes $1$ and `False` becomes $0$, what meaning is preserved, what new operations become possible, and what misunderstandings must be avoided? That is the subject of Section 2.2.
+
+## 2.2 From `True` and `False` to `1` and `0`
+
+Suppose five students receive the following scores:
+
+```python
+scores = [40, 70, 55, 30, 75]
+```
+
+Suppose that a score of at least `50` is passing. Evaluating the condition
+
+```python
+score >= 50
+```
+
+for every student gives a collection:
+
+```python
+[False, True, True, False, True]
+```
+
+This collection tells us exactly which students passed. However, suppose we now ask:
+
+> How many students passed?
+
+We could count the `True` values manually:
+
+```text
+False, True, True, False, True
+       1     2           3
+```
+
+There are three passing students. To express the same counting process numerically, assign one unit to every passing result and zero units to every failing result. The Boolean collection has now become:
+
+```python
+[0, 1, 1, 0, 1]
+```
+
+Now if we add the numerical values, we will get:
+
+$$
+0+1+1+0+1=3.
+$$
+
+The sum is the number of passing students. The Boolean mapping allows the outcomes of conditions to participate in arithmetic. Before using it, however, we must understand exactly what it means and what it does not mean.
+
+### An Encoding Represents One Kind of Object with Another
+
+Consider the words:
+
+```text
+Fail
+Pass
+```
+
+A school database could store them using the letters:
+
+```text
+F
+P
+```
+
+It could instead use the words:
+
+```text
+failed
+passed
+```
+
+or numerical codes:
+
+```text
+0
+1
+```
+
+The numerical code does not claim that the concept of passing is literally the number one. It uses `1` to represent one of two possible outcomes. Similarly, it does not claim that failing is literally the number zero. It uses `0` to represent the other outcome. This is an **encoding**: a deliberate correspondence through which one kind of object is represented by another kind of object.
+
+### Why `False` Is Represented by `0`
+
+The number `0` is useful because adding zero leaves a total unchanged:
+
+$$
+a+0=a.
+$$
+
+Suppose the current number of passing students is two. The next student fails. We want the count to remain two:
+
+$$
+2+0=2.
+$$
+
+If the next student passes, we want the count to increase by one:
+
+$$
+2+1=3.
+$$
+
+The choice of zero is not merely symbolic. Zero has the exact additive behavior required of a non-occurrence: it contributes nothing to the count without disturbing what has already been counted.
+
+### The Encoding Preserves the Two Outcomes
+
+An encoding is useful only if we can determine which original value a code represents. Under the Boolean encoding:
+
+```text
+False → 0
+True  → 1
+```
+
+the inverse interpretation is unambiguous:
+
+```text
+0 → False
+1 → True
+```
+
+If we see:
+
+```python
+[0, 1, 1, 0, 1]
+```
+
+and know that the values are Boolean codes, we can reconstruct:
+
+```python
+[False, True, True, False, True]
+```
+
+### Binary Boolean Encoding Is Different from General Truthiness
+
+Python permits values other than `True` and `False` inside an `if` statement:
+
+```python
+if 5:
+    print("Executed")
+```
+
+The block executes because Python treats the nonzero integer `5` as truthy.
+
+Similarly:
+
+```python
+if 0:
+    print("Executed")
+```
+
+does not execute because Python treats zero as falsy. Python also treats empty and nonempty collections differently:
+
+```python
+bool([])
+```
+
+produces:
+
+```text
+False
+```
+
+while:
+
+```python
+bool([10, 20])
+```
+
+produces:
+
+```text
+True
+```
+
+This broader conversion is called **truthiness**. It allows many kinds of Python values to be interpreted in a Boolean context. Truthiness should not be confused with the binary numerical encoding developed in this section. Under our encoding, a Boolean result is represented specifically by:
+
+$$
+0\quad\text{or}\quad1.
+$$
+
+Python truthiness, by contrast, can interpret values such as `5`, `-3`, `"hello"`, and `[10, 20]` as true in a conditional context. For example:
+
+```python
+bool(5)
+```
+
+produces `True`, but this does not mean that `5` is the numerical encoding of one Boolean result. The canonical numerical code for `True` remains `1`. The directions and purposes differ. Boolean encoding allows logical outcomes to enter numerical computation. Truthiness allows Python objects to be used in conditional control flow.
+
+In our counting program, the conditional behavior has been represented as a sequence of numerical contributions:
+
+$$
+0+1+1+0+1=3.
+$$
+
+This is our first example of a control-flow decision becoming mathematical data. Instead of representing “pass” only as a reason to execute an update, we represent it as the value one. Instead of representing “fail” only as a reason to skip the update, we represent it as the value zero. The next question is what happens when these numerical Boolean values are multiplied by other quantities. If multiplying by one preserves a value while multiplying by zero suppresses it, then a condition can control not only a count but also whether an arbitrary quantity contributes to a computation. That idea leads to multiplication as a gate.
+
+## 2.3 Conditional Counting Becomes a Sum
+
+Consider the following program:
+
+```python
+scores = [40, 70, 55, 30, 75]
+
+count = 0
+
+for score in scores:
+    if score >= 50:
+        count = count + 1
+```
+
+The program answers:
+
+> How many scores are at least 50?
+
+We already know that the final answer is three. Our goal is not merely to obtain that answer. We want to discover the mathematical relationship represented by the combination of the loop, the condition, and the counter.
+
+We will use the method developed in Chapter 1:
+
+1. Determine what one input item contributes.
+2. Determine how all individual contributions are combined.
+3. Generalize the relationship.
+4. Give the resulting mathematical object a notation.
+
+### What Does One Score Contribute?
+
+The update inside the condition is:
+
+```python
+count = count + 1
+```
+
+This tells us that a passing score contributes one unit to the final count. For example, when the current score is `70`, the condition is true. When the current score is `40`, the condition is false, so the program skips the update. If the count was zero before processing `40`, it remains zero afterward. Skipping the update can be represented numerically as adding zero. The branch can now be understood as choosing the contribution made by the current score:
+
+$$
+\text{contribution}=
+\begin{cases}
+1, & \text{if the score is at least }50,\\
+0, & \text{if the score is below }50.
+\end{cases}
+$$
+
+This represents a piecewise definition and is not an arbitrary mathematical replacement for the code.
+
+### Constructing the Contribution for Every Score
+
+Let the five scores be:
+
+$$
+x_1=40,\qquad
+x_2=70,\qquad
+x_3=55,\qquad
+x_4=30,\qquad
+x_5=75.
+$$
+
+For every score $x_i$, define a numerical contribution $b_i$:
+
+$$
+b_i=
+\begin{cases}
+1, & \text{if }x_i\geq50,\\
+0, & \text{if }x_i<50.
+\end{cases}
+$$
+
+The symbol $b_i$ does not represent the score itself. It represents the result of asking whether the $i$th score satisfies the condition.
+
+For the concrete scores:
+
+$$
+\begin{aligned}
+b_1&=0 &&\text{because }40<50,\\
+b_2&=1 &&\text{because }70\geq50,\\
+b_3&=1 &&\text{because }55\geq50,\\
+b_4&=0 &&\text{because }30<50,\\
+b_5&=1 &&\text{because }75\geq50.
+\end{aligned}
+$$
+
+The original input collection $[40,70,55,30,75]$ has produced the contribution collection $[0,1,1,0,1]$. If you notice, we have transformed the underlying problem from “Does this score pass?” into the numerical question “How much should this score contribute to the count?”
+
+### Expressing the Counter as a Recurrence
+
+The Python counter changes over time. Let $c_i$ represent the count after processing the first $i$ scores. Before any score has been processed, the count is zero:
+
+$$
+c_0=0.
+$$
+
+After processing the first score, the new count equals the previous count plus the first score’s contribution:
+
+$$
+c_1=c_0+b_1.
+$$
+
+After processing the second score:
+
+$$
+c_2=c_1+b_2.
+$$
+
+The same relationship continues:
+
+$$
+c_i=c_{i-1}+b_i.
+$$
+
+This is a **recurrence relation**: the current state is defined using the previous state and the current contribution. It is the mathematical counterpart of:
+
+```python
+count = count + contribution
+```
+
+For our concrete data:
+
+$$
+\begin{aligned}
+c_0&=0,\\
+c_1&=c_0+b_1=0+0=0,\\
+c_2&=c_1+b_2=0+1=1,\\
+c_3&=c_2+b_3=1+1=2,\\
+c_4&=c_3+b_4=2+0=2,\\
+c_5&=c_4+b_5=2+1=3.
+\end{aligned}
+$$
+
+The recurrence still describes the computation step by step. It is mathematically explicit, but it remains close to the loop. To discover the complete input-output relationship, we must remove the dependence on all the intermediate counter states.
+
+### Unfolding the Recurrence
+
+Begin with the final count:
+
+$$
+c_5=c_4+b_5.
+$$
+
+The previous count $c_4$ was itself produced from:
+
+$$
+c_4=c_3+b_4.
+$$
+
+Substituting this into the expression for $c_5$ gives:
+
+$$
+c_5=(c_3+b_4)+b_5.
+$$
+
+The same process continues:
+
+$$
+c_3=c_2+b_3,
+$$
+
+so:
+
+$$
+c_5=((c_2+b_3)+b_4)+b_5.
+$$
+
+Since:
+
+$$
+c_2=c_1+b_2,
+$$
+
+we obtain:
+
+$$
+c_5=(((c_1+b_2)+b_3)+b_4)+b_5.
+$$
+
+Finally:
+
+$$
+c_1=c_0+b_1,
+$$
+
+so:
+
+$$
+c_5=((((c_0+b_1)+b_2)+b_3)+b_4)+b_5.
+$$
+
+Because $c_0=0$:
+
+$$
+c_5=0+b_1+b_2+b_3+b_4+b_5.
+$$
+
+Adding zero does not change the result, so:
+
+$$
+c_5=b_1+b_2+b_3+b_4+b_5.
+$$
+
+Substituting the concrete contributions:
+
+$$
+c_5=0+1+1+0+1=3.
+$$
+
+The repeated counter updates have become one sum. This is the central transformation. The loop constructs the result sequentially. The sum describes the complete relationship between all input conditions and the final count.
+
+### Generalizing to Any Number of Scores
+
+For $n$ scores:
+
+$$
+x_1,x_2,\ldots,x_n,
+$$
+
+define:
+
+$$
+b_i=
+\begin{cases}
+1, & \text{if }x_i\geq50,\\
+0, & \text{if }x_i<50.
+\end{cases}
+$$
+
+The total number of passing scores is:
+
+$$
+C=b_1+b_2+\cdots+b_n.
+$$
+
+Using summation notation:
+
+$$
+\boxed{
+C=\sum_{i=1}^{n}b_i
+}
+$$
+
+This equation has two structural parts. The expression $b_i$ specifies what one score contributes:
+
+$$
+b_i\in\{0,1\}.
+$$
+
+The summation specifies how all contributions are combined:
+
+$$
+\sum_{i=1}^{n}.
+$$
+
+This matches the code-analysis method established in Chapter 1. The equation is therefore constructed from the semantic roles inside the program rather than recalled as a formula.
+
+### Giving the Numerical Condition a Name
+
+The piecewise definition
+
+$$
+b_i=
+\begin{cases}
+1, & \text{if }x_i\geq50,\\
+0, & \text{if }x_i<50
+\end{cases}
+$$
+
+will occur repeatedly. Mathematics provides a compact notation for this object:
+
+$$
+\mathbf{1}[x_i\geq50].
+$$
+
+It is read as:
+
+> The indicator that $x_i$ is at least 50.
+
+Its definition is:
+
+$$
+\mathbf{1}[x_i\geq50]
+=
+\begin{cases}
+1, & \text{if }x_i\geq50,\\
+0, & \text{if }x_i<50.
+\end{cases}
+$$
+
+The bold symbol $\mathbf{1}$ does not mean that the answer is always one. It names a function whose output depends on the condition inside the brackets.
+
+For $x_i=70$:
+
+$$
+\mathbf{1}[70\geq50]=1.
+$$
+
+For $x_i=40$:
+
+$$
+\mathbf{1}[40\geq50]=0.
+$$
+
+The brackets contain the condition being tested. The complete indicator returns one when that condition is true and zero when it is false. Our earlier contribution $b_i$ can now be written as:
+
+$$
+b_i=\mathbf{1}[x_i\geq50].
+$$
+
+Substituting this into
+
+$$
+C=\sum_{i=1}^{n}b_i
+$$
+
+gives:
+
+$$
+\boxed{
+C=\sum_{i=1}^{n}\mathbf{1}[x_i\geq50]
+}
+$$
+
+This equation means:
+
+> For every score, produce one if it is at least 50 and zero otherwise, then add all the produced values.
+
+That is precisely what the original conditional counter computes.
+
+### Reading the Equation Back into Code
+
+To ensure that the mathematical notation has not lost the program’s meaning, we should translate it back into computation.
+
+Start with:
+
+$$
+C=\sum_{i=1}^{n}\mathbf{1}[x_i\geq50].
+$$
+
+The index $i=1,\ldots,n$ tells us to examine every score. The condition $x_i\geq50$ tells us what must be tested. The indicator $\mathbf{1}[\cdot]$ tells us to produce either one or zero. The summation tells us to add those results.
+
+A direct Python translation is:
+
+```python
+count = 0
+
+for score in scores:
+    contribution = int(score >= 50)
+    count = count + contribution
+```
+
+For the concrete scores, `contribution` takes the values:
+
+```python
+[0, 1, 1, 0, 1]
+```
+
+The same relationship can be expressed more compactly:
+
+```python
+count = sum(int(score >= 50) for score in scores)
+```
+
+Python also permits Boolean values to participate directly in addition:
+
+```python
+count = sum(score >= 50 for score in scores)
+```
+
+All three programs implement the same mathematical structure:
+
+$$
+\sum_{i=1}^{n}\mathbf{1}[x_i\geq50].
+$$
+
+The compact forms should not be memorized as tricks. They become understandable because we derived every component:
+
+```text
+score >= 50
+        ↓
+Boolean result
+        ↓
+0 or 1
+        ↓
+contribution to the count
+        ↓
+sum of all contributions
+```
+
+### Changing the Condition Changes What Is Counted
+
+The structure
+
+$$
+\sum_{i=1}^{n}\mathbf{1}[\text{condition on }x_i]
+$$
+
+does not belong only to passing scores. The condition determines what kind of objects are counted.
+
+To count positive values:
+
+$$
+\sum_{i=1}^{n}\mathbf{1}[x_i>0].
+$$
+
+To count even values:
+
+$$
+\sum_{i=1}^{n}\mathbf{1}[x_i\bmod2=0].
+$$
+
+To count scores between 50 and 80 inclusive:
+
+$$
+\sum_{i=1}^{n}\mathbf{1}[50\leq x_i\leq80].
+$$
+
+To count prediction errors:
+
+$$
+\sum_{i=1}^{n}\mathbf{1}[\hat{y}_i\neq y_i].
+$$
+
+In each case, the indicator performs the same mathematical role:
+
+$$
+\text{qualifies}\longrightarrow1,
+\qquad
+\text{does not qualify}\longrightarrow0.
+$$
+
+The summation then converts the individual classifications into a count.
+
+For example, let:
+
+$$
+x=[4,-2,7,-5,3].
+$$
+
+To count positive values, evaluate:
+
+$$
+\begin{aligned}
+\mathbf{1}[4>0]&=1,\\
+\mathbf{1}[-2>0]&=0,\\
+\mathbf{1}[7>0]&=1,\\
+\mathbf{1}[-5>0]&=0,\\
+\mathbf{1}[3>0]&=1.
+\end{aligned}
+$$
+
+Therefore $1+0+1+0+1=3$. The programming requirement “count only the values satisfying a condition” has become a general mathematical pattern:
+
+$$
+\boxed{
+\text{number of qualifying items}
+=
+\sum_i\mathbf{1}[\text{item }i\text{ qualifies}]
+}
+$$
+
+### What the Mathematical Representation Reveals
+
+The original program presents counting as conditional execution:
+
+```python
+if score >= 50:
+    count = count + 1
+```
+
+The equation presents counting as contribution and aggregation:
+
+$$
+C=\sum_{i=1}^{n}\mathbf{1}[x_i\geq50].
+$$
+
+The condition has not disappeared. It has changed roles. In the program, the condition controls whether an instruction executes. In the equation, the condition determines the numerical contribution produced by an item:
+
+$$
+\boxed{
+\text{control condition}
+\longrightarrow
+\text{numerical contribution}
+}
+$$
+
+This is one of the central transformations of mathematical programming. A decision that once existed only as a branch has become an object inside an equation. The transformation was possible because the original update had two required behaviors:
+
+```text
+qualifying item:
+increase the count by 1
+
+nonqualifying item:
+increase the count by 0
+```
+
+The numbers $1$ and $0$ capture those behaviors, while summation combines the contributions. Conditional counting is only the first application. Here, every qualifying item contributes the fixed quantity one. The next mathematical question is:
+
+> What if a qualifying item should contribute some quantity $x_i$ rather than merely one?
+
+Answering that question requires us to understand why multiplying by one preserves a quantity while multiplying by zero suppresses it. That will lead from indicators to multiplication as a gate.
