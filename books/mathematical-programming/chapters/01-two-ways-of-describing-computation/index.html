@@ -192,6 +192,23 @@ window.Quarto = {
    
   <ul>
   <li><a href="#the-same-task-can-be-described-in-different-ways" id="toc-the-same-task-can-be-described-in-different-ways" class="nav-link active" data-scroll-target="#the-same-task-can-be-described-in-different-ways">1.1 The Same Task Can Be Described in Different Ways</a></li>
+  <li><a href="#the-relational-view" id="toc-the-relational-view" class="nav-link" data-scroll-target="#the-relational-view">1.2 The Relational View</a>
+  <ul class="collapse">
+  <li><a href="#the-output-depends-on-the-input-in-a-particular-way" id="toc-the-output-depends-on-the-input-in-a-particular-way" class="nav-link" data-scroll-target="#the-output-depends-on-the-input-in-a-particular-way">The Output Depends on the Input in a Particular Way</a></li>
+  <li><a href="#inputs-and-outputs-have-roles-not-merely-values" id="toc-inputs-and-outputs-have-roles-not-merely-values" class="nav-link" data-scroll-target="#inputs-and-outputs-have-roles-not-merely-values">Inputs and Outputs Have Roles, Not Merely Values</a></li>
+  <li><a href="#the-relational-view-helps-compare-different-programs" id="toc-the-relational-view-helps-compare-different-programs" class="nav-link" data-scroll-target="#the-relational-view-helps-compare-different-programs">The Relational View Helps Compare Different Programs</a></li>
+  <li><a href="#what-the-relational-view-makes-easier-to-see" id="toc-what-the-relational-view-makes-easier-to-see" class="nav-link" data-scroll-target="#what-the-relational-view-makes-easier-to-see">What the Relational View Makes Easier to See</a></li>
+  <li><a href="#what-the-relational-view-can-leave-hidden" id="toc-what-the-relational-view-can-leave-hidden" class="nav-link" data-scroll-target="#what-the-relational-view-can-leave-hidden">What the Relational View Can Leave Hidden</a></li>
+  </ul></li>
+  <li><a href="#finding-the-relationship-inside-a-program" id="toc-finding-the-relationship-inside-a-program" class="nav-link" data-scroll-target="#finding-the-relationship-inside-a-program">1.3 Finding the Relationship Inside a Program</a>
+  <ul class="collapse">
+  <li><a href="#from-concrete-positions-to-indexed-values" id="toc-from-concrete-positions-to-indexed-values" class="nav-link" data-scroll-target="#from-concrete-positions-to-indexed-values">From Concrete Positions to Indexed Values</a></li>
+  <li><a href="#the-accumulator-reveals-the-combination-rule" id="toc-the-accumulator-reveals-the-combination-rule" class="nav-link" data-scroll-target="#the-accumulator-reveals-the-combination-rule">The Accumulator Reveals the Combination Rule</a></li>
+  <li><a href="#separate-the-per-element-transformation-from-the-combination" id="toc-separate-the-per-element-transformation-from-the-combination" class="nav-link" data-scroll-target="#separate-the-per-element-transformation-from-the-combination">Separate the Per-Element Transformation from the Combination</a></li>
+  <li><a href="#not-every-loop-produces-one-accumulated-value" id="toc-not-every-loop-produces-one-accumulated-value" class="nav-link" data-scroll-target="#not-every-loop-produces-one-accumulated-value">Not Every Loop Produces One Accumulated Value</a></li>
+  <li><a href="#conditions-determine-which-values-contribute" id="toc-conditions-determine-which-values-contribute" class="nav-link" data-scroll-target="#conditions-determine-which-values-contribute">Conditions Determine Which Values Contribute</a></li>
+  <li><a href="#translating-in-the-reverse-direction" id="toc-translating-in-the-reverse-direction" class="nav-link" data-scroll-target="#translating-in-the-reverse-direction">Translating in the Reverse Direction</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -244,49 +261,10 @@ window.Quarto = {
 <pre class="text"><code>total = 10 + 25 = 35</code></pre>
 <p>During the third iteration, <code>price</code> is <code>15</code>:</p>
 <pre class="text"><code>total = 35 + 15 = 50</code></pre>
-<p>The changing value of <code>total</code> can be displayed as a table:</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th style="text-align: right;">Iteration</th>
-<th style="text-align: right;">Current price</th>
-<th style="text-align: right;">Previous total</th>
-<th style="text-align: right;">New total</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">Start</td>
-<td style="text-align: right;">—</td>
-<td style="text-align: right;">—</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">10</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">25</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">35</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">15</td>
-<td style="text-align: right;">35</td>
-<td style="text-align: right;">50</td>
-</tr>
-</tbody>
-</table>
-<p>The loop reaches the correct answer by describing a sequence of actions: begin at zero, visit one price, add it to the current total, store the result, and repeat. This is one way of describing the task.</p>
-<p>Python allows us to describe the same task differently:</p>
+<p>The loop reaches the correct answer by describing a sequence of actions. This is one way of describing the task. Python allows us to describe the same task differently:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>prices <span class="op">=</span> [<span class="dv">10</span>, <span class="dv">25</span>, <span class="dv">15</span>]</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>total <span class="op">=</span> <span class="bu">sum</span>(prices)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This program does not show us the intermediate totals <code>10</code>, <code>35</code>, and <code>50</code>. It simply says: compute the sum of the values in <code>prices</code>. The detailed repetition still has to happen somewhere inside Python, but those details are hidden from the person reading the code.</p>
-<p>We can also describe the task mathematically:</p>
+<p>This program does not show us the intermediate totals <code>10</code>, <code>35</code>, and <code>50</code>. It simply says: compute the sum of the values in <code>prices</code>. The detailed repetition still has to happen somewhere inside Python, but those details are hidden from the person reading the code. We can also describe the task mathematically:</p>
 <p><span class="math display">\[
 10+25+15=50.
 \]</span></p>
@@ -318,103 +296,611 @@ T=10+25+15=50.
 <p><span class="math display">\[
 T=\sum_{i=1}^{n}p_i.
 \]</span></p>
-<p>These descriptions do not look the same, but they express the same central task: combine all the prices through addition to obtain their total.</p>
-<p>The task itself is what we will call the <strong>computation</strong>. In this example, the computation is:</p>
+<p>These descriptions do not look the same, but they express the same central task: combine all the prices through addition to obtain their total. The task itself is what we will call the <strong>computation</strong>. In this example, the computation is:</p>
 <blockquote class="blockquote">
 <p>Transform a collection of prices into one value by adding all the prices.</p>
 </blockquote>
-<p>The loop, <code>sum(prices)</code>, and the mathematical summation are different <strong>representations</strong> of that computation. A representation is simply a particular way of expressing something. This meaning of <em>representation</em> is not special to mathematics. For example, the time “half past three” can be represented as <code>3:30</code>, as the position of hands on an analog clock, or as the number of minutes that have passed since midnight. The representations look different, but they can refer to the same time.</p>
-<p>In our price example, the representations reveal different information. The loop reveals the individual actions performed during the process. It shows the total changing from <code>0</code> to <code>10</code>, then to <code>35</code>, and finally to <code>50</code>. This is useful when we are learning how accumulation works or when we need to inspect what happens during each iteration.</p>
-<p>The loop also has a cost: the reader must mentally simulate several steps before seeing the complete relationship. Consider this code again:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>total <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> price <span class="kw">in</span> prices:</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    total <span class="op">=</span> total <span class="op">+</span> price</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>To understand its final purpose, the reader has to notice that <code>total</code> starts at zero, that each price is added exactly once, and that the repeated updates eventually produce the sum of the collection. For an experienced programmer, this recognition happens quickly. For a learner, it can require following the variable through each iteration.</p>
-<p>The expression <code>sum(prices)</code> reveals something else:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>total <span class="op">=</span> <span class="bu">sum</span>(prices)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Its advantage is that it names the complete operation directly. A reader familiar with <code>sum</code> immediately knows that all the prices are being added. Its disadvantage is that it hides how the result is constructed. If a learner does not yet understand accumulation, the function may produce the correct answer without helping the learner understand the process.</p>
-<p>The mathematical expression also emphasizes the complete relationship:</p>
-<p><span class="math display">\[
-T=\sum_{i=1}^{n}p_i.
-\]</span></p>
-<p>It says that <span class="math inline">\(T\)</span> is obtained by adding every price from the first price to the <span class="math inline">\(n\)</span>th price. This form is useful because it is independent of Python. The same relationship could be implemented in Python, C++, Java, a spreadsheet, a database, or a calculator. However, the equation does not specify important programming details such as where the prices are stored, which data type they use, or how the computer should react if the collection contains invalid data. It describes the mathematical relationship, not the entire software system.</p>
-<p>We can now see why learning more than one representation matters. Imagine that an interviewer gives us the following code:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> value <span class="kw">in</span> values:</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> result <span class="op">+</span> value</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>If we see only instructions, we may explain the program like this:</p>
-<blockquote class="blockquote">
-<p>Set <code>result</code> to zero. Visit each value. Add the value to <code>result</code>. Store the new result. Continue until the loop ends.</p>
-</blockquote>
-<p>That explanation is correct, but it remains very close to the code. It describes each line without identifying the larger idea connecting the lines.</p>
-<p>If we recognize the underlying computation, we can also say:</p>
-<blockquote class="blockquote">
-<p>The program computes the sum of all values.</p>
-</blockquote>
-<p>This second explanation compresses the entire loop into one relationship. The program contains many individual additions, but together those additions form one summation.</p>
-<p>The compression is useful because it gives the mind fewer separate pieces to manage. Instead of remembering initialization, iteration, addition, reassignment, and termination as unrelated operations, we can organize all of them under one idea: <strong>summation</strong>. We are not deleting the programming details. We are grouping them according to the larger purpose they collectively serve.</p>
-<p>This grouping becomes important when the program grows. Suppose the prices are:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>prices <span class="op">=</span> [<span class="dv">10</span>, <span class="dv">25</span>, <span class="dv">15</span>, <span class="dv">30</span>, <span class="dv">12</span>, <span class="dv">18</span>, <span class="dv">40</span>, <span class="dv">22</span>, <span class="dv">17</span>, <span class="dv">11</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Following every intermediate value of <code>total</code> is possible, but it creates unnecessary mental work if our only question is what the program computes. Recognizing the structure allows us to say:</p>
-<p><span class="math display">\[
-\text{The program adds all ten prices.}
-\]</span></p>
-<p>We can still return to the individual iterations if a bug requires us to inspect them. The larger mathematical description does not prevent detailed reasoning; it gives us a higher level from which we can decide whether that detail is currently necessary.</p>
+<p>The loop, <code>sum(prices)</code>, and the mathematical summation are different <strong>representations</strong> of that computation. A representation is simply a particular way of expressing something.</p>
+<p>In our price example, the representations reveal different information. The loop reveals the individual actions performed during the process. It shows the total changing from <code>0</code> to <code>10</code>, then to <code>35</code>, and finally to <code>50</code>. This is useful when we are learning how accumulation works or when we need to inspect what happens during each iteration. The loop also has a cost: the reader must mentally simulate several steps before seeing the complete relationship.</p>
+<p>The advantage of expression <code>sum(prices)</code> is that it names the complete operation directly. A reader familiar with <code>sum</code> immediately knows that all the prices are being added. Its disadvantage is that it hides how the result is constructed.</p>
+<p>The mathematical expression says that <span class="math inline">\(T\)</span> is obtained by adding every price from the first price to the <span class="math inline">\(n\)</span>th price. This form is useful because it is independent of Python. The same relationship could be implemented in Python, C++, Java, a spreadsheet, a database, or a calculator. However, the equation does not specify important programming details such as where the prices are stored, which data type they use, or how the computer should react if the collection contains invalid data.</p>
 <p>There is another important consequence. Once we understand that a computation can have multiple representations, we are no longer forced to accept the first implementation that comes to mind. We can ask whether another representation makes the task easier to understand, verify, generalize, or execute.</p>
-<p>For the price example, the alternatives can be compared concretely:</p>
+<p>No representation is automatically the best in every situation. If we are teaching how an accumulator changes, the loop may be best. If we are writing ordinary Python and only need the total, <code>sum(prices)</code> may be clearest. If we are analyzing an algorithm or connecting the task to statistics, the mathematical equation may be most useful. The choice depends on what we need the representation to reveal.</p>
+<p>This book will train us to move between such descriptions. We will begin with concrete values and ordinary code because they let us observe what actually happens. We will then search for the larger relationship formed by those operations. Finally, we will give that relationship a mathematical expression and translate it back into code.</p>
+</section>
+<section id="the-relational-view" class="level2">
+<h2 class="anchored" data-anchor-id="the-relational-view">1.2 The Relational View</h2>
+<p>Consider the following scores:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> [<span class="dv">40</span>, <span class="dv">70</span>, <span class="dv">55</span>, <span class="dv">30</span>, <span class="dv">75</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>We want to calculate the average of the passing scores, where a score is considered passing when it is at least <code>50</code>.</p>
+<p>A familiar Python solution is:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>total <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>count <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> score <span class="kw">in</span> scores:</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> score <span class="op">&gt;=</span> <span class="dv">50</span>:</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        total <span class="op">=</span> total <span class="op">+</span> score</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        count <span class="op">=</span> count <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>average <span class="op">=</span> total <span class="op">/</span> count</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>We can understand this program by following its execution. The program begins with <code>total = 0</code> and <code>count = 0</code>. It visits <code>40</code>, rejects it, visits <code>70</code>, adds it to <code>total</code>, increases <code>count</code>, and continues in this manner until every score has been examined. This explanation tells us how the program reaches its result. Now let us temporarily set the execution steps aside and look directly at the input. The original scores are:</p>
+<pre class="text"><code>40, 70, 55, 30, 75</code></pre>
+<p>The passing scores are:</p>
+<pre class="text"><code>70, 55, 75</code></pre>
+<p>Their total is:</p>
+<p><span class="math display">\[
+70+55+75=200,
+\]</span></p>
+<p>and there are three of them. Their average is therefore:</p>
+<p><span class="math display">\[
+\frac{70+55+75}{3}=\frac{200}{3}.
+\]</span></p>
+<p>This second explanation does not begin with <code>total</code>, <code>count</code>, or the order in which the loop visits the scores. It begins by identifying the quantities that belong in the result and then states the relationship among them:</p>
+<blockquote class="blockquote">
+<p>The required result is the sum of the passing scores divided by the number of passing scores.</p>
+</blockquote>
+<p>The program and this statement concern the same problem, but they organize our attention differently. The program directs our attention toward the process: initialize, visit, test, update, and repeat. The second description directs our attention toward the relationship between the complete input and the required output.</p>
+<p>This is the <strong>relational view</strong> of computation. Instead of asking primarily,</p>
+<blockquote class="blockquote">
+<p>What instruction should execute next?</p>
+</blockquote>
+<p>we ask:</p>
+<blockquote class="blockquote">
+<p>Given the input, what must be true of the output?</p>
+</blockquote>
+<section id="the-output-depends-on-the-input-in-a-particular-way" class="level3">
+<h3 class="anchored" data-anchor-id="the-output-depends-on-the-input-in-a-particular-way">The Output Depends on the Input in a Particular Way</h3>
+<p>Let us examine a simpler example before generalizing this idea. Suppose a store sells notebooks for 120 rupees each. The following table shows the total cost for several quantities:</p>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 16%">
-<col style="width: 44%">
-<col style="width: 38%">
-</colgroup>
 <thead>
 <tr class="header">
-<th>Representation</th>
-<th>What it makes easy to see</th>
-<th>What it leaves less visible</th>
+<th style="text-align: right;">Number of notebooks</th>
+<th style="text-align: right;">Price of one notebook</th>
+<th style="text-align: right;">Total cost</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Explicit loop</td>
-<td>How the total changes during every iteration</td>
-<td>The complete summation must be inferred</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">120</td>
+<td style="text-align: right;">120</td>
 </tr>
 <tr class="even">
-<td><code>sum(prices)</code></td>
-<td>The overall purpose of the code</td>
-<td>The accumulation steps are hidden</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">120</td>
+<td style="text-align: right;">240</td>
 </tr>
 <tr class="odd">
-<td><span class="math inline">\(T=\sum_{i=1}^{n}p_i\)</span></td>
-<td>The general relationship between the prices and the total</td>
-<td>Programming and data-handling details are omitted</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">120</td>
+<td style="text-align: right;">360</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">120</td>
+<td style="text-align: right;">600</td>
 </tr>
 </tbody>
 </table>
-<p>No representation is automatically the best in every situation. If we are teaching how an accumulator changes, the loop may be best. If we are writing ordinary Python and only need the total, <code>sum(prices)</code> may be clearest. If we are analyzing an algorithm or connecting the task to statistics, the mathematical equation may be most useful. The choice depends on what we need the representation to reveal.</p>
-<p>This book will train us to move between such descriptions. We will begin with concrete values and ordinary code because they let us observe what actually happens. We will then search for the larger relationship formed by those operations. Finally, we will give that relationship a mathematical expression and translate it back into code.</p>
-<p>The recurring journey will therefore be:</p>
+<p>Each row contains different input and output values, but the same relationship connects them. If <span class="math inline">\(n\)</span> represents the number of notebooks, <span class="math inline">\(p\)</span> represents the price of one notebook, and <span class="math inline">\(C\)</span> represents the total cost, we can write:</p>
 <p><span class="math display">\[
-\boxed{
-\text{concrete example}
-\rightarrow
-\text{executed steps}
-\rightarrow
-\text{shared relationship}
-\rightarrow
-\text{mathematical expression}
-\rightarrow
-\text{code}
-}
+C=np.
 \]</span></p>
-<p>In this section, the shared relationship was summation. Later, a group of conditions may reveal selection, a counter may reveal counting, repeated multiplication may reveal weighting, and a changing variable may reveal a state transition. We will not assume these relationships in advance. We will begin with something concrete, examine what happens, and then construct the abstraction from the example.</p>
-<p>The central lesson of this section is therefore simple: the code we first write is not the only possible description of the computation. The same task can be represented through explicit instructions, a higher-level programming operation, or a mathematical relationship. Learning to see these alternative descriptions is the first step toward discovering the mathematics already present inside programs.</p>
+<p>The equation <span class="math inline">\(C=np\)</span> does not describe a sequence such as “read <code>n</code>, read <code>p</code>, multiply them, create <code>C</code>, and store the result.” A computer implementation must eventually perform operations, but the equation concentrates on a different fact: for every permitted pair of values <span class="math inline">\(n\)</span> and <span class="math inline">\(p\)</span>, the total cost <span class="math inline">\(C\)</span> must equal their product.</p>
+<p>A Python program can realize this relationship directly:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>number_of_notebooks <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>price_per_notebook <span class="op">=</span> <span class="dv">120</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>total_cost <span class="op">=</span> number_of_notebooks <span class="op">*</span> price_per_notebook</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A more procedural program could realize it through repeated addition:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>number_of_notebooks <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>price_per_notebook <span class="op">=</span> <span class="dv">120</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>total_cost <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(number_of_notebooks):</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    total_cost <span class="op">=</span> total_cost <span class="op">+</span> price_per_notebook</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For the given input, both programs produce:</p>
+<pre class="text"><code>600</code></pre>
+<p>Their instructions differ, but the required relationship remains:</p>
+<p><span class="math display">\[
+C=np.
+\]</span></p>
+<p>This relationship gives us a standard against which implementations can be judged. If a program receives <span class="math inline">\(n=5\)</span> and <span class="math inline">\(p=120\)</span> but produces <span class="math inline">\(720\)</span>, it has not realized the required relationship.</p>
+<p>The relational view therefore separates two questions:</p>
+<ol type="1">
+<li>What result is required for a given input?</li>
+<li>What instructions will produce that result?</li>
+</ol>
+<p>The first question determines the meaning that must be preserved. The second determines how that meaning will be implemented.</p>
+</section>
+<section id="inputs-and-outputs-have-roles-not-merely-values" class="level3">
+<h3 class="anchored" data-anchor-id="inputs-and-outputs-have-roles-not-merely-values">Inputs and Outputs Have Roles, Not Merely Values</h3>
+<p>Consider the following calculation:</p>
+<p><span class="math display">\[
+5\times120=600.
+\]</span></p>
+<p>Suppose that the number <code>5</code> represents a quantity of notebooks, while <code>120</code> represents rupees per notebook. Although both are written as numbers, they do not play interchangeable roles in our interpretation. We can record their meanings explicitly:</p>
+<pre class="text"><code>5 notebooks × 120 rupees per notebook = 600 rupees</code></pre>
+<p>The unit “notebooks” combines with “rupees per notebook”: <span class="math display">\[
+\text{rupees}.
+\]</span></p>
+<p>The notebook units cancel, leaving rupees: <span class="math display">\[
+\text{rupees}.
+\]</span></p>
+<p>This unit relationship helps explain why multiplication is appropriate. Each notebook contributes 120 rupees, and <span class="math inline">\(n\)</span> notebooks contribute <span class="math inline">\(n\)</span> copies of that amount. The equation preserves not only numerical values but also the meanings attached to them.</p>
+<p>Now suppose a programmer accidentally writes:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>total_cost <span class="op">=</span> number_of_notebooks <span class="op">+</span> price_per_notebook</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For five notebooks at 120 rupees each, this produces:</p>
+<pre class="text"><code>125</code></pre>
+<p>The error is not merely that <code>125</code> is the wrong number. Addition expresses the wrong relationship. It treats the number of notebooks and the number of rupees per notebook as quantities that should be combined directly:</p>
+<pre class="text"><code>5 notebooks + 120 rupees per notebook</code></pre>
+<p>Those quantities do not form a total price through addition. The relational view helps us detect the mistake before or independently of tracing the program. This habit is central to mathematical programming. We do not begin by searching our memory for an operator that appears in similar code. We ask what role each quantity plays and what relationship must hold among those roles.</p>
+</section>
+<section id="the-relational-view-helps-compare-different-programs" class="level3">
+<h3 class="anchored" data-anchor-id="the-relational-view-helps-compare-different-programs">The Relational View Helps Compare Different Programs</h3>
+<p>Consider two possible implementations:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Program A</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>total <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>count <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> score <span class="kw">in</span> scores:</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> score <span class="op">&gt;=</span> <span class="dv">50</span>:</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>        total <span class="op">=</span> total <span class="op">+</span> score</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>        count <span class="op">=</span> count <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>average <span class="op">=</span> total <span class="op">/</span> count</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Program B</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>passing_scores <span class="op">=</span> []</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> score <span class="kw">in</span> scores:</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> score <span class="op">&gt;=</span> <span class="dv">50</span>:</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>        passing_scores.append(score)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>average <span class="op">=</span> <span class="bu">sum</span>(passing_scores) <span class="op">/</span> <span class="bu">len</span>(passing_scores)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Their intermediate states differ. Program A stores a running total and count. Program B constructs a new list. Nevertheless, for the input:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>[<span class="dv">40</span>, <span class="dv">70</span>, <span class="dv">55</span>, <span class="dv">30</span>, <span class="dv">75</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>both produce:</p>
+<p><span class="math display">\[
+\frac{200}{3}.
+\]</span></p>
+<p>Why can we call them two implementations of the same computation? It is not because their instructions are identical. They are not. We regard them as equivalent for this problem because they establish the same required input-output relationship:</p>
+<blockquote class="blockquote">
+<p>For a collection containing at least one passing score, return the arithmetic mean of all scores greater than or equal to 50.</p>
+</blockquote>
+<p>This statement also exposes an assumption that the code may not initially make obvious: there must be at least one passing score. Consider:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> [<span class="dv">20</span>, <span class="dv">35</span>, <span class="dv">40</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>There are no passing scores, so both programs eventually attempt division by zero. The required relationship is not currently defined for this input because the “number of passing scores” is zero: <span class="math display">\[
+\frac{0}{0}.
+\]</span></p>
+<p>The relational view encourages us to specify constraints on inputs. We must decide what the program should do when no passing scores exist. It might return <code>None</code>, raise an error, or use another explicitly chosen convention. Until that decision is made, the computation is only defined for collections containing at least one passing score.</p>
+</section>
+<section id="what-the-relational-view-makes-easier-to-see" class="level3">
+<h3 class="anchored" data-anchor-id="what-the-relational-view-makes-easier-to-see">What the Relational View Makes Easier to See</h3>
+<p>The notebook example makes the required dependency visible:</p>
+<p><span class="math display">\[
+C=np.
+\]</span></p>
+<p>The score example makes the complete selection-and-average structure visible: <span class="math display">\[
+\frac{\text{sum of passing scores}}
+{\text{number of passing scores}}.
+\]</span></p>
+<p>From these examples, we can identify several concrete strengths of relational reasoning.</p>
+<p>First, it makes the intended output easier to verify. If five notebooks cost 120 rupees each, any correct program must produce 600 rupees. If a program produces 125, the relationship immediately exposes the error.</p>
+<p>Second, it supports generalization. The calculation <span class="math inline">\(5\times120=600\)</span> concerns one purchase, while <span class="math inline">\(C=np\)</span> describes every purchase governed by the same pricing rule.</p>
+<p>Third, it reveals the roles of quantities. The value <code>5</code> is not merely a number; it is a number of notebooks. The value <code>120</code> is a price per notebook. Their roles explain why multiplication produces a total measured in rupees.</p>
+<p>Fourth, it permits comparison between different implementations. Two score-processing programs can use different intermediate data and still realize the same relationship between the input scores and the output average.</p>
+<p>Fifth, it exposes assumptions. The passing-score average requires at least one passing score. Writing the relationship as a division makes the zero-denominator problem visible.</p>
+<p>Each strength comes from focusing on what must remain true across implementations rather than on the particular instructions used by one implementation.</p>
+</section>
+<section id="what-the-relational-view-can-leave-hidden" class="level3">
+<h3 class="anchored" data-anchor-id="what-the-relational-view-can-leave-hidden">What the Relational View Can Leave Hidden</h3>
+<p>The relational view does not make every important feature of a program visible. Consider two bank transactions applied to an account with a balance of 100 rupees:</p>
+<pre class="text"><code>deposit 50
+withdraw 130</code></pre>
+<p>If the deposit happens first, the balance changes as follows:</p>
+<pre class="text"><code>100 → 150 → 20</code></pre>
+<p>If the withdrawal happens first and the bank rejects withdrawals larger than the current balance, the result is different:</p>
+<pre class="text"><code>100 → withdrawal rejected → 150</code></pre>
+<p>Simply adding the numerical changes,</p>
+<p><span class="math display">\[
+100+50-130=20,
+\]</span></p>
+<p>describes the final balance only under rules that allow both transactions to occur. It does not represent the rejection rule or show that transaction order can affect which actions are permitted.</p>
+<p>In this situation, the history matters. The current balance at the moment of withdrawal determines whether the withdrawal occurs. A description concerned only with the initial and final numbers may hide that dependency.</p>
+<p>Side effects create a similar issue. The two instruction sequences</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>save_order()</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>send_confirmation_email()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>and</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>send_confirmation_email()</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>save_order()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>contain the same two actions but may not be equivalent. If saving fails, the second sequence may send confirmation for an order that was never stored. A simple relationship between input and return value may not capture this externally visible difference.</p>
+</section>
+</section>
+<section id="finding-the-relationship-inside-a-program" class="level2">
+<h2 class="anchored" data-anchor-id="finding-the-relationship-inside-a-program">1.3 Finding the Relationship Inside a Program</h2>
+<p>The central skill required for mathematical programming is the ability to begin with ordinary code and determine what the complete collection of instructions means.&nbsp;Consider the following program:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> [<span class="dv">2</span>, <span class="op">-</span><span class="dv">3</span>, <span class="dv">4</span>]</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>total <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> value <span class="kw">in</span> values:</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    total <span class="op">=</span> total <span class="op">+</span> value <span class="op">*</span> value</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Suppose we do not yet know the mathematical expression represented by this loop. We can begin with the concrete values and execute the program:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Current value</th>
+<th style="text-align: right;"><code>value * value</code></th>
+<th style="text-align: right;">Previous total</th>
+<th style="text-align: right;">New total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">-3</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">29</td>
+</tr>
+</tbody>
+</table>
+<p>The final result is <code>29</code>. Merely knowing the result, however, does not tell us the general relationship represented by the program. Therefore, we should start by asking what each instruction contributes to that result.&nbsp;During the first iteration, the program contributes:</p>
+<p><span class="math display">\[
+2\times2=2^2=4.
+\]</span></p>
+<p>During the second iteration, it contributes:</p>
+<p><span class="math display">\[
+(-3)\times(-3)=(-3)^2=9.
+\]</span></p>
+<p>During the third iteration, it contributes:</p>
+<p><span class="math display">\[
+4\times4=4^2=16.
+\]</span></p>
+<p>The variable <code>total</code> combines these contributions through addition:</p>
+<p><span class="math display">\[
+4+9+16=29.
+\]</span></p>
+<p>Substituting the original values back into this expression gives:</p>
+<p><span class="math display">\[
+2^2+(-3)^2+4^2=29.
+\]</span></p>
+<p>We have now moved beyond saying that the program “uses a loop.” The loop is only the mechanism that repeats the instructions. The complete computation is:</p>
+<blockquote class="blockquote">
+<p>Square every value and add the squared values.</p>
+</blockquote>
+<p>This sentence exposes two different structures hidden inside the loop:</p>
+<ol type="1">
+<li>Each individual value is transformed into its square.</li>
+<li>All the transformed values are combined through addition.</li>
+</ol>
+<section id="from-concrete-positions-to-indexed-values" class="level3">
+<h3 class="anchored" data-anchor-id="from-concrete-positions-to-indexed-values">From Concrete Positions to Indexed Values</h3>
+<p>The expression</p>
+<p><span class="math display">\[
+2^2+(-3)^2+4^2
+\]</span></p>
+<p>describes our iterating over a particular length of list. We now want to describe the same computation for a list of any length.&nbsp;Let the input values be:</p>
+<p><span class="math display">\[
+x_1,x_2,\ldots,x_n.
+\]</span></p>
+<p>Here, <span class="math inline">\(x_1\)</span> represents the first value, <span class="math inline">\(x_2\)</span> represents the second value, and <span class="math inline">\(x_n\)</span> represents the final value in a collection containing <span class="math inline">\(n\)</span> values. Now, the general form of contribution made by the first value is:</p>
+<p><span class="math display">\[
+x_1^2.
+\]</span></p>
+<p>The contribution made by the second value is:</p>
+<p><span class="math display">\[
+x_2^2.
+\]</span></p>
+<p>Continuing in the same way, the complete result is:</p>
+<p><span class="math display">\[
+x_1^2+x_2^2+\cdots+x_n^2.
+\]</span></p>
+<p>Summation notation provides a compact representation of this repeated addition:</p>
+<p><span class="math display">\[
+S=\sum_{i=1}^{n}x_i^2.
+\]</span></p>
+<p>Every part of the notation corresponds to something already visible in the concrete program:</p>
+</section>
+<section id="the-accumulator-reveals-the-combination-rule" class="level3">
+<h3 class="anchored" data-anchor-id="the-accumulator-reveals-the-combination-rule">The Accumulator Reveals the Combination Rule</h3>
+<p>The initial value of an accumulator often gives us an important clue about the relationship being constructed.&nbsp;In the sum-of-squares program, the accumulator begins at zero:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>total <span class="op">=</span> <span class="dv">0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>and each contribution is added:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>total <span class="op">=</span> total <span class="op">+</span> value <span class="op">*</span> value</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Zero is appropriate because adding zero does not change the value being added in zero itself:</p>
+<p><span class="math display">\[
+0+a=a.
+\]</span></p>
+<p>If the first squared contribution is <span class="math inline">\(4\)</span>, beginning with zero gives:</p>
+<p><span class="math display">\[
+0+4=4.
+\]</span></p>
+<p>The initialization allows the same update rule to be used during the first iteration and every later iteration.&nbsp;Now consider a different program:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> [<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>]</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>product <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> value <span class="kw">in</span> values:</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    product <span class="op">=</span> product <span class="op">*</span> value</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Its execution is:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Current value</th>
+<th style="text-align: right;">Previous product</th>
+<th style="text-align: right;">New product</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">24</td>
+</tr>
+</tbody>
+</table>
+<p>This accumulator begins at one rather than zero because the contributions are combined through multiplication:</p>
+<p><span class="math display">\[
+1\times a=a.
+\]</span></p>
+<p>Beginning at zero would destroy the product immediately:</p>
+<p><span class="math display">\[
+0\times2\times3\times4=0.
+\]</span></p>
+<p>The program represents:</p>
+<p><span class="math display">\[
+2\times3\times4=24,
+\]</span></p>
+<p>or generally:</p>
+<p><span class="math display">\[
+P=\prod_{i=1}^{n}x_i.
+\]</span></p>
+</section>
+<section id="separate-the-per-element-transformation-from-the-combination" class="level3">
+<h3 class="anchored" data-anchor-id="separate-the-per-element-transformation-from-the-combination">Separate the Per-Element Transformation from the Combination</h3>
+<p>Consider another loop:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> [<span class="dv">2</span>, <span class="op">-</span><span class="dv">3</span>, <span class="dv">4</span>]</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>total <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> value <span class="kw">in</span> values:</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    contribution <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> value <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    total <span class="op">=</span> total <span class="op">+</span> contribution</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Let us trace it:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;"><span class="math inline">\(x\)</span></th>
+<th style="text-align: right;">Contribution <span class="math inline">\(2x+1\)</span></th>
+<th style="text-align: right;">Previous total</th>
+<th style="text-align: right;">New total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">-3</td>
+<td style="text-align: right;">-5</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">9</td>
+</tr>
+</tbody>
+</table>
+<p>The program performs two conceptually different operations. First, it transforms each value:</p>
+<p><span class="math display">\[
+x\longmapsto2x+1.
+\]</span></p>
+<p>For the concrete input, this transformation produces:</p>
+<pre class="text"><code>[2, -3, 4] → [5, -5, 9]</code></pre>
+<p>Second, it adds the transformed values:</p>
+<p><span class="math display">\[
+5+(-5)+9=9.
+\]</span></p>
+<p>The complete relationship is therefore:</p>
+<p><span class="math display">\[
+S=\sum_{i=1}^{n}(2x_i+1).
+\]</span></p>
+<p>The parentheses are important. They show that the entire expression <span class="math inline">\(2x_i+1\)</span> is the contribution associated with the <span class="math inline">\(i\)</span>th input value. The summation then combines all such contributions.&nbsp;This distinction between <strong>transforming</strong> and <strong>combining</strong> is useful because many loops have this structure:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>accumulator <span class="op">=</span> initial_value</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> item <span class="kw">in</span> collection:</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    contribution <span class="op">=</span> transform(item)</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>    accumulator <span class="op">=</span> combine(accumulator, contribution)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The concrete questions are:</p>
+<pre class="text"><code>What does one item become?
+How are the resulting contributions joined?</code></pre>
+</section>
+<section id="not-every-loop-produces-one-accumulated-value" class="level3">
+<h3 class="anchored" data-anchor-id="not-every-loop-produces-one-accumulated-value">Not Every Loop Produces One Accumulated Value</h3>
+<p>Now consider:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> [<span class="dv">2</span>, <span class="op">-</span><span class="dv">3</span>, <span class="dv">4</span>]</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>transformed_values <span class="op">=</span> []</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> value <span class="kw">in</span> values:</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>    transformed_values.append(<span class="dv">2</span> <span class="op">*</span> value <span class="op">+</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The concrete execution produces:</p>
+<pre class="text"><code>[2, -3, 4] → [5, -5, 9]</code></pre>
+<p>Unlike the earlier program, this loop does not add the transformed values. It preserves each transformed value in a new collection.&nbsp;We can express the relationship between corresponding input and output positions as:</p>
+<p><span class="math display">\[
+y_i=2x_i+1.
+\]</span></p>
+<p>For the concrete list:</p>
+<p><span class="math display">\[
+\begin{aligned}
+y_1&amp;=2(2)+1=5,\
+y_2&amp;=2(-3)+1=-5,\
+y_3&amp;=2(4)+1=9.
+\end{aligned}
+\]</span></p>
+<p>The earlier program computed one number:</p>
+<p><span class="math display">\[
+\sum_{i=1}^{n}(2x_i+1).
+\]</span></p>
+<p>The current program computes a collection:</p>
+<p><span class="math display">\[
+[y_1,y_2,\ldots,y_n],
+\qquad
+y_i=2x_i+1.
+\]</span></p>
+<p>This example shows why identifying only the per-element expression is insufficient. We must also inspect what the program does with each result.&nbsp;Compare the two final instructions:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>total <span class="op">=</span> total <span class="op">+</span> contribution</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>and:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>transformed_values.append(contribution)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The first collapses many contributions into one accumulated value. The second constructs a new collection containing one output for every input.&nbsp;We can now recognize two broad structural patterns:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 32%">
+<col style="width: 38%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Structural pattern</th>
+<th>Concrete behavior</th>
+<th>Result shape</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Transform each element</td>
+<td><code>[2, -3, 4] → [5, -5, 9]</code></td>
+<td>Many values become many values</td>
+</tr>
+<tr class="even">
+<td>Combine contributions</td>
+<td><code>[4, 9, 16] → 29</code></td>
+<td>Many values become one value</td>
+</tr>
+</tbody>
+</table>
+<p>Later, these patterns will be connected to vector operations, mapping, reductions, NumPy, and tensor programming. At this stage, their importance is simpler: two loops may both visit every element while representing fundamentally different relationships.</p>
+</section>
+<section id="conditions-determine-which-values-contribute" class="level3">
+<h3 class="anchored" data-anchor-id="conditions-determine-which-values-contribute">Conditions Determine Which Values Contribute</h3>
+<p>Consider a third kind of loop:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> [<span class="dv">4</span>, <span class="op">-</span><span class="dv">2</span>, <span class="dv">7</span>, <span class="op">-</span><span class="dv">5</span>, <span class="dv">3</span>]</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>total <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> value <span class="kw">in</span> values:</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> value <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>        total <span class="op">=</span> total <span class="op">+</span> value</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The execution can be organized by asking whether each value contributes to the total:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Value</th>
+<th>Is it positive?</th>
+<th style="text-align: right;">Contribution</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td>Yes</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">-2</td>
+<td>No</td>
+<td style="text-align: right;">Nothing</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td>Yes</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">-5</td>
+<td>No</td>
+<td style="text-align: right;">Nothing</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td>Yes</td>
+<td style="text-align: right;">3</td>
+</tr>
+</tbody>
+</table>
+<p>The values that contribute are:</p>
+<pre class="text"><code>4, 7, 3</code></pre>
+<p>and the final result is:</p>
+<p><span class="math display">\[
+4+7+3=14.
+\]</span></p>
+<p>The complete relationship can currently be stated in words:</p>
+<blockquote class="blockquote">
+<p>Add all values in the input collection that are greater than zero.</p>
+</blockquote>
+<p>The condition does not merely control whether one line executes. From the relational view, it determines membership in the collection of contributing values.</p>
+<p>At this point, we can identify the selection relationship verbally, but we have not yet constructed a compact algebraic expression for it. How can the condition <code>value &gt; 0</code> itself become part of a mathematical expression? How can a value contribute when the condition is true and disappear when the condition is false?</p>
+<p>Those questions require the next major idea of the book: treating Boolean conditions as mathematical objects. We will develop that idea carefully rather than inserting a completed formula here without explaining where it comes from.</p>
+<p>However,&nbsp;In this section, we have learnt to&nbsp;decompose the code into four semantic roles:</p>
+<pre class="text"><code>item
+condition
+contribution
+combination</code></pre>
+<p>Not every program will contain all four roles. A loop without a condition allows every object to contribute. A transformation that constructs a new list may preserve each contribution rather than combining them. Nevertheless, these questions help us locate the structure before choosing mathematical notation.</p>
+</section>
+<section id="translating-in-the-reverse-direction" class="level3">
+<h3 class="anchored" data-anchor-id="translating-in-the-reverse-direction">Translating in the Reverse Direction</h3>
+<p>The translation process must also work from mathematics back to code. Suppose we are given:</p>
+<p><span class="math display">\[
+S=\sum_{i=1}^{n}x_i^2.
+\]</span></p>
+<p>Before writing Python, we can unpack the expression.</p>
+<p>The symbol <span class="math inline">\(i=1,\ldots,n\)</span> tells us that every input position is involved. The expression <span class="math inline">\(x_i^2\)</span> tells us the contribution associated with one input value. The summation symbol tells us that these contributions are combined through addition. The symbol <span class="math inline">\(S\)</span> names the final result.&nbsp;This interpretation leads naturally to:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>total <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> value <span class="kw">in</span> values:</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>    contribution <span class="op">=</span> value <span class="op">*</span> value</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>    total <span class="op">=</span> total <span class="op">+</span> contribution</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Now consider:</p>
+<p><span class="math display">\[
+y_i=2x_i+1.
+\]</span></p>
+<p>The subscript <span class="math inline">\(i\)</span> appears on both <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>. This tells us that every input position has a corresponding output position. The expression does not sum the outputs. It defines each output separately:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>transformed_values <span class="op">=</span> []</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> value <span class="kw">in</span> values:</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>    transformed_values.append(<span class="dv">2</span> <span class="op">*</span> value <span class="op">+</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This is why learning mathematical programming cannot consist only of memorizing Python replacements. The notation expresses the organization of the computation. To translate it correctly, we must understand which objects exist, what happens to one object, and how the individual results are organized.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
