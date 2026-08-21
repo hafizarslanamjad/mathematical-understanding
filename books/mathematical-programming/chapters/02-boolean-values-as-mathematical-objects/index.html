@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="How conditions become numerical objects, indicators, and mathematical contributions inside equations.">
+
+<title>Chapter 2 — Boolean Values as Mathematical Objects – Mathematical Understanding</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../../">
+<script src="../../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../../site_libs/bootstrap/bootstrap-e3adbaa939bcd423dddc8c8a834270b4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../../../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../../index.html">
+    <span class="navbar-title">Mathematical Understanding</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../index.html"> 
+<span class="menu-text">Articles</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../books/mathematical-programming/index.html"> 
+<span class="menu-text">Mathematical Programming</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/hafizarslanamjad/mathematical-understanding"> <i class="bi bi-github" role="img" aria-label="GitHub repository">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#a-condition-produces-a-value" id="toc-a-condition-produces-a-value" class="nav-link active" data-scroll-target="#a-condition-produces-a-value">2.1 A Condition Produces a Value</a>
+  <ul class="collapse">
+  <li><a href="#a-comparison-is-a-value-producing-expression" id="toc-a-comparison-is-a-value-producing-expression" class="nav-link" data-scroll-target="#a-comparison-is-a-value-producing-expression">A Comparison Is a Value-Producing Expression</a></li>
+  <li><a href="#the-condition-and-its-result-are-different-things" id="toc-the-condition-and-its-result-are-different-things" class="nav-link" data-scroll-target="#the-condition-and-its-result-are-different-things">The Condition and Its Result Are Different Things</a></li>
+  <li><a href="#the-boolean-result-exists-before-if-uses-it" id="toc-the-boolean-result-exists-before-if-uses-it" class="nav-link" data-scroll-target="#the-boolean-result-exists-before-if-uses-it">The Boolean Result Exists Before <code>if</code> Uses It</a></li>
+  </ul></li>
+  <li><a href="#from-true-and-false-to-1-and-0" id="toc-from-true-and-false-to-1-and-0" class="nav-link" data-scroll-target="#from-true-and-false-to-1-and-0">2.2 From <code>True</code> and <code>False</code> to <code>1</code> and <code>0</code></a>
+  <ul class="collapse">
+  <li><a href="#an-encoding-represents-one-kind-of-object-with-another" id="toc-an-encoding-represents-one-kind-of-object-with-another" class="nav-link" data-scroll-target="#an-encoding-represents-one-kind-of-object-with-another">An Encoding Represents One Kind of Object with Another</a></li>
+  <li><a href="#why-false-is-represented-by-0" id="toc-why-false-is-represented-by-0" class="nav-link" data-scroll-target="#why-false-is-represented-by-0">Why <code>False</code> Is Represented by <code>0</code></a></li>
+  <li><a href="#the-encoding-preserves-the-two-outcomes" id="toc-the-encoding-preserves-the-two-outcomes" class="nav-link" data-scroll-target="#the-encoding-preserves-the-two-outcomes">The Encoding Preserves the Two Outcomes</a></li>
+  <li><a href="#binary-boolean-encoding-is-different-from-general-truthiness" id="toc-binary-boolean-encoding-is-different-from-general-truthiness" class="nav-link" data-scroll-target="#binary-boolean-encoding-is-different-from-general-truthiness">Binary Boolean Encoding Is Different from General Truthiness</a></li>
+  </ul></li>
+  <li><a href="#conditional-counting-becomes-a-sum" id="toc-conditional-counting-becomes-a-sum" class="nav-link" data-scroll-target="#conditional-counting-becomes-a-sum">2.3 Conditional Counting Becomes a Sum</a>
+  <ul class="collapse">
+  <li><a href="#what-does-one-score-contribute" id="toc-what-does-one-score-contribute" class="nav-link" data-scroll-target="#what-does-one-score-contribute">What Does One Score Contribute?</a></li>
+  <li><a href="#constructing-the-contribution-for-every-score" id="toc-constructing-the-contribution-for-every-score" class="nav-link" data-scroll-target="#constructing-the-contribution-for-every-score">Constructing the Contribution for Every Score</a></li>
+  <li><a href="#expressing-the-counter-as-a-recurrence" id="toc-expressing-the-counter-as-a-recurrence" class="nav-link" data-scroll-target="#expressing-the-counter-as-a-recurrence">Expressing the Counter as a Recurrence</a></li>
+  <li><a href="#unfolding-the-recurrence" id="toc-unfolding-the-recurrence" class="nav-link" data-scroll-target="#unfolding-the-recurrence">Unfolding the Recurrence</a></li>
+  <li><a href="#generalizing-to-any-number-of-scores" id="toc-generalizing-to-any-number-of-scores" class="nav-link" data-scroll-target="#generalizing-to-any-number-of-scores">Generalizing to Any Number of Scores</a></li>
+  <li><a href="#giving-the-numerical-condition-a-name" id="toc-giving-the-numerical-condition-a-name" class="nav-link" data-scroll-target="#giving-the-numerical-condition-a-name">Giving the Numerical Condition a Name</a></li>
+  <li><a href="#reading-the-equation-back-into-code" id="toc-reading-the-equation-back-into-code" class="nav-link" data-scroll-target="#reading-the-equation-back-into-code">Reading the Equation Back into Code</a></li>
+  <li><a href="#changing-the-condition-changes-what-is-counted" id="toc-changing-the-condition-changes-what-is-counted" class="nav-link" data-scroll-target="#changing-the-condition-changes-what-is-counted">Changing the Condition Changes What Is Counted</a></li>
+  <li><a href="#what-the-mathematical-representation-reveals" id="toc-what-the-mathematical-representation-reveals" class="nav-link" data-scroll-target="#what-the-mathematical-representation-reveals">What the Mathematical Representation Reveals</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Chapter 2 — Boolean Values as Mathematical Objects</h1>
+</div>
+
+<div>
+  <div class="description">
+    How conditions become numerical objects, indicators, and mathematical contributions inside equations.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="a-condition-produces-a-value" class="level2">
+<h2 class="anchored" data-anchor-id="a-condition-produces-a-value">2.1 A Condition Produces a Value</h2>
+<p>At the end of Chapter 1, we examined the following program:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> [<span class="dv">4</span>, <span class="op">-</span><span class="dv">2</span>, <span class="dv">7</span>, <span class="op">-</span><span class="dv">5</span>, <span class="dv">3</span>]</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>total <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> value <span class="kw">in</span> values:</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> value <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        total <span class="op">=</span> total <span class="op">+</span> value</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>We described its complete meaning in words:</p>
+<blockquote class="blockquote">
+<p>Add all values in the input collection that are greater than zero.</p>
+</blockquote>
+<p>The condition</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>value <span class="op">&gt;</span> <span class="dv">0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>determines whether the current value contributes to the total. When <code>value</code> is <code>4</code>, the contribution is included. When <code>value</code> is <code>-2</code>, the contribution is excluded. So far, we have treated the condition as something that directs the <code>if</code> statement. We will now examine the condition itself.</p>
+<p>Let us remove the <code>if</code> statement and evaluate only the comparison:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>value <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>value <span class="op">&gt;</span> <span class="dv">0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Python produces:</p>
+<pre class="text"><code>True</code></pre>
+<p>Now change the value:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>value <span class="op">=</span> <span class="op">-</span><span class="dv">2</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>value <span class="op">&gt;</span> <span class="dv">0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Python produces:</p>
+<pre class="text"><code>False</code></pre>
+<p>The expression <code>value &gt; 0</code> therefore does not merely ask Python to choose whether an indented block should execute. Before any choice can be made, Python evaluates the expression and produces a result. This is the first idea of the chapter:</p>
+<blockquote class="blockquote">
+<p>A condition is an expression that produces a value.</p>
+</blockquote>
+<p>The value it produces is not an integer, string, or floating-point number. It is a <strong>Boolean value</strong>. A Boolean value has two possible forms:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="va">True</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="va">False</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The name <em>Boolean</em> identifies the kind of value being produced, just as <em>integer</em> identifies values such as <code>4</code> and <code>-2</code>, and <em>string</em> identifies values such as <code>"passing"</code> and <code>"failing"</code>.</p>
+<section id="a-comparison-is-a-value-producing-expression" class="level3">
+<h3 class="anchored" data-anchor-id="a-comparison-is-a-value-producing-expression">A Comparison Is a Value-Producing Expression</h3>
+<p>A condition has an input-output relationship of its own. For the expression</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>value <span class="op">&gt;</span> <span class="dv">0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>the input is the current numerical value, and the output is Boolean:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Input <code>value</code></th>
+<th>Output of <code>value &gt; 0</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td><code>True</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">-2</td>
+<td><code>False</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td><code>True</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">-5</td>
+<td><code>False</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td><code>True</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
+<p>The final row is important. The expression asks whether the value is strictly greater than zero. Zero is equal to zero, not greater than zero, so the result is <code>False</code>. The condition can therefore be viewed as a transformation:</p>
+<pre class="text"><code>number → Boolean value</code></pre>
+</section>
+<section id="the-condition-and-its-result-are-different-things" class="level3">
+<h3 class="anchored" data-anchor-id="the-condition-and-its-result-are-different-things">The Condition and Its Result Are Different Things</h3>
+<p>Consider:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>score <span class="op">&gt;=</span> <span class="dv">50</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This is a comparison expression. It describes the question to be evaluated:</p>
+<blockquote class="blockquote">
+<p>Is the current score greater than or equal to 50?</p>
+</blockquote>
+<p>Now suppose:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>score <span class="op">=</span> <span class="dv">70</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Substituting the current value gives:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="dv">70</span> <span class="op">&gt;=</span> <span class="dv">50</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Python evaluates the comparison and produces:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="va">True</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The expression and its result should not be confused:</p>
+<pre class="text"><code>Expression: score &gt;= 50
+Result:     True</code></pre>
+<p>If the score changes, the expression remains the same while its result may change.</p>
+</section>
+<section id="the-boolean-result-exists-before-if-uses-it" class="level3">
+<h3 class="anchored" data-anchor-id="the-boolean-result-exists-before-if-uses-it">The Boolean Result Exists Before <code>if</code> Uses It</h3>
+<p>Return to the familiar statement:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> score <span class="op">&gt;=</span> <span class="dv">50</span>:</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Pass"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>It is tempting to treat <code>score &gt;= 50</code> and the <code>if</code> statement as one indivisible operation. However, Python must conceptually perform two steps. First, it evaluates the comparison:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>score <span class="op">&gt;=</span> <span class="dv">50</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Suppose <code>score</code> is <code>70</code>. The comparison produces:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="va">True</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The statement can then be understood as:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">True</span>:</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Pass"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>if</code> statement does not create the Boolean value. The comparison expression creates it. The <code>if</code> statement uses that value to determine whether its body should execute. This distinction matters because the comparison can exist and produce a result without any <code>if</code> statement. This proves something important: a condition is not inseparably attached to control flow. Its result can be calculated, named, stored, inspected, returned from a function, or placed inside a larger data structure. The <code>if</code> statement is only one possible consumer of that result. Because a condition produces a value, we can inspect the result directly:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>score <span class="op">=</span> <span class="dv">49</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>passed <span class="op">=</span> score <span class="op">&gt;=</span> <span class="dv">50</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(passed)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The output is:</p>
+<pre class="text"><code>False</code></pre>
+<p>In Chapter 1, we learned to ask what relationship connects an input to an output. A comparison has precisely such a relationship. The Boolean result may then be consumed by <code>if</code>, stored in a variable, printed, returned, tested, or collected with other Boolean results. The next step is to ask whether these two outcomes can be represented numerically. If <code>True</code> becomes <span class="math inline">\(1\)</span> and <code>False</code> becomes <span class="math inline">\(0\)</span>, what meaning is preserved, what new operations become possible, and what misunderstandings must be avoided? That is the subject of Section 2.2.</p>
+</section>
+</section>
+<section id="from-true-and-false-to-1-and-0" class="level2">
+<h2 class="anchored" data-anchor-id="from-true-and-false-to-1-and-0">2.2 From <code>True</code> and <code>False</code> to <code>1</code> and <code>0</code></h2>
+<p>Suppose five students receive the following scores:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> [<span class="dv">40</span>, <span class="dv">70</span>, <span class="dv">55</span>, <span class="dv">30</span>, <span class="dv">75</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Suppose that a score of at least <code>50</code> is passing. Evaluating the condition</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>score <span class="op">&gt;=</span> <span class="dv">50</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>for every student gives a collection:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>[<span class="va">False</span>, <span class="va">True</span>, <span class="va">True</span>, <span class="va">False</span>, <span class="va">True</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This collection tells us exactly which students passed. However, suppose we now ask:</p>
+<blockquote class="blockquote">
+<p>How many students passed?</p>
+</blockquote>
+<p>We could count the <code>True</code> values manually:</p>
+<pre class="text"><code>False, True, True, False, True
+       1     2           3</code></pre>
+<p>There are three passing students. To express the same counting process numerically, assign one unit to every passing result and zero units to every failing result. The Boolean collection has now become:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>[<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Now if we add the numerical values, we will get:</p>
+<p><span class="math display">\[
+0+1+1+0+1=3.
+\]</span></p>
+<p>The sum is the number of passing students. The Boolean mapping allows the outcomes of conditions to participate in arithmetic. Before using it, however, we must understand exactly what it means and what it does not mean.</p>
+<section id="an-encoding-represents-one-kind-of-object-with-another" class="level3">
+<h3 class="anchored" data-anchor-id="an-encoding-represents-one-kind-of-object-with-another">An Encoding Represents One Kind of Object with Another</h3>
+<p>Consider the words:</p>
+<pre class="text"><code>Fail
+Pass</code></pre>
+<p>A school database could store them using the letters:</p>
+<pre class="text"><code>F
+P</code></pre>
+<p>It could instead use the words:</p>
+<pre class="text"><code>failed
+passed</code></pre>
+<p>or numerical codes:</p>
+<pre class="text"><code>0
+1</code></pre>
+<p>The numerical code does not claim that the concept of passing is literally the number one. It uses <code>1</code> to represent one of two possible outcomes. Similarly, it does not claim that failing is literally the number zero. It uses <code>0</code> to represent the other outcome. This is an <strong>encoding</strong>: a deliberate correspondence through which one kind of object is represented by another kind of object.</p>
+</section>
+<section id="why-false-is-represented-by-0" class="level3">
+<h3 class="anchored" data-anchor-id="why-false-is-represented-by-0">Why <code>False</code> Is Represented by <code>0</code></h3>
+<p>The number <code>0</code> is useful because adding zero leaves a total unchanged:</p>
+<p><span class="math display">\[
+a+0=a.
+\]</span></p>
+<p>Suppose the current number of passing students is two. The next student fails. We want the count to remain two:</p>
+<p><span class="math display">\[
+2+0=2.
+\]</span></p>
+<p>If the next student passes, we want the count to increase by one:</p>
+<p><span class="math display">\[
+2+1=3.
+\]</span></p>
+<p>The choice of zero is not merely symbolic. Zero has the exact additive behavior required of a non-occurrence: it contributes nothing to the count without disturbing what has already been counted.</p>
+</section>
+<section id="the-encoding-preserves-the-two-outcomes" class="level3">
+<h3 class="anchored" data-anchor-id="the-encoding-preserves-the-two-outcomes">The Encoding Preserves the Two Outcomes</h3>
+<p>An encoding is useful only if we can determine which original value a code represents. Under the Boolean encoding:</p>
+<pre class="text"><code>False → 0
+True  → 1</code></pre>
+<p>the inverse interpretation is unambiguous:</p>
+<pre class="text"><code>0 → False
+1 → True</code></pre>
+<p>If we see:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>[<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>and know that the values are Boolean codes, we can reconstruct:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>[<span class="va">False</span>, <span class="va">True</span>, <span class="va">True</span>, <span class="va">False</span>, <span class="va">True</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="binary-boolean-encoding-is-different-from-general-truthiness" class="level3">
+<h3 class="anchored" data-anchor-id="binary-boolean-encoding-is-different-from-general-truthiness">Binary Boolean Encoding Is Different from General Truthiness</h3>
+<p>Python permits values other than <code>True</code> and <code>False</code> inside an <code>if</code> statement:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="dv">5</span>:</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Executed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The block executes because Python treats the nonzero integer <code>5</code> as truthy.</p>
+<p>Similarly:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="dv">0</span>:</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Executed"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>does not execute because Python treats zero as falsy. Python also treats empty and nonempty collections differently:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="bu">bool</span>([])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>produces:</p>
+<pre class="text"><code>False</code></pre>
+<p>while:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="bu">bool</span>([<span class="dv">10</span>, <span class="dv">20</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>produces:</p>
+<pre class="text"><code>True</code></pre>
+<p>This broader conversion is called <strong>truthiness</strong>. It allows many kinds of Python values to be interpreted in a Boolean context. Truthiness should not be confused with the binary numerical encoding developed in this section. Under our encoding, a Boolean result is represented specifically by:</p>
+<p><span class="math display">\[
+0\quad\text{or}\quad1.
+\]</span></p>
+<p>Python truthiness, by contrast, can interpret values such as <code>5</code>, <code>-3</code>, <code>"hello"</code>, and <code>[10, 20]</code> as true in a conditional context. For example:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="bu">bool</span>(<span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>produces <code>True</code>, but this does not mean that <code>5</code> is the numerical encoding of one Boolean result. The canonical numerical code for <code>True</code> remains <code>1</code>. The directions and purposes differ. Boolean encoding allows logical outcomes to enter numerical computation. Truthiness allows Python objects to be used in conditional control flow.</p>
+<p>In our counting program, the conditional behavior has been represented as a sequence of numerical contributions:</p>
+<p><span class="math display">\[
+0+1+1+0+1=3.
+\]</span></p>
+<p>This is our first example of a control-flow decision becoming mathematical data. Instead of representing “pass” only as a reason to execute an update, we represent it as the value one. Instead of representing “fail” only as a reason to skip the update, we represent it as the value zero. The next question is what happens when these numerical Boolean values are multiplied by other quantities. If multiplying by one preserves a value while multiplying by zero suppresses it, then a condition can control not only a count but also whether an arbitrary quantity contributes to a computation. That idea leads to multiplication as a gate.</p>
+</section>
+</section>
+<section id="conditional-counting-becomes-a-sum" class="level2">
+<h2 class="anchored" data-anchor-id="conditional-counting-becomes-a-sum">2.3 Conditional Counting Becomes a Sum</h2>
+<p>Consider the following program:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> [<span class="dv">40</span>, <span class="dv">70</span>, <span class="dv">55</span>, <span class="dv">30</span>, <span class="dv">75</span>]</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>count <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> score <span class="kw">in</span> scores:</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> score <span class="op">&gt;=</span> <span class="dv">50</span>:</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>        count <span class="op">=</span> count <span class="op">+</span> <span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The program answers:</p>
+<blockquote class="blockquote">
+<p>How many scores are at least 50?</p>
+</blockquote>
+<p>We already know that the final answer is three. Our goal is not merely to obtain that answer. We want to discover the mathematical relationship represented by the combination of the loop, the condition, and the counter.</p>
+<p>We will use the method developed in Chapter 1:</p>
+<ol type="1">
+<li>Determine what one input item contributes.</li>
+<li>Determine how all individual contributions are combined.</li>
+<li>Generalize the relationship.</li>
+<li>Give the resulting mathematical object a notation.</li>
+</ol>
+<section id="what-does-one-score-contribute" class="level3">
+<h3 class="anchored" data-anchor-id="what-does-one-score-contribute">What Does One Score Contribute?</h3>
+<p>The update inside the condition is:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>count <span class="op">=</span> count <span class="op">+</span> <span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This tells us that a passing score contributes one unit to the final count. For example, when the current score is <code>70</code>, the condition is true. When the current score is <code>40</code>, the condition is false, so the program skips the update. If the count was zero before processing <code>40</code>, it remains zero afterward. Skipping the update can be represented numerically as adding zero. The branch can now be understood as choosing the contribution made by the current score:</p>
+<p><span class="math display">\[
+\text{contribution}=
+\begin{cases}
+1, &amp; \text{if the score is at least }50,\\
+0, &amp; \text{if the score is below }50.
+\end{cases}
+\]</span></p>
+<p>This represents a piecewise definition and is not an arbitrary mathematical replacement for the code.</p>
+</section>
+<section id="constructing-the-contribution-for-every-score" class="level3">
+<h3 class="anchored" data-anchor-id="constructing-the-contribution-for-every-score">Constructing the Contribution for Every Score</h3>
+<p>Let the five scores be:</p>
+<p><span class="math display">\[
+x_1=40,\qquad
+x_2=70,\qquad
+x_3=55,\qquad
+x_4=30,\qquad
+x_5=75.
+\]</span></p>
+<p>For every score <span class="math inline">\(x_i\)</span>, define a numerical contribution <span class="math inline">\(b_i\)</span>:</p>
+<p><span class="math display">\[
+b_i=
+\begin{cases}
+1, &amp; \text{if }x_i\geq50,\\
+0, &amp; \text{if }x_i&lt;50.
+\end{cases}
+\]</span></p>
+<p>The symbol <span class="math inline">\(b_i\)</span> does not represent the score itself. It represents the result of asking whether the <span class="math inline">\(i\)</span>th score satisfies the condition.</p>
+<p>For the concrete scores:</p>
+<p><span class="math display">\[
+\begin{aligned}
+b_1&amp;=0 &amp;&amp;\text{because }40&lt;50,\\
+b_2&amp;=1 &amp;&amp;\text{because }70\geq50,\\
+b_3&amp;=1 &amp;&amp;\text{because }55\geq50,\\
+b_4&amp;=0 &amp;&amp;\text{because }30&lt;50,\\
+b_5&amp;=1 &amp;&amp;\text{because }75\geq50.
+\end{aligned}
+\]</span></p>
+<p>The original input collection <span class="math inline">\([40,70,55,30,75]\)</span> has produced the contribution collection <span class="math inline">\([0,1,1,0,1]\)</span>. If you notice, we have transformed the underlying problem from “Does this score pass?” into the numerical question “How much should this score contribute to the count?”</p>
+</section>
+<section id="expressing-the-counter-as-a-recurrence" class="level3">
+<h3 class="anchored" data-anchor-id="expressing-the-counter-as-a-recurrence">Expressing the Counter as a Recurrence</h3>
+<p>The Python counter changes over time. Let <span class="math inline">\(c_i\)</span> represent the count after processing the first <span class="math inline">\(i\)</span> scores. Before any score has been processed, the count is zero:</p>
+<p><span class="math display">\[
+c_0=0.
+\]</span></p>
+<p>After processing the first score, the new count equals the previous count plus the first score’s contribution:</p>
+<p><span class="math display">\[
+c_1=c_0+b_1.
+\]</span></p>
+<p>After processing the second score:</p>
+<p><span class="math display">\[
+c_2=c_1+b_2.
+\]</span></p>
+<p>The same relationship continues:</p>
+<p><span class="math display">\[
+c_i=c_{i-1}+b_i.
+\]</span></p>
+<p>This is a <strong>recurrence relation</strong>: the current state is defined using the previous state and the current contribution. It is the mathematical counterpart of:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>count <span class="op">=</span> count <span class="op">+</span> contribution</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For our concrete data:</p>
+<p><span class="math display">\[
+\begin{aligned}
+c_0&amp;=0,\\
+c_1&amp;=c_0+b_1=0+0=0,\\
+c_2&amp;=c_1+b_2=0+1=1,\\
+c_3&amp;=c_2+b_3=1+1=2,\\
+c_4&amp;=c_3+b_4=2+0=2,\\
+c_5&amp;=c_4+b_5=2+1=3.
+\end{aligned}
+\]</span></p>
+<p>The recurrence still describes the computation step by step. It is mathematically explicit, but it remains close to the loop. To discover the complete input-output relationship, we must remove the dependence on all the intermediate counter states.</p>
+</section>
+<section id="unfolding-the-recurrence" class="level3">
+<h3 class="anchored" data-anchor-id="unfolding-the-recurrence">Unfolding the Recurrence</h3>
+<p>Begin with the final count:</p>
+<p><span class="math display">\[
+c_5=c_4+b_5.
+\]</span></p>
+<p>The previous count <span class="math inline">\(c_4\)</span> was itself produced from:</p>
+<p><span class="math display">\[
+c_4=c_3+b_4.
+\]</span></p>
+<p>Substituting this into the expression for <span class="math inline">\(c_5\)</span> gives:</p>
+<p><span class="math display">\[
+c_5=(c_3+b_4)+b_5.
+\]</span></p>
+<p>The same process continues:</p>
+<p><span class="math display">\[
+c_3=c_2+b_3,
+\]</span></p>
+<p>so:</p>
+<p><span class="math display">\[
+c_5=((c_2+b_3)+b_4)+b_5.
+\]</span></p>
+<p>Since:</p>
+<p><span class="math display">\[
+c_2=c_1+b_2,
+\]</span></p>
+<p>we obtain:</p>
+<p><span class="math display">\[
+c_5=(((c_1+b_2)+b_3)+b_4)+b_5.
+\]</span></p>
+<p>Finally:</p>
+<p><span class="math display">\[
+c_1=c_0+b_1,
+\]</span></p>
+<p>so:</p>
+<p><span class="math display">\[
+c_5=((((c_0+b_1)+b_2)+b_3)+b_4)+b_5.
+\]</span></p>
+<p>Because <span class="math inline">\(c_0=0\)</span>:</p>
+<p><span class="math display">\[
+c_5=0+b_1+b_2+b_3+b_4+b_5.
+\]</span></p>
+<p>Adding zero does not change the result, so:</p>
+<p><span class="math display">\[
+c_5=b_1+b_2+b_3+b_4+b_5.
+\]</span></p>
+<p>Substituting the concrete contributions:</p>
+<p><span class="math display">\[
+c_5=0+1+1+0+1=3.
+\]</span></p>
+<p>The repeated counter updates have become one sum. This is the central transformation. The loop constructs the result sequentially. The sum describes the complete relationship between all input conditions and the final count.</p>
+</section>
+<section id="generalizing-to-any-number-of-scores" class="level3">
+<h3 class="anchored" data-anchor-id="generalizing-to-any-number-of-scores">Generalizing to Any Number of Scores</h3>
+<p>For <span class="math inline">\(n\)</span> scores:</p>
+<p><span class="math display">\[
+x_1,x_2,\ldots,x_n,
+\]</span></p>
+<p>define:</p>
+<p><span class="math display">\[
+b_i=
+\begin{cases}
+1, &amp; \text{if }x_i\geq50,\\
+0, &amp; \text{if }x_i&lt;50.
+\end{cases}
+\]</span></p>
+<p>The total number of passing scores is:</p>
+<p><span class="math display">\[
+C=b_1+b_2+\cdots+b_n.
+\]</span></p>
+<p>Using summation notation:</p>
+<p><span class="math display">\[
+\boxed{
+C=\sum_{i=1}^{n}b_i
+}
+\]</span></p>
+<p>This equation has two structural parts. The expression <span class="math inline">\(b_i\)</span> specifies what one score contributes:</p>
+<p><span class="math display">\[
+b_i\in\{0,1\}.
+\]</span></p>
+<p>The summation specifies how all contributions are combined:</p>
+<p><span class="math display">\[
+\sum_{i=1}^{n}.
+\]</span></p>
+<p>This matches the code-analysis method established in Chapter 1. The equation is therefore constructed from the semantic roles inside the program rather than recalled as a formula.</p>
+</section>
+<section id="giving-the-numerical-condition-a-name" class="level3">
+<h3 class="anchored" data-anchor-id="giving-the-numerical-condition-a-name">Giving the Numerical Condition a Name</h3>
+<p>The piecewise definition</p>
+<p><span class="math display">\[
+b_i=
+\begin{cases}
+1, &amp; \text{if }x_i\geq50,\\
+0, &amp; \text{if }x_i&lt;50
+\end{cases}
+\]</span></p>
+<p>will occur repeatedly. Mathematics provides a compact notation for this object:</p>
+<p><span class="math display">\[
+\mathbf{1}[x_i\geq50].
+\]</span></p>
+<p>It is read as:</p>
+<blockquote class="blockquote">
+<p>The indicator that <span class="math inline">\(x_i\)</span> is at least 50.</p>
+</blockquote>
+<p>Its definition is:</p>
+<p><span class="math display">\[
+\mathbf{1}[x_i\geq50]
+=
+\begin{cases}
+1, &amp; \text{if }x_i\geq50,\\
+0, &amp; \text{if }x_i&lt;50.
+\end{cases}
+\]</span></p>
+<p>The bold symbol <span class="math inline">\(\mathbf{1}\)</span> does not mean that the answer is always one. It names a function whose output depends on the condition inside the brackets.</p>
+<p>For <span class="math inline">\(x_i=70\)</span>:</p>
+<p><span class="math display">\[
+\mathbf{1}[70\geq50]=1.
+\]</span></p>
+<p>For <span class="math inline">\(x_i=40\)</span>:</p>
+<p><span class="math display">\[
+\mathbf{1}[40\geq50]=0.
+\]</span></p>
+<p>The brackets contain the condition being tested. The complete indicator returns one when that condition is true and zero when it is false. Our earlier contribution <span class="math inline">\(b_i\)</span> can now be written as:</p>
+<p><span class="math display">\[
+b_i=\mathbf{1}[x_i\geq50].
+\]</span></p>
+<p>Substituting this into</p>
+<p><span class="math display">\[
+C=\sum_{i=1}^{n}b_i
+\]</span></p>
+<p>gives:</p>
+<p><span class="math display">\[
+\boxed{
+C=\sum_{i=1}^{n}\mathbf{1}[x_i\geq50]
+}
+\]</span></p>
+<p>This equation means:</p>
+<blockquote class="blockquote">
+<p>For every score, produce one if it is at least 50 and zero otherwise, then add all the produced values.</p>
+</blockquote>
+<p>That is precisely what the original conditional counter computes.</p>
+</section>
+<section id="reading-the-equation-back-into-code" class="level3">
+<h3 class="anchored" data-anchor-id="reading-the-equation-back-into-code">Reading the Equation Back into Code</h3>
+<p>To ensure that the mathematical notation has not lost the program’s meaning, we should translate it back into computation.</p>
+<p>Start with:</p>
+<p><span class="math display">\[
+C=\sum_{i=1}^{n}\mathbf{1}[x_i\geq50].
+\]</span></p>
+<p>The index <span class="math inline">\(i=1,\ldots,n\)</span> tells us to examine every score. The condition <span class="math inline">\(x_i\geq50\)</span> tells us what must be tested. The indicator <span class="math inline">\(\mathbf{1}[\cdot]\)</span> tells us to produce either one or zero. The summation tells us to add those results.</p>
+<p>A direct Python translation is:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>count <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> score <span class="kw">in</span> scores:</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    contribution <span class="op">=</span> <span class="bu">int</span>(score <span class="op">&gt;=</span> <span class="dv">50</span>)</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    count <span class="op">=</span> count <span class="op">+</span> contribution</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For the concrete scores, <code>contribution</code> takes the values:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>[<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The same relationship can be expressed more compactly:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>count <span class="op">=</span> <span class="bu">sum</span>(<span class="bu">int</span>(score <span class="op">&gt;=</span> <span class="dv">50</span>) <span class="cf">for</span> score <span class="kw">in</span> scores)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Python also permits Boolean values to participate directly in addition:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>count <span class="op">=</span> <span class="bu">sum</span>(score <span class="op">&gt;=</span> <span class="dv">50</span> <span class="cf">for</span> score <span class="kw">in</span> scores)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>All three programs implement the same mathematical structure:</p>
+<p><span class="math display">\[
+\sum_{i=1}^{n}\mathbf{1}[x_i\geq50].
+\]</span></p>
+<p>The compact forms should not be memorized as tricks. They become understandable because we derived every component:</p>
+<pre class="text"><code>score &gt;= 50
+        ↓
+Boolean result
+        ↓
+0 or 1
+        ↓
+contribution to the count
+        ↓
+sum of all contributions</code></pre>
+</section>
+<section id="changing-the-condition-changes-what-is-counted" class="level3">
+<h3 class="anchored" data-anchor-id="changing-the-condition-changes-what-is-counted">Changing the Condition Changes What Is Counted</h3>
+<p>The structure</p>
+<p><span class="math display">\[
+\sum_{i=1}^{n}\mathbf{1}[\text{condition on }x_i]
+\]</span></p>
+<p>does not belong only to passing scores. The condition determines what kind of objects are counted.</p>
+<p>To count positive values:</p>
+<p><span class="math display">\[
+\sum_{i=1}^{n}\mathbf{1}[x_i&gt;0].
+\]</span></p>
+<p>To count even values:</p>
+<p><span class="math display">\[
+\sum_{i=1}^{n}\mathbf{1}[x_i\bmod2=0].
+\]</span></p>
+<p>To count scores between 50 and 80 inclusive:</p>
+<p><span class="math display">\[
+\sum_{i=1}^{n}\mathbf{1}[50\leq x_i\leq80].
+\]</span></p>
+<p>To count prediction errors:</p>
+<p><span class="math display">\[
+\sum_{i=1}^{n}\mathbf{1}[\hat{y}_i\neq y_i].
+\]</span></p>
+<p>In each case, the indicator performs the same mathematical role:</p>
+<p><span class="math display">\[
+\text{qualifies}\longrightarrow1,
+\qquad
+\text{does not qualify}\longrightarrow0.
+\]</span></p>
+<p>The summation then converts the individual classifications into a count.</p>
+<p>For example, let:</p>
+<p><span class="math display">\[
+x=[4,-2,7,-5,3].
+\]</span></p>
+<p>To count positive values, evaluate:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mathbf{1}[4&gt;0]&amp;=1,\\
+\mathbf{1}[-2&gt;0]&amp;=0,\\
+\mathbf{1}[7&gt;0]&amp;=1,\\
+\mathbf{1}[-5&gt;0]&amp;=0,\\
+\mathbf{1}[3&gt;0]&amp;=1.
+\end{aligned}
+\]</span></p>
+<p>Therefore <span class="math inline">\(1+0+1+0+1=3\)</span>. The programming requirement “count only the values satisfying a condition” has become a general mathematical pattern:</p>
+<p><span class="math display">\[
+\boxed{
+\text{number of qualifying items}
+=
+\sum_i\mathbf{1}[\text{item }i\text{ qualifies}]
+}
+\]</span></p>
+</section>
+<section id="what-the-mathematical-representation-reveals" class="level3">
+<h3 class="anchored" data-anchor-id="what-the-mathematical-representation-reveals">What the Mathematical Representation Reveals</h3>
+<p>The original program presents counting as conditional execution:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> score <span class="op">&gt;=</span> <span class="dv">50</span>:</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>    count <span class="op">=</span> count <span class="op">+</span> <span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The equation presents counting as contribution and aggregation:</p>
+<p><span class="math display">\[
+C=\sum_{i=1}^{n}\mathbf{1}[x_i\geq50].
+\]</span></p>
+<p>The condition has not disappeared. It has changed roles. In the program, the condition controls whether an instruction executes. In the equation, the condition determines the numerical contribution produced by an item:</p>
+<p><span class="math display">\[
+\boxed{
+\text{control condition}
+\longrightarrow
+\text{numerical contribution}
+}
+\]</span></p>
+<p>This is one of the central transformations of mathematical programming. A decision that once existed only as a branch has become an object inside an equation. The transformation was possible because the original update had two required behaviors:</p>
+<pre class="text"><code>qualifying item:
+increase the count by 1
+
+nonqualifying item:
+increase the count by 0</code></pre>
+<p>The numbers <span class="math inline">\(1\)</span> and <span class="math inline">\(0\)</span> capture those behaviors, while summation combines the contributions. Conditional counting is only the first application. Here, every qualifying item contributes the fixed quantity one. The next mathematical question is:</p>
+<blockquote class="blockquote">
+<p>What if a qualifying item should contribute some quantity <span class="math inline">\(x_i\)</span> rather than merely one?</p>
+</blockquote>
+<p>Answering that question requires us to understand why multiplying by one preserves a quantity while multiplying by zero suppresses it. That will lead from indicators to multiplication as a gate.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/hafizarslanamjad\.github\.io\/mathematical-understanding\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Articles and books by Hafiz Arslan Amjad</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="https://github.com/hafizarslanamjad/mathematical-understanding">
+<p>Source</p>
+</a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
