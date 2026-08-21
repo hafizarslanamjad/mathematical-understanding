@@ -16,6 +16,12 @@ The book is being written and published one comprehensive mini-section at a time
 
 **[Read Mathematical Programming](https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/)**
 
+#### Published Chapters
+
+- **[Chapter 1 — Two Ways of Describing a Computation](https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/chapters/01-two-ways-of-describing-computation/)** explains how ordinary code can be examined for the mathematical relationship it implements.
+
+- **[Chapter 2 — Boolean Values as Mathematical Objects](https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/chapters/02-boolean-values-as-mathematical-objects/)** develops conditions into binary numerical contributions and derives conditional counting as a sum of indicators.
+
 ## Published Blog Posts
 
 ### Before Mathematics Begins
@@ -72,10 +78,11 @@ mathematical-understanding/
 ├── books/
 │   └── mathematical-programming/
 │       ├── chapters/
-│       │   └── 01-two-ways-of-describing-computation/
+│       │   ├── 01-two-ways-of-describing-computation/
+│       │   │   └── index.qmd
+│       │   └── 02-boolean-values-as-mathematical-objects/
 │       │       └── index.qmd
-│       └── index.qmd
-├── .gitignore
+│       └── index.qmd├── .gitignore
 ├── _quarto.yml
 ├── index.qmd
 ├── references.bib

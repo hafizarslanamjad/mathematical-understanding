@@ -32,6 +32,10 @@ The journey begins with familiar programming ideas such as variables, conditions
 
 The opening chapter examines how the same computational task can be expressed through explicit instructions, higher-level programming operations, and mathematical relationships.
 
+### [Chapter 2 — Boolean Values as Mathematical Objects](chapters/02-boolean-values-as-mathematical-objects/index.qmd)
+
+This chapter constructs the mathematical bridge from Boolean conditions to numerical contributions. It explains how `True` and `False` can be represented by $1$ and $0$, derives conditional counting as a sum, and introduces indicator notation from the behavior of an ordinary counter.
+
 ## How This Book Is Being Written
 
 This is a book in progress. It is being written and published one comprehensive mini-section at a time. Each mini-section answers one precise conceptual question, begins with concrete examples, and develops its abstraction only after the underlying experience is clear.
