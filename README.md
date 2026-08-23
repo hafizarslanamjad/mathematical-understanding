@@ -80,9 +80,12 @@ mathematical-understanding/
 │       ├── chapters/
 │       │   ├── 01-two-ways-of-describing-computation/
 │       │   │   └── index.qmd
-│       │   └── 02-boolean-values-as-mathematical-objects/
+│       │   ├── 02-boolean-values-as-mathematical-objects/
+│       │   │   └── index.qmd
+│       │   └── 03-multiplication-as-a-gate/
 │       │       └── index.qmd
-│       └── index.qmd├── .gitignore
+│       └── index.qmd
+├── .gitignore
 ├── _quarto.yml
 ├── index.qmd
 ├── references.bib

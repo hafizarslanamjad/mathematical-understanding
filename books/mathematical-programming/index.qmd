@@ -36,6 +36,10 @@ The opening chapter examines how the same computational task can be expressed th
 
 This chapter constructs the mathematical bridge from Boolean conditions to numerical contributions. It explains how `True` and `False` can be represented by $1$ and $0$, derives conditional counting as a sum, and introduces indicator notation from the behavior of an ordinary counter.
 
+### [Chapter 3 — Multiplication as a Gate](chapters/03-multiplication-as-a-gate/index.qmd)
+
+This chapter develops multiplication as a mathematical mechanism for conditional contribution. It shows how binary values can preserve or suppress arbitrary quantities, explains why $1$ acts as the multiplicative identity while $0$ absorbs a product, and establishes the idea of a binary mathematical gate.
+
 ## How This Book Is Being Written
 
 This is a book in progress. It is being written and published one comprehensive mini-section at a time. Each mini-section answers one precise conceptual question, begins with concrete examples, and develops its abstraction only after the underlying experience is clear.
