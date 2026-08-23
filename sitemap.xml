@@ -2,34 +2,38 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/index.html</loc>
-    <lastmod>2026-08-21T19:11:50.225Z</lastmod>
-  </url>
-  <url>
-    <loc>https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/chapters/01-two-ways-of-describing-computation/index.html</loc>
-    <lastmod>2026-08-21T19:11:50.225Z</lastmod>
-  </url>
-  <url>
-    <loc>https://hafizarslanamjad.github.io/mathematical-understanding/articles/when-mathematics-change-the-expression/index.html</loc>
-    <lastmod>2026-08-21T19:11:50.223Z</lastmod>
-  </url>
-  <url>
-    <loc>https://hafizarslanamjad.github.io/mathematical-understanding/articles/before-mathematics-begins/index.html</loc>
-    <lastmod>2026-08-21T19:11:50.220Z</lastmod>
-  </url>
-  <url>
-    <loc>https://hafizarslanamjad.github.io/mathematical-understanding/index.html</loc>
-    <lastmod>2026-08-21T19:11:50.225Z</lastmod>
-  </url>
-  <url>
-    <loc>https://hafizarslanamjad.github.io/mathematical-understanding/articles/structuring-probability-problem/index.html</loc>
-    <lastmod>2026-08-21T19:11:50.222Z</lastmod>
-  </url>
-  <url>
-    <loc>https://hafizarslanamjad.github.io/mathematical-understanding/articles/when-symbols-stay-the-same/index.html</loc>
-    <lastmod>2026-08-21T19:11:50.223Z</lastmod>
+    <lastmod>2026-08-23T10:11:38.742Z</lastmod>
   </url>
   <url>
     <loc>https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/chapters/02-boolean-values-as-mathematical-objects/index.html</loc>
-    <lastmod>2026-08-21T19:11:50.225Z</lastmod>
+    <lastmod>2026-08-23T10:11:38.742Z</lastmod>
+  </url>
+  <url>
+    <loc>https://hafizarslanamjad.github.io/mathematical-understanding/articles/when-symbols-stay-the-same/index.html</loc>
+    <lastmod>2026-08-23T10:11:38.741Z</lastmod>
+  </url>
+  <url>
+    <loc>https://hafizarslanamjad.github.io/mathematical-understanding/articles/structuring-probability-problem/index.html</loc>
+    <lastmod>2026-08-23T10:11:38.740Z</lastmod>
+  </url>
+  <url>
+    <loc>https://hafizarslanamjad.github.io/mathematical-understanding/index.html</loc>
+    <lastmod>2026-08-23T10:11:38.742Z</lastmod>
+  </url>
+  <url>
+    <loc>https://hafizarslanamjad.github.io/mathematical-understanding/articles/before-mathematics-begins/index.html</loc>
+    <lastmod>2026-08-23T10:11:38.738Z</lastmod>
+  </url>
+  <url>
+    <loc>https://hafizarslanamjad.github.io/mathematical-understanding/articles/when-mathematics-change-the-expression/index.html</loc>
+    <lastmod>2026-08-23T10:11:38.741Z</lastmod>
+  </url>
+  <url>
+    <loc>https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/chapters/01-two-ways-of-describing-computation/index.html</loc>
+    <lastmod>2026-08-23T10:11:38.742Z</lastmod>
+  </url>
+  <url>
+    <loc>https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/chapters/03-multiplication-as-a-gate/index.html</loc>
+    <lastmod>2026-08-23T10:11:38.742Z</lastmod>
   </url>
 </urlset>
