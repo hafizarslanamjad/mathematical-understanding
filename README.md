@@ -22,6 +22,10 @@ The book is being written and published one comprehensive mini-section at a time
 
 - **[Chapter 2 — Boolean Values as Mathematical Objects](https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/chapters/02-boolean-values-as-mathematical-objects/)** develops conditions into binary numerical contributions and derives conditional counting as a sum of indicators.
 
+- **[Chapter 3 — Multiplication as a Gate](https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/chapters/03-multiplication-as-a-gate/)** develops multiplication as a mathematical gate that preserves or suppresses arbitrary numerical contributions.
+
+- **[Chapter 4 — Algebraic If/Else](https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/chapters/04-algebraic-if-else/)** derives complementary binary gates, constructs algebraic two-way selection, and generalizes the same reasoning to ordered `if/elif/else` chains.
+
 ## Published Blog Posts
 
 ### Before Mathematics Begins
@@ -82,7 +86,9 @@ mathematical-understanding/
 │       │   │   └── index.qmd
 │       │   ├── 02-boolean-values-as-mathematical-objects/
 │       │   │   └── index.qmd
-│       │   └── 03-multiplication-as-a-gate/
+│       │   ├── 03-multiplication-as-a-gate/
+│       │   │   └── index.qmd
+│       │   └── 04-algebraic-if-else/
 │       │       └── index.qmd
 │       └── index.qmd
 ├── .gitignore

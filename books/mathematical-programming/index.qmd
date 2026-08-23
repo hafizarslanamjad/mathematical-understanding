@@ -40,6 +40,10 @@ This chapter constructs the mathematical bridge from Boolean conditions to numer
 
 This chapter develops multiplication as a mathematical mechanism for conditional contribution. It shows how binary values can preserve or suppress arbitrary quantities, explains why $1$ acts as the multiplicative identity while $0$ absorbs a product, and establishes the idea of a binary mathematical gate.
 
+### [Chapter 4 — Algebraic If/Else](chapters/04-algebraic-if-else/index.qmd)
+
+This chapter constructs algebraic selection from ordinary conditional branches. It derives complementary binary gates, develops the two-way selector $IA+(1-I)B$, interprets the equivalent form $B+I(A-B)$ as baseline plus conditional change, and generalizes the construction to ordered `if/elif/else` chains.
+
 ## How This Book Is Being Written
 
 This is a book in progress. It is being written and published one comprehensive mini-section at a time. Each mini-section answers one precise conceptual question, begins with concrete examples, and develops its abstraction only after the underlying experience is clear.
