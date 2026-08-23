@@ -1,0 +1,659 @@
+---
+title: "Chapter 4 — Algebraic If/Else"
+description: "How complementary indicators turn two-way and multi-way program branches into algebraic selections."
+number-sections: false
+---
+
+Programming and mathematics often describe the same act of choice from different viewpoints. A program usually describes choice as control over execution: test a condition, enter one branch, and skip the others. Mathematics cannot place one part of an equation on hold while another part executes. An equation presents a relationship all at once. If a branch is to become an equation, the alternatives must therefore remain present in the expression while their contributions are controlled numerically. This chapter develops the mathematical structure that makes such a representation possible.
+
+The objective is not to claim that algebra should replace every `if` statement. A scalar branch is frequently the clearest program. The deeper purpose is to learn how computational choice can become a mathematical object. That change of representation will later allow one equation to describe many simultaneous choices over vectors, matrices, images, probability distributions, and tensors.
+
+## 4.1 When Both Branches Produce a Value
+
+Consider a machine that can operate at two power levels. When its temperature is below $70$ degrees Celsius, it operates at $80$ watts. When its temperature reaches or exceeds $70$ degrees Celsius, it operates at a reduced level of $30$ watts.
+
+```python
+temperature = 62
+
+if temperature < 70:
+    power = 80
+else:
+    power = 30
+```
+
+For `temperature = 62`, the proposition `temperature < 70` is true, so the output is $80$ watts. For `temperature = 76`, the proposition is false, so the output is $30$ watts. The complete input-output relationship is
+
+$$
+\text{power}=
+\begin{cases}
+80, & \text{if the temperature is below }70,\\
+30, & \text{if the temperature is at least }70.
+\end{cases}
+$$
+
+The word *relationship* matters. Imperative code emphasizes which assignment executes. The piecewise definition emphasizes which output corresponds to each region of the input domain. The program divides all possible temperatures into two disjoint regions: temperatures below $70$, and temperatures not below $70$. Every possible temperature belongs to exactly one region. The output rule then associates $80$ with the first region and $30$ with the second.
+
+This is a more demanding structure than the gate studied in Chapter 3. A single gate $Ix$ chooses between $x$ and $0$:
+
+$$
+Ix=
+\begin{cases}
+x, & I=1,\\
+0, & I=0.
+\end{cases}
+$$
+
+That construction is sufficient when the false case is meant to contribute nothing. The current program does not choose between $80$ and nothing. It chooses between two meaningful values, $80$ and $30$. If the condition is encoded as
+
+$$
+I=
+\begin{cases}
+1, & \text{if the temperature is below }70,\\
+0, & \text{if the temperature is at least }70,
+\end{cases}
+$$
+
+then $I(80)$ handles only the first alternative. When $I=1$,
+
+$$
+I(80)=1(80)=80,
+$$
+
+and when $I=0$,
+
+$$
+I(80)=0(80)=0.
+$$
+
+The first result is correct, but the second is incomplete. Zero tells us that the first alternative has been removed; it does not construct the required alternative of $30$ watts. Suppression and selection are therefore not identical. Suppression answers, “Should this one value contribute?” Selection between two values asks, “Which of these two values should contribute?”
+
+Adding the second value unconditionally does not solve the problem:
+
+$$
+I(80)+30.
+$$
+
+When $I=0$, this gives the required result:
+
+$$
+0(80)+30=30.
+$$
+
+When $I=1$, however, it gives
+
+$$
+1(80)+30=110.
+$$
+
+The failure reveals the exact missing structure. The value $30$ must not merely be present in the expression; its contribution must depend on the condition. Moreover, it must depend on the condition in the opposite way from $80$. The required contributions are
+
+| Value of $I$ | Contribution of $80$ | Contribution of $30$ |
+|---:|---:|---:|
+| $1$ | $80$ | $0$ |
+| $0$ | $0$ | $30$ |
+
+The two columns express a form of mathematical exclusivity. At every admissible value of $I$, one alternative contributes its full value and the other contributes zero. The alternatives may both appear symbolically, but they may not both survive numerically. We already possess the gate for the first column. The next problem is to construct, rather than guess, a gate with the opposite behavior for the second column.
+
+## 4.2 Constructing the Opposite Gate
+
+The original indicator $I$ takes values in the two-element set
+
+$$
+\{0,1\}.
+$$
+
+These numbers are useful not merely because they are conventional encodings of false and true. Their algebraic behavior matches the computational roles that a gate must perform. Under multiplication, $1$ preserves a quantity and $0$ annihilates it:
+
+$$
+1x=x,
+\qquad
+0x=0.
+$$
+
+The first branch therefore uses $I$ because the first value must survive when the proposition is true. The second branch requires the reverse mapping:
+
+| Original gate $I$ | Required second gate |
+|---:|---:|
+| $1$ | $0$ |
+| $0$ | $1$ |
+
+Before looking for a formula, we should understand the object being requested. We need a transformation on the set $\{0,1\}$ that exchanges its two elements. The transformation must send the multiplicative identity $1$ to the suppressing value $0$, and it must send $0$ to $1$. Because the domain contains only two admissible inputs, a proposed transformation is completely verified once its behavior at both inputs has been checked.
+
+Subtracting the original value from $1$ satisfies the requirement. When $I=1$,
+
+$$
+1-I=1-1=0,
+$$
+
+and when $I=0$,
+
+$$
+1-I=1-0=1.
+$$
+
+Thus the required opposite gate is
+
+$$
+1-I.
+$$
+
+This expression is called the **complement** of $I$. The word *complement* means that it supplies what is absent from the original indicator relative to the complete binary amount $1$. This interpretation is visible in the invariant
+
+$$
+I+(1-I)=1.
+$$
+
+No matter which admissible value $I$ takes, the two gates together contain exactly one unit of activation. If $I$ contains that unit, $1-I$ contains zero; if $I$ contains zero, $1-I$ contains the unit. Consequently,
+
+$$
+I(1-I)=0.
+$$
+
+This second identity expresses mutual exclusion algebraically. If $I=1$, then $1-I=0$; if $I=0$, then the factor $I$ is zero. Their product must therefore vanish in every case. The identities
+
+$$
+I+(1-I)=1
+$$
+
+and
+
+$$
+I(1-I)=0
+$$
+
+describe two complementary properties: together the gates cover the whole choice, and they never activate simultaneously. In the language of sets, the condition and its complement partition the possible cases. In the language of programs, the `if` and `else` branches are exhaustive and mutually exclusive.
+
+There is another algebraic property worth noticing. Since $I$ can only be $0$ or $1$,
+
+$$
+I^2=I.
+$$
+
+Squaring the indicator does not change it because $0^2=0$ and $1^2=1$. Numbers with this property are called **idempotent under multiplication**. This is one reason binary indicators behave like stable selectors: applying the same binary gate twice has no further effect,
+
+$$
+I(Ix)=I^2x=Ix.
+$$
+
+The chapter does not require abstract algebra to use indicators, but these identities show that the construction is not a programming trick. It works because $0$ and $1$ possess exactly the algebraic properties needed to represent exclusion, preservation, completeness, and repeated selection.
+
+We can now apply the complementary gate to the second power level:
+
+$$
+(1-I)(30).
+$$
+
+When the temperature is below $70$ degrees Celsius, $I=1$, so
+
+$$
+(1-1)(30)=0(30)=0.
+$$
+
+When the temperature is at least $70$ degrees Celsius, $I=0$, so
+
+$$
+(1-0)(30)=1(30)=30.
+$$
+
+The same reasoning generalizes from the concrete value $30$ to an arbitrary false-branch value $B$:
+
+$$
+(1-I)B=
+\begin{cases}
+0, & I=1,\\
+B, & I=0.
+\end{cases}
+$$
+
+We now have two expressions with coordinated behavior:
+
+$$
+IA=
+\begin{cases}
+A, & I=1,\\
+0, & I=0,
+\end{cases}
+$$
+
+and
+
+$$
+(1-I)B=
+\begin{cases}
+0, & I=1,\\
+B, & I=0.
+\end{cases}
+$$
+
+Each expression represents one branch contribution. The remaining task is to organize these contributions into one output without disturbing their complementary behavior.
+
+## 4.3 Two Gates Become One Expression
+
+For the machine-power example, the two contributions are
+
+$$
+I(80)
+$$
+
+and
+
+$$
+(1-I)(30).
+$$
+
+The final result must equal whichever contribution survives. Because the gates are mutually exclusive, one contribution is always the desired value and the other is always zero. Addition is therefore the appropriate operation for combining them. This follows from the additive identity
+
+$$
+x+0=x.
+$$
+
+Addition does not blend two active alternatives in this construction. It collects two possible contributions under the guarantee that only one can be nonzero. The complete power relationship is
+
+$$
+\text{power}=I(80)+(1-I)(30).
+$$
+
+When the temperature is $62$ degrees Celsius, $I=1$, and
+
+$$
+\begin{aligned}
+\text{power}
+&=1(80)+(1-1)(30)\\
+&=80+0\\
+&=80.
+\end{aligned}
+$$
+
+When the temperature is $76$ degrees Celsius, $I=0$, and
+
+$$
+\begin{aligned}
+\text{power}
+&=0(80)+(1-0)(30)\\
+&=0+30\\
+&=30.
+\end{aligned}
+$$
+
+We can now replace the concrete branch values by arbitrary values $A$ and $B$. For the program
+
+```python
+if condition:
+    result = A
+else:
+    result = B
+```
+
+define
+
+$$
+I=
+\begin{cases}
+1, & \text{if the condition is true},\\
+0, & \text{if the condition is false}.
+\end{cases}
+$$
+
+The two branch contributions are $IA$ and $(1-I)B$, so the complete relationship is
+
+$$
+\boxed{
+\text{result}=IA+(1-I)B
+}
+$$
+
+The formula is now a conclusion rather than a starting point. Every component has a necessary role. The indicator $I$ represents the proposition numerically. Multiplication turns each indicator into a gate over a branch value. The complement $1-I$ reverses the gate for the alternative branch. Addition collects the mutually exclusive contributions into one output.
+
+Direct substitution verifies that the equation preserves the branch semantics. If $I=1$,
+
+$$
+\begin{aligned}
+IA+(1-I)B
+&=1A+(1-1)B\\
+&=A+0\\
+&=A.
+\end{aligned}
+$$
+
+If $I=0$,
+
+$$
+\begin{aligned}
+IA+(1-I)B
+&=0A+(1-0)B\\
+&=0+B\\
+&=B.
+\end{aligned}
+$$
+
+The equation can therefore be read in both directions. From code to mathematics, it converts a control-flow choice into complementary numerical contributions. From mathematics to code, the two gates reveal which branch value is selected:
+
+```python
+if I == 1:
+    result = A
+else:
+    result = B
+```
+
+An arithmetic implementation is also possible:
+
+```python
+I = int(condition)
+result = I * A + (1 - I) * B
+```
+
+The algebraic form is not automatically the better scalar implementation. Its importance is representational: the entire input-output relationship is now one mathematical object. This form can be reasoned about, transformed, differentiated when generalized to continuous gates, or applied elementwise when the indicator becomes a collection.
+
+### Selection as Baseline Plus Change
+
+An algebraic expression can preserve its value while revealing a different meaning through rearrangement. Beginning with
+
+$$
+IA+(1-I)B,
+$$
+
+distribute $B$:
+
+$$
+IA+(1-I)B=IA+B-IB.
+$$
+
+Regroup the terms containing $I$:
+
+$$
+IA+B-IB=B+(IA-IB).
+$$
+
+Factor out $I$:
+
+$$
+B+(IA-IB)=B+I(A-B).
+$$
+
+Therefore,
+
+$$
+\boxed{
+IA+(1-I)B=B+I(A-B)
+}
+$$
+
+The equality says that two different descriptions produce the same output for every admissible value of $I$. The left side describes two alternatives symmetrically: gate $A$, gate $B$ oppositely, and collect the survivor. The right side chooses $B$ as a reference state. It begins at $B$ and conditionally applies the displacement required to reach $A$.
+
+The subtraction $A-B$ should not be read merely as “taking $B$ away from $A$.” In this context, subtraction constructs a directed change. It answers:
+
+> Starting from $B$, what must be added to arrive at $A$?
+
+The defining relationship is
+
+$$
+B+(A-B)=A.
+$$
+
+Thus $A-B$ is the correction that transforms the baseline $B$ into the alternative $A$. The indicator decides whether that correction contributes. If $I=0$,
+
+$$
+B+0(A-B)=B.
+$$
+
+If $I=1$,
+
+$$
+\begin{aligned}
+B+1(A-B)
+&=B+A-B\\
+&=A.
+\end{aligned}
+$$
+
+For the machine-power example,
+
+$$
+\text{power}=30+I(80-30)=30+50I.
+$$
+
+The value $30$ is the baseline power, and $50$ watts is the change required to reach $80$ watts. When $I=0$, the change is absent; when $I=1$, the entire change is present. The two forms therefore express two philosophies of the same choice:
+
+$$
+IA+(1-I)B
+$$
+
+means “let exactly one of two alternatives contribute,” while
+
+$$
+B+I(A-B)
+$$
+
+means “begin from a reference state and activate the change leading to the other state.” This second interpretation will later become important in conditional updates, interpolation, state transitions, and optimization.
+
+## 4.4 From Two Branches to Many Branches
+
+A two-way `if/else` divides the possible cases into two regions. A longer conditional chain divides them into several regions:
+
+```python
+if condition_1:
+    result = A_1
+elif condition_2:
+    result = A_2
+elif condition_3:
+    result = A_3
+else:
+    result = A_4
+```
+
+The mathematical problem is no longer to construct one gate and its complement. We need one gate for each branch, with two requirements:
+
+1. exactly one branch gate must equal $1$ for every input;
+2. all remaining branch gates must equal $0$.
+
+If the gates are $G_1,G_2,G_3,G_4$, these requirements become
+
+$$
+G_j\in\{0,1\}
+$$
+
+for every $j$, and
+
+$$
+G_1+G_2+G_3+G_4=1.
+$$
+
+The sum-to-one equation expresses completeness: one unit of selection is distributed among the branches. Mutual exclusivity can be written as
+
+$$
+G_jG_k=0
+\qquad
+\text{whenever }j\ne k.
+$$
+
+No pair of distinct branches can be active simultaneously. Under these conditions, the output is
+
+$$
+\text{result}=G_1A_1+G_2A_2+G_3A_3+G_4A_4.
+$$
+
+Since exactly one gate equals $1$, exactly one branch value survives. If, for example,
+
+$$
+(G_1,G_2,G_3,G_4)=(0,1,0,0),
+$$
+
+then
+
+$$
+\begin{aligned}
+\text{result}
+&=0A_1+1A_2+0A_3+0A_4\\
+&=A_2.
+\end{aligned}
+$$
+
+For $n$ alternatives, the same structure becomes
+
+$$
+\boxed{
+\text{result}=\sum_{j=1}^{n}G_jA_j
+}
+$$
+
+subject to
+
+$$
+G_j\in\{0,1\},
+\qquad
+\sum_{j=1}^{n}G_j=1.
+$$
+
+This is the multi-way form of algebraic selection. The two-way selector is its smallest nontrivial case. With $G_1=I$ and $G_2=1-I$,
+
+$$
+\sum_{j=1}^{2}G_jA_j=IA+(1-I)B.
+$$
+
+### Preserving the Priority of `elif`
+
+There is a subtlety that must not be hidden by the compact summation. In an `if/elif/else` chain, later conditions are tested only if all earlier conditions have failed. The branch conditions are therefore governed by priority. Raw conditions need not be mutually exclusive.
+
+Consider
+
+```python
+if score >= 90:
+    grade = 4
+elif score >= 80:
+    grade = 3
+else:
+    grade = 2
+```
+
+For `score = 95`, both comparisons `score >= 90` and `score >= 80` are true as independent propositions. Nevertheless, the program selects only the first branch because the `elif` is reached only after the first condition fails. If we used the raw indicators
+
+$$
+I_1=\mathbf{1}[\text{score}\geq90]
+$$
+
+and
+
+$$
+I_2=\mathbf{1}[\text{score}\geq80]
+$$
+
+directly, then both would equal $1$ for a score of $95$. The expression
+
+$$
+4I_1+3I_2
+$$
+
+would incorrectly produce $7$. The mathematical gates must represent the effective branch conditions, not merely the written comparisons.
+
+The first branch has no earlier branch to exclude, so its gate is
+
+$$
+G_1=I_1.
+$$
+
+The second branch is active only when the first condition is false and the second condition is true:
+
+$$
+G_2=(1-I_1)I_2.
+$$
+
+The final `else` branch is active only when both preceding conditions are false:
+
+$$
+G_3=(1-I_1)(1-I_2).
+$$
+
+The algebraic selection is therefore
+
+$$
+\boxed{
+\text{grade}=4I_1+3(1-I_1)I_2+2(1-I_1)(1-I_2)
+}
+$$
+
+For a score of $95$, $I_1=1$ and $I_2=1$, but the effective gates are
+
+$$
+G_1=1,
+\qquad
+G_2=(1-1)(1)=0,
+\qquad
+G_3=(1-1)(1-1)=0.
+$$
+
+Only the first value survives. For a score of $85$, $I_1=0$ and $I_2=1$, giving
+
+$$
+G_1=0,
+\qquad
+G_2=(1-0)(1)=1,
+\qquad
+G_3=(1-0)(1-1)=0.
+$$
+
+Only the second value survives. For a score of $70$, both indicators are zero, giving
+
+$$
+G_1=0,
+\qquad
+G_2=(1-0)(0)=0,
+\qquad
+G_3=(1-0)(1-0)=1.
+$$
+
+Only the `else` value survives.
+
+The construction generalizes to an ordered chain with conditions represented by indicators $I_1,I_2,\ldots,I_{n-1}$ and a final `else` value $A_n$. The effective gate for the first branch is
+
+$$
+G_1=I_1.
+$$
+
+For branch $j$, where $2\leq j\leq n-1$, every earlier condition must have failed and the current condition must hold:
+
+$$
+G_j=\left(\prod_{k=1}^{j-1}(1-I_k)\right)I_j.
+$$
+
+The final `else` branch is selected only if every stated condition has failed:
+
+$$
+G_n=\prod_{k=1}^{n-1}(1-I_k).
+$$
+
+The complete ordered selection is
+
+$$
+\boxed{
+\text{result}
+=
+I_1A_1
++
+\sum_{j=2}^{n-1}
+\left(\prod_{k=1}^{j-1}(1-I_k)\right)I_jA_j
++
+\left(\prod_{k=1}^{n-1}(1-I_k)\right)A_n
+}
+$$
+
+Every product of complements records a history of earlier failures. The factor $I_j$ records success at the current condition. Thus a procedural statement such as “take the first branch whose condition succeeds” becomes an algebraic statement: “preserve the value whose gate contains all required earlier failures followed by the current success.”
+
+This generalization reveals the mathematical structure hidden inside a conditional chain. An `if/elif/else` program is not merely a sequence of tests. It constructs an ordered partition of the possible inputs and associates one output with each region. Indicators encode membership in those regions, multiplication forms the effective branch gates, and summation collects the single surviving value.
+
+The conceptual progression of the chapter is therefore
+
+$$
+\boxed{
+\text{branch meaning}
+\longrightarrow
+\text{binary indicators}
+\longrightarrow
+\text{complementary gates}
+\longrightarrow
+\text{partition of cases}
+\longrightarrow
+\text{algebraic selection}
+}
+$$
+
+What begins in code as control over which instruction executes has become, in mathematics, a structured relationship among propositions, gates, and possible outputs.
