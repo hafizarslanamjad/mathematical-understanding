@@ -1012,3 +1012,1417 @@ $$
 $$
 
 The selective-update equation now handles changes expressed as additions or displacements. A different requirement remains: sometimes a selected value should not receive a known increment but should be replaced by a specified target value. To express replacement through the same update structure, we must determine the exact change that moves $x_i$ to that target.
+
+## 6.3 Conditional Replacement as a Difference Update
+
+The update in Section 6.2 added a correction of $2$ degrees to every selected reading:
+
+$$
+x_i'=x_i+2m_i.
+$$
+
+When the gate was open, the new value was determined relative to the old value:
+
+$$
+x_i'=x_i+2.
+$$
+
+Thus different original readings remained different after the update:
+
+$$
+18\longrightarrow20,
+$$
+
+$$
+16\longrightarrow18,
+$$
+
+and
+
+$$
+19\longrightarrow21.
+$$
+
+Suppose the calibration requirement changes. Instead of increasing every reading below $20$ by a fixed amount, assume that every such reading must be replaced by the common target value $20$. Readings of at least $20$ must remain unchanged.
+
+The ordinary program becomes
+
+```python
+readings = [18, 24, 16, 27, 19]
+corrected_readings = []
+
+for reading in readings:
+    if reading < 20:
+        corrected_readings.append(20)
+    else:
+        corrected_readings.append(reading)
+```
+
+The required transformation is now
+
+$$
+\begin{bmatrix}
+18\\
+24\\
+16\\
+27\\
+19
+\end{bmatrix}
+\longrightarrow
+\begin{bmatrix}
+20\\
+24\\
+20\\
+27\\
+20
+\end{bmatrix}.
+$$
+
+This is not the same transformation as adding $2$ to every selected value. The reading $18$ must increase by $2$, but the reading $16$ must increase by $4$, and the reading $19$ must increase by $1$. The required change depends on the original value. The piecewise requirement is
+
+$$
+x_i'
+=
+\begin{cases}
+20, & x_i<20,\\
+x_i, & x_i\geq20.
+\end{cases}
+$$
+
+Using the mask
+
+$$
+m_i=\mathbf{1}[x_i<20],
+$$
+
+the same requirement becomes
+
+$$
+x_i'
+=
+\begin{cases}
+20, & m_i=1,\\
+x_i, & m_i=0.
+\end{cases}
+$$
+
+The problem is no longer merely to activate a known correction. We must determine what correction would move each selected value from its present state $x_i$ to the target state $20$.
+
+### A Target Is Not the Same Object as a Change
+
+The number $20$ in this program is a target value. It describes where a selected reading should end. It does not directly describe how far the reading must move. For an original reading of $18$, reaching $20$ requires the change
+
+$$
+20-18=2.
+$$
+
+For an original reading of $16$, reaching $20$ requires
+
+$$
+20-16=4.
+$$
+
+For an original reading of $19$, reaching $20$ requires
+
+$$
+20-19=1.
+$$
+
+The target is the same in all three cases, but the required changes are different. This exposes a distinction between two mathematical roles:
+
+$$
+\text{target}
+=
+\text{desired final state},
+$$
+
+whereas
+
+$$
+\text{change}
+=
+\text{displacement from the current state to the target}.
+$$
+
+Let $r_i$ denote the replacement target at position $i$. To discover the required change, begin with the defining requirement
+
+$$
+x_i+\Delta_i=r_i.
+$$
+
+This equation says that applying the correct change $\Delta_i$ to the current value $x_i$ must produce the target $r_i$. Subtracting $x_i$ from both sides gives
+
+$$
+\Delta_i=r_i-x_i.
+$$
+
+The difference
+
+$$
+r_i-x_i
+$$
+
+is therefore not an arbitrary algebraic rearrangement. It is the unique additive correction that transforms $x_i$ into $r_i$:
+
+$$
+x_i+(r_i-x_i)=r_i.
+$$
+
+The order of subtraction is determined by the direction of the required movement. We are moving from the current state $x_i$ to the target state $r_i$. Therefore the displacement is
+
+$$
+\boxed{
+\text{target}-\text{current state}
+=
+r_i-x_i.
+}
+$$
+
+Writing $x_i-r_i$ would describe the displacement in the opposite direction. Adding that quantity to $x_i$ would not generally produce $r_i$. For the target $20$, the required change is
+
+$$
+\Delta_i=20-x_i.
+$$
+
+This one expression generates the different corrections required by different starting values.
+
+### Gating the Displacement to the Target
+
+Section 6.2 established the general selective-update equation
+
+$$
+x_i'=x_i+m_i\Delta_i.
+$$
+
+For conditional replacement, the required change is
+
+$$
+\Delta_i=r_i-x_i.
+$$
+
+Substituting this change into the selective-update equation gives
+
+$$
+\boxed{
+x_i'=x_i+m_i(r_i-x_i).
+}
+$$
+
+This expression can be read in stages:
+
+1. begin at the current state $x_i$;
+2. calculate the displacement $r_i-x_i$ needed to reach the target;
+3. use $m_i$ to decide whether that displacement is active;
+4. add the active displacement to the current state.
+
+When $m_i=1$, the displacement is preserved:
+
+$$
+\begin{aligned}
+x_i'
+&=x_i+1(r_i-x_i)\\
+&=x_i+r_i-x_i\\
+&=r_i.
+\end{aligned}
+$$
+
+The old value is replaced by the target. When $m_i=0$, the displacement is suppressed:
+
+$$
+\begin{aligned}
+x_i'
+&=x_i+0(r_i-x_i)\\
+&=x_i+0\\
+&=x_i.
+\end{aligned}
+$$
+
+The old value is preserved. Therefore,
+
+$$
+x_i+m_i(r_i-x_i)
+=
+\begin{cases}
+r_i, & m_i=1,\\
+x_i, & m_i=0.
+\end{cases}
+$$
+
+The expression satisfies both branches of the replacement requirement.
+
+### Verifying the Concrete Replacements
+
+For the sensor example, the target is the constant value
+
+$$
+r_i=20
+$$
+
+at every position. The update is
+
+$$
+x_i'=x_i+m_i(20-x_i).
+$$
+
+For $x_1=18$ and $m_1=1$,
+
+$$
+\begin{aligned}
+x_1'
+&=18+1(20-18)\\
+&=18+2\\
+&=20.
+\end{aligned}
+$$
+
+For $x_2=24$ and $m_2=0$,
+
+$$
+\begin{aligned}
+x_2'
+&=24+0(20-24)\\
+&=24+0(-4)\\
+&=24.
+\end{aligned}
+$$
+
+The difference $20-24=-4$ is calculated, but the closed gate prevents it from contributing. This illustrates an important point: the proposed target does not alter an unselected value. Selection is controlled by $m_i$, not by whether the target lies above or below the current state.
+
+For $x_3=16$ and $m_3=1$,
+
+$$
+\begin{aligned}
+x_3'
+&=16+1(20-16)\\
+&=16+4\\
+&=20.
+\end{aligned}
+$$
+
+For $x_4=27$ and $m_4=0$,
+
+$$
+\begin{aligned}
+x_4'
+&=27+0(20-27)\\
+&=27+0(-7)\\
+&=27.
+\end{aligned}
+$$
+
+For $x_5=19$ and $m_5=1$,
+
+$$
+\begin{aligned}
+x_5'
+&=19+1(20-19)\\
+&=19+1\\
+&=20.
+\end{aligned}
+$$
+
+The computation produces
+
+$$
+\mathbf{x}'
+=
+\begin{bmatrix}
+20\\
+24\\
+20\\
+27\\
+20
+\end{bmatrix}.
+$$
+
+The selected values all reach the common target even though they require different changes.
+
+### The Vector Form of Conditional Replacement
+
+Let
+
+$$
+\mathbf{x}
+=
+\begin{bmatrix}
+18\\
+24\\
+16\\
+27\\
+19
+\end{bmatrix},
+\qquad
+\mathbf{m}
+=
+\begin{bmatrix}
+1\\
+0\\
+1\\
+0\\
+1
+\end{bmatrix},
+$$
+
+and let the target vector be
+
+$$
+\mathbf{r}
+=
+\begin{bmatrix}
+20\\
+20\\
+20\\
+20\\
+20
+\end{bmatrix}.
+$$
+
+The displacement from the current state to the target is
+
+$$
+\mathbf{r}-\mathbf{x}
+=
+\begin{bmatrix}
+20-18\\
+20-24\\
+20-16\\
+20-27\\
+20-19
+\end{bmatrix}
+=
+\begin{bmatrix}
+2\\
+-4\\
+4\\
+-7\\
+1
+\end{bmatrix}.
+$$
+
+The mask suppresses the displacements at unselected positions:
+
+$$
+\begin{aligned}
+\mathbf{m}\odot(\mathbf{r}-\mathbf{x})
+&=
+\begin{bmatrix}
+1\\
+0\\
+1\\
+0\\
+1
+\end{bmatrix}
+\odot
+\begin{bmatrix}
+2\\
+-4\\
+4\\
+-7\\
+1
+\end{bmatrix}\\
+&=
+\begin{bmatrix}
+2\\
+0\\
+4\\
+0\\
+1
+\end{bmatrix}.
+\end{aligned}
+$$
+
+Adding the active displacement to the original state gives
+
+$$
+\begin{aligned}
+\mathbf{x}'
+&=
+\mathbf{x}
++
+\mathbf{m}\odot(\mathbf{r}-\mathbf{x})\\
+&=
+\begin{bmatrix}
+18\\
+24\\
+16\\
+27\\
+19
+\end{bmatrix}
++
+\begin{bmatrix}
+2\\
+0\\
+4\\
+0\\
+1
+\end{bmatrix}\\
+&=
+\begin{bmatrix}
+20\\
+24\\
+20\\
+27\\
+20
+\end{bmatrix}.
+\end{aligned}
+$$
+
+Thus the vector form is
+
+$$
+\boxed{
+\mathbf{x}'
+=
+\mathbf{x}
++
+\mathbf{m}\odot(\mathbf{r}-\mathbf{x}).
+}
+$$
+
+This equation permits a different target $r_i$ at every position. A constant target is only the special case in which every component of $\mathbf{r}$ has the same value.
+
+### Recovering the Complementary-Gate Form
+
+The replacement equation can be reorganized algebraically:
+
+$$
+x_i'=x_i+m_i(r_i-x_i).
+$$
+
+Distribute $m_i$:
+
+$$
+x_i'=x_i+m_ir_i-m_ix_i.
+$$
+
+Group the terms involving $x_i$:
+
+$$
+x_i'=x_i-m_ix_i+m_ir_i.
+$$
+
+Factor $x_i$ from the first two terms:
+
+$$
+x_i'=(1-m_i)x_i+m_ir_i.
+$$
+
+Therefore,
+
+$$
+\boxed{
+x_i+m_i(r_i-x_i)
+=
+(1-m_i)x_i+m_ir_i.
+}
+$$
+
+The right-hand side is the algebraic two-way selector developed in Chapter 4. The two alternatives are now:
+
+- preserve the current value $x_i$;
+- replace it with the target $r_i$.
+
+The gate $m_i$ controls the target, while its complement $1-m_i$ controls the original value:
+
+$$
+x_i'=(1-m_i)x_i+m_ir_i.
+$$
+
+When $m_i=1$,
+
+$$
+\begin{aligned}
+x_i'
+&=(1-1)x_i+1r_i\\
+&=0+r_i\\
+&=r_i.
+\end{aligned}
+$$
+
+When $m_i=0$,
+
+$$
+\begin{aligned}
+x_i'
+&=(1-0)x_i+0r_i\\
+&=x_i+0\\
+&=x_i.
+\end{aligned}
+$$
+
+The two equivalent forms reveal different mathematical interpretations:
+
+$$
+\boxed{
+x_i+m_i(r_i-x_i)
+}
+$$
+
+describes replacement as a selective displacement from the current state to the target, whereas
+
+$$
+\boxed{
+(1-m_i)x_i+m_ir_i
+}
+$$
+
+describes replacement as complementary selection between the current value and the target value. Neither form is merely shorter notation. Each exposes a different structure hidden in the same computation.
+
+### Replacement Is a Special Kind of Update
+
+The general selective update is
+
+$$
+x_i'=x_i+m_i\Delta_i.
+$$
+
+Conditional replacement fits this form by defining
+
+$$
+\Delta_i=r_i-x_i.
+$$
+
+Thus replacement is not mathematically separate from updating. It is an update whose change has been constructed to land exactly on a target. A fixed increment uses a change independent of the current state:
+
+$$
+\Delta_i=c.
+$$
+
+The selected output becomes
+
+$$
+x_i'=x_i+c.
+$$
+
+Replacement uses a change dependent on both the current state and the target:
+
+$$
+\Delta_i=r_i-x_i.
+$$
+
+The selected output becomes
+
+$$
+x_i'=r_i.
+$$
+
+This difference explains why adding the same constant and replacing by the same target produce different results. A constant increment preserves differences among selected values:
+
+$$
+x_a-x_b
+=
+(x_a+c)-(x_b+c).
+$$
+
+If two selected readings differ by $2$ before the update, they still differ by $2$ after receiving the same correction.Replacement by a common target removes those differences:
+
+$$
+x_a'=r,
+\qquad
+x_b'=r,
+$$
+
+so
+
+$$
+x_a'-x_b'=0.
+$$
+
+The update rule therefore determines what structure is preserved. Constant addition preserves relative differences among selected values. Replacement forces selected values to share a specified final state.
+
+### Translating the Equation Back into Code
+
+The direct branch implementation is
+
+```python
+if selected:
+    updated = target
+else:
+    updated = current
+```
+
+The difference-update form corresponds to
+
+```python
+updated = current + selected * (target - current)
+```
+
+The complementary-gate form corresponds to
+
+```python
+updated = (1 - selected) * current + selected * target
+```
+
+For a binary value
+
+```python
+selected = int(condition)
+```
+
+all three representations produce the same result.
+
+The purpose of deriving the algebraic forms is not to insist that the arithmetic versions replace a clear scalar branch. The derivation reveals that replacement can be understood in two general ways:
+
+$$
+\boxed{
+\text{replacement}
+=
+\text{current state}
++
+\text{gated displacement to target}
+}
+$$
+
+and
+
+$$
+\boxed{
+\text{replacement}
+=
+\text{complementary selection between current state and target}.
+}
+$$
+
+The next step is to examine how the same reasoning generates a family of selective updates. Addition and replacement are not isolated formulas; they are instances of a broader design method in which we identify what must remain invariant, determine the proposed transformation, and use a mask to control where that transformation affects the state.
+
+## 6.4 Families of Selective Updates
+
+The preceding sections constructed two selective-update patterns. A selected value could receive a proposed change,
+
+$$
+x_i'=x_i+m_i\Delta_i,
+$$
+
+or it could be moved to a target,
+
+$$
+x_i'=x_i+m_i(r_i-x_i).
+$$
+
+These expressions may initially appear to be separate formulas. The first seems to describe addition, while the second seems to describe replacement. A more general structure becomes visible when we return to the computational requirement shared by both:
+
+> At an unselected position, preserve the original value. At a selected position, apply a specified transformation.
+
+The invariant branch is always
+
+$$
+x_i'=x_i.
+$$
+
+The selected branch depends on the task. It may increase the value, decrease it, scale it, replace it, clip it, or apply some other transformation. Let
+
+$$
+f_i(x_i)
+$$
+
+denote the value proposed for position $i$ when that position is selected. The selective requirement is then
+
+$$
+x_i'
+=
+\begin{cases}
+f_i(x_i), & m_i=1,\\
+x_i, & m_i=0.
+\end{cases}
+$$
+
+This piecewise relationship contains the essential design before any compact formula is introduced. The two alternatives are not arbitrary values. They are two transformations of the current state:
+
+- the identity transformation, which returns $x_i$ unchanged;
+- the proposed transformation, which returns $f_i(x_i)$.
+
+The identity transformation can be written as
+
+$$
+\operatorname{id}(x_i)=x_i.
+$$
+
+Thus selective updating chooses between
+
+$$
+\operatorname{id}(x_i)
+$$
+
+and
+
+$$
+f_i(x_i).
+$$
+
+This changes the philosophical interpretation of the mask. The mask no longer chooses merely between two stored numbers. It chooses which transformation governs the transition from $x_i$ to $x_i'$.
+
+### Selecting Between Two Transformations
+
+Chapter 4 constructed algebraic choice between alternatives $A$ and $B$:
+
+$$
+IA+(1-I)B.
+$$
+
+For a selective update, the two alternatives are the transformed value $f_i(x_i)$ and the unchanged value $x_i$. Using $m_i$ as the selector gives
+
+$$
+\boxed{
+x_i'
+=
+m_if_i(x_i)
++
+(1-m_i)x_i.
+}
+$$
+
+When $m_i=1$,
+
+$$
+\begin{aligned}
+x_i'
+&=1f_i(x_i)+(1-1)x_i\\
+&=f_i(x_i)+0\\
+&=f_i(x_i).
+\end{aligned}
+$$
+
+When $m_i=0$,
+
+$$
+\begin{aligned}
+x_i'
+&=0f_i(x_i)+(1-0)x_i\\
+&=0+x_i\\
+&=x_i.
+\end{aligned}
+$$
+
+The complementary-gate form therefore reproduces the selective transformation exactly:
+
+$$
+m_if_i(x_i)+(1-m_i)x_i
+=
+\begin{cases}
+f_i(x_i), & m_i=1,\\
+x_i, & m_i=0.
+\end{cases}
+$$
+
+This expression emphasizes choice between two candidate states. One gate controls the transformed state, while the complementary gate controls the original state.
+
+### The Same Update as a Gated Difference
+
+The complementary-gate expression can be rearranged:
+
+$$
+x_i'
+=
+m_if_i(x_i)+(1-m_i)x_i.
+$$
+
+Distribute $x_i$:
+
+$$
+x_i'
+=
+m_if_i(x_i)+x_i-m_ix_i.
+$$
+
+Group the terms controlled by $m_i$:
+
+$$
+x_i'
+=
+x_i+m_i\bigl(f_i(x_i)-x_i\bigr).
+$$
+
+Therefore,
+
+$$
+\boxed{
+m_if_i(x_i)+(1-m_i)x_i
+=
+x_i+m_i\bigl(f_i(x_i)-x_i\bigr).
+}
+$$
+
+The quantity
+
+$$
+f_i(x_i)-x_i
+$$
+
+is the change required to move from the current state to the proposed transformed state. This is the same target-minus-current reasoning used in Section 6.3. Here, however, the target is generated by the transformation $f_i$ rather than supplied directly as $r_i$. The difference form can be read as:
+
+> Begin with the current state $x_i$, calculate how far the proposed transformation would move it, and use $m_i$ to decide whether that movement occurs. This produces the general selective-update equation
+
+$$
+\boxed{
+x_i'
+=
+x_i
++
+m_i\bigl(f_i(x_i)-x_i\bigr).
+}
+$$
+
+It has the same structure as
+
+$$
+x_i'=x_i+m_i\Delta_i,
+$$
+
+with the change defined by
+
+$$
+\Delta_i=f_i(x_i)-x_i.
+$$
+
+The general design method is therefore:
+
+$$
+\boxed{
+\begin{aligned}
+\text{proposed state}
+&=f_i(x_i),\\
+\text{required change}
+&=f_i(x_i)-x_i,\\
+\text{active change}
+&=m_i\bigl(f_i(x_i)-x_i\bigr),\\
+\text{updated state}
+&=x_i+m_i\bigl(f_i(x_i)-x_i\bigr).
+\end{aligned}
+}
+$$
+
+The formulas for particular update families can now be derived by specifying $f_i$.
+
+### Additive Updates
+
+Suppose the selected transformation adds a change $\Delta_i$:
+
+$$
+f_i(x_i)=x_i+\Delta_i.
+$$
+
+Substituting this proposed state into the general equation gives
+
+$$
+x_i'
+=
+x_i
++
+m_i\bigl((x_i+\Delta_i)-x_i\bigr).
+$$
+
+The current-state terms cancel inside the difference:
+
+$$
+(x_i+\Delta_i)-x_i=\Delta_i.
+$$
+
+Therefore,
+
+$$
+\boxed{
+x_i'=x_i+m_i\Delta_i.
+}
+$$
+
+The additive formula from Section 6.2 is not a separate rule. It emerges from the general selective-transformation equation when the proposed transformation is addition. If every selected position receives the same change $c$, then
+
+$$
+f_i(x_i)=x_i+c
+$$
+
+and
+
+$$
+x_i'=x_i+cm_i.
+$$
+
+If the changes differ by position, then
+
+$$
+\mathbf{x}'
+=
+\mathbf{x}
++
+\mathbf{m}\odot\boldsymbol{\Delta}.
+$$
+
+The invariant structure is the same in both cases: the original state remains present everywhere, while the mask controls the displacement.
+
+### Replacement Updates
+
+Suppose the proposed transformation ignores the current value and returns a target:
+
+$$
+f_i(x_i)=r_i.
+$$
+
+Then
+
+$$
+f_i(x_i)-x_i=r_i-x_i.
+$$
+
+Substituting into the general equation gives
+
+$$
+\boxed{
+x_i'=x_i+m_i(r_i-x_i).
+}
+$$
+
+The complementary-gate form is
+
+$$
+\boxed{
+x_i'=(1-m_i)x_i+m_ir_i.
+}
+$$
+
+Thus replacement is the special case in which the selected transformation maps the current state directly to a specified target. The phrase “ignores the current value” refers to the proposed final state $f_i(x_i)=r_i$. The displacement required to reach that state still depends on the current value:
+
+$$
+r_i-x_i.
+$$
+
+This explains why replacement can produce different changes at different starting states even when the target is common.
+
+### Multiplicative Updates
+
+Suppose selected values should be scaled by a factor $\alpha_i$:
+
+$$
+f_i(x_i)=\alpha_ix_i.
+$$
+
+For example, if a selected quantity should increase by $10\%$, then
+
+$$
+\alpha_i=1.1.
+$$
+
+If it should be halved, then
+
+$$
+\alpha_i=0.5.
+$$
+
+If it should change sign, then
+
+$$
+\alpha_i=-1.
+$$
+
+The change produced by scaling is
+
+$$
+\begin{aligned}
+f_i(x_i)-x_i
+&=\alpha_ix_i-x_i\\
+&=(\alpha_i-1)x_i.
+\end{aligned}
+$$
+
+Substituting this difference into the general selective-update equation gives
+
+$$
+\boxed{
+x_i'
+=
+x_i
++
+m_i(\alpha_i-1)x_i.
+}
+$$
+
+Factoring out $x_i$ produces an equivalent form:
+
+$$
+\boxed{
+x_i'
+=
+\bigl(1+m_i(\alpha_i-1)\bigr)x_i.
+}
+$$
+
+This expression reveals the effective scaling factor:
+
+$$
+1+m_i(\alpha_i-1).
+$$
+
+When $m_i=0$, the factor is
+
+$$
+1+0(\alpha_i-1)=1,
+$$
+
+so
+
+$$
+x_i'=1x_i=x_i.
+$$
+
+The identity scaling factor preserves the original value. When $m_i=1$, the factor is
+
+$$
+1+1(\alpha_i-1)=\alpha_i,
+$$
+
+so
+
+$$
+x_i'=\alpha_ix_i.
+$$
+
+The requested scaling becomes active. The same relationship can be derived from complementary selection:
+
+$$
+\begin{aligned}
+x_i'
+&=(1-m_i)x_i+m_i(\alpha_ix_i)\\
+&=\bigl((1-m_i)+m_i\alpha_i\bigr)x_i\\
+&=\bigl(1+m_i(\alpha_i-1)\bigr)x_i.
+\end{aligned}
+$$
+
+This shows that selective scaling chooses between two multiplicative identities:
+
+- a factor of $1$, which preserves the value;
+- a factor of $\alpha_i$, which applies the proposed scaling.
+
+The mask does not directly multiply the state to zero. It selects the effective scaling factor.
+
+### Nonlinear Transformations
+
+The proposed transformation need not be addition, replacement, or multiplication. Suppose selected negative values should be reflected across zero:
+
+$$
+f_i(x_i)=|x_i|.
+$$
+
+The selective update is
+
+$$
+x_i'
+=
+x_i
++
+m_i\bigl(|x_i|-x_i\bigr).
+$$
+
+When $m_i=1$,
+
+$$
+x_i'=|x_i|,
+$$
+
+and when $m_i=0$,
+
+$$
+x_i'=x_i.
+$$
+
+Or suppose selected values should be limited to an upper bound $u$:
+
+$$
+f_i(x_i)=\min(x_i,u).
+$$
+
+Then
+
+$$
+x_i'
+=
+x_i
++
+m_i\bigl(\min(x_i,u)-x_i\bigr).
+$$
+
+Again, the mask does not need to know how the transformation works internally. It controls whether the difference between the proposed state and the current state contributes.
+
+This separation creates two independent questions:
+
+1. What transformation should produce the proposed state?
+2. At which positions should that transformation replace the identity?
+
+The function $f_i$ answers the first question. The mask $m_i$ answers the second.
+
+### A Concrete Comparison of Update Families
+
+Consider one current value:
+
+$$
+x_i=10
+$$
+
+with an open gate:
+
+$$
+m_i=1.
+$$
+
+Different proposed transformations produce different new states. If the rule adds $3$,
+
+$$
+f_i(x_i)=x_i+3=13,
+$$
+
+so
+
+$$
+x_i'=10+1(13-10)=13.
+$$
+
+If the rule replaces the value by $20$,
+
+$$
+f_i(x_i)=20,
+$$
+
+so
+
+$$
+x_i'=10+1(20-10)=20.
+$$
+
+If the rule doubles the value,
+
+$$
+f_i(x_i)=2x_i=20,
+$$
+
+so
+
+$$
+x_i'=10+1(20-10)=20.
+$$
+
+The replacement and doubling transformations happen to produce the same output for $x_i=10$, but they do not represent the same rule. For $x_i=7$, replacement by $20$ gives
+
+$$
+f_i(7)=20,
+$$
+
+whereas doubling gives
+
+$$
+f_i(7)=14.
+$$
+
+A numerical coincidence at one input does not establish equivalence between transformations. Two transformations are equivalent only if they produce the same output over the domain under consideration. When the gate is closed,
+
+$$
+m_i=0,
+$$
+
+every one of these proposed transformations produces the same final state:
+
+$$
+x_i'
+=
+x_i+0\bigl(f_i(x_i)-x_i\bigr)
+=
+x_i.
+$$
+
+This is the invariant supplied by selective updating. The proposed transformations may differ radically, but the unselected behavior is always the identity transformation.
+
+### The Vector Form
+
+Let the proposed transformation act elementwise on the collection:
+
+$$
+\mathbf{f}(\mathbf{x})
+=
+\begin{bmatrix}
+f_1(x_1)\\
+f_2(x_2)\\
+\vdots\\
+f_n(x_n)
+\end{bmatrix}.
+$$
+
+The vector of required changes is
+
+$$
+\mathbf{f}(\mathbf{x})-\mathbf{x}.
+$$
+
+The mask preserves only the changes at selected positions:
+
+$$
+\mathbf{m}\odot
+\bigl(\mathbf{f}(\mathbf{x})-\mathbf{x}\bigr).
+$$
+
+Adding the active changes to the original state gives
+
+$$
+\boxed{
+\mathbf{x}'
+=
+\mathbf{x}
++
+\mathbf{m}\odot
+\bigl(\mathbf{f}(\mathbf{x})-\mathbf{x}\bigr).
+}
+$$
+
+The equivalent complementary-gate form is
+
+$$
+\boxed{
+\mathbf{x}'
+=
+(\mathbf{1}-\mathbf{m})\odot\mathbf{x}
++
+\mathbf{m}\odot\mathbf{f}(\mathbf{x}),
+}
+$$
+
+where $\mathbf{1}$ is a vector of ones with the same shape as $\mathbf{m}$. These equations are defined componentwise:
+
+$$
+x_i'
+=
+x_i+m_i\bigl(f_i(x_i)-x_i\bigr)
+$$
+
+and
+
+$$
+x_i'
+=
+(1-m_i)x_i+m_if_i(x_i).
+$$
+
+The vector notation does not remove the local decisions. It states that the same selective relationship holds at every corresponding position.
+
+### Repeated Application Reveals the Nature of an Update
+
+Different transformations also behave differently when applied repeatedly. An additive update with a fixed change $c$ gives
+
+$$
+x_i'=x_i+c
+$$
+
+at a selected position. Applying it again gives
+
+$$
+x_i''=x_i'+c=x_i+2c.
+$$
+
+The effect accumulates. A multiplicative update gives
+
+$$
+x_i'=\alpha x_i.
+$$
+
+Applying it again gives
+
+$$
+x_i''=\alpha x_i'=\alpha^2x_i.
+$$
+
+The factors compose multiplicatively. Replacement by a fixed target gives
+
+$$
+x_i'=r.
+$$
+
+Applying the same replacement again gives
+
+$$
+x_i''=r.
+$$
+
+After the target has been reached, repeating the operation produces no further change. Such a transformation is idempotent:
+
+$$
+f(f(x))=f(x).
+$$
+
+These differences matter because the phrase “update this value” does not specify how repeated execution behaves. Additive changes accumulate, scaling compounds, and fixed replacement stabilizes after one application. The algebraic form makes these behaviors visible. The mask controls where a transformation acts, but the transformation determines what repeated action means.
+
+### A General Method for Designing Selective Updates
+
+The chapter's update equations can now be replaced by a single reasoning procedure.
+
+First, identify the original state:
+
+$$
+x_i.
+$$
+
+Second, determine the proposed state at a selected position:
+
+$$
+f_i(x_i).
+$$
+
+Third, construct the displacement from the original state to the proposed state:
+
+$$
+f_i(x_i)-x_i.
+$$
+
+Fourth, use the mask to preserve or suppress that displacement:
+
+$$
+m_i\bigl(f_i(x_i)-x_i\bigr).
+$$
+
+Finally, add the active displacement to the original state:
+
+$$
+\boxed{
+x_i'
+=
+x_i
++
+m_i\bigl(f_i(x_i)-x_i\bigr).
+}
+$$
+
+This method prevents a common mistake: attaching the mask to the original value when the requirement is to preserve the original value and control only its transformation. The correct question is not merely
+
+> Which values are selected?
+
+It is
+
+> Which candidate transformation should govern the transition at each position?
+
+The complete conceptual progression of the chapter is
+
+$$
+\boxed{
+\text{original state}
+\rightarrow
+\text{proposed state}
+\rightarrow
+\text{difference between states}
+\rightarrow
+\text{gated difference}
+\rightarrow
+\text{selectively updated state}.
+}
+$$
+
+Chapter 5 constructed a mask as a structured description of where a predicate holds. Chapter 6 has now turned that description into controlled change. At every position, the mask selects between leaving the state invariant and applying a proposed transformation:
+
+$$
+\boxed{
+x_i'
+=
+(1-m_i)x_i
++
+m_if_i(x_i)
+=
+x_i
++
+m_i\bigl(f_i(x_i)-x_i\bigr).
+}
+$$
+
+Selective updating is therefore not a collection of unrelated programming tricks. It is a general mathematical method for combining an identity transformation with a conditionally active alternative.
