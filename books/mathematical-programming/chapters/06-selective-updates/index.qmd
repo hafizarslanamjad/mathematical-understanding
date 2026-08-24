@@ -1,0 +1,386 @@
+---
+title: "Chapter 6 — Selective Updates"
+description: "How masks control mathematical changes while preserving values that should remain unchanged."
+number-sections: false
+---
+
+## 6.1 A Condition That Changes Some Values
+
+Consider five temperature readings produced by a sensor:
+
+```python
+readings = [18, 24, 16, 27, 19]
+```
+
+A calibration test has established that readings below $20$ degrees Celsius under-report the actual temperature by $2$ degrees. Such readings must therefore be increased by $2$, while readings of at least $20$ degrees must remain unchanged. An ordinary program can express this requirement through a branch inside a loop:
+
+```python
+readings = [18, 24, 16, 27, 19]
+corrected_readings = []
+
+for reading in readings:
+    if reading < 20:
+        corrected_readings.append(reading + 2)
+    else:
+        corrected_readings.append(reading)
+```
+
+The resulting collection is
+
+```python
+[20, 24, 18, 27, 21]
+```
+
+This computation begins with one collection and constructs another:
+
+$$
+\begin{bmatrix}
+18\\
+24\\
+16\\
+27\\
+19
+\end{bmatrix}
+\longrightarrow
+\begin{bmatrix}
+20\\
+24\\
+18\\
+27\\
+21
+\end{bmatrix}.
+$$
+
+The condition does not determine whether a value should exist in the output. Every sensor position remains present. Instead, the condition determines whether the value at that position should change. This is the central distinction between masking and selective updating. In Chapter 5, masking answered:
+
+> Should the numerical contribution at this position survive or be suppressed to zero?
+
+The present computation asks:
+
+> Should the value at this position be changed or preserved?
+
+Suppression and preservation are not interchangeable. If a reading does not require correction, the required result is not zero. The required result is the original reading itself.
+
+### The Original State and the Updated State
+
+To represent change mathematically, we must distinguish the value before the update from the value after the update. Let
+
+$$
+x_i
+$$
+
+denote the original reading at position $i$, and let
+
+$$
+x_i'
+$$
+
+denote the corrected reading at the same position. The prime symbol in $x_i'$ does not mean differentiation here. It labels a new version of the quantity. Both $x_i$ and $x_i'$ refer to the same sensor position, but they refer to different states of its value:
+
+$$
+x_i
+=
+\text{value before correction},
+$$
+
+$$
+x_i'
+=
+\text{value after correction}.
+$$
+
+This notation prevents a conceptual ambiguity that ordinary assignment syntax can hide. In code such as
+
+```python
+reading = reading + 2
+```
+
+the name `reading` appears on both sides. On the right, it refers to the old value; after assignment, the same name refers to the new value. Mathematics makes the two roles explicit:
+
+$$
+\text{old state}
+\longrightarrow
+\text{new state}.
+$$
+
+For the five readings, the corresponding state pairs are
+
+$$
+x_1=18
+\longrightarrow
+x_1'=20,
+$$
+
+$$
+x_2=24
+\longrightarrow
+x_2'=24,
+$$
+
+$$
+x_3=16
+\longrightarrow
+x_3'=18,
+$$
+
+$$
+x_4=27
+\longrightarrow
+x_4'=27,
+$$
+
+and
+
+$$
+x_5=19
+\longrightarrow
+x_5'=21.
+$$
+
+Some positions undergo a numerical change, while others satisfy
+
+$$
+x_i'=x_i.
+$$
+
+This equality expresses preservation. It says that the transition from the original state to the updated state leaves the value invariant.
+
+### Constructing the Required Behavior
+
+Before searching for one algebraic expression, write the required update as a piecewise relationship:
+
+$$
+x_i'
+=
+\begin{cases}
+x_i+2, & x_i<20,\\
+x_i, & x_i\geq20.
+\end{cases}
+$$
+
+This relationship contains two different state transitions. For a reading below $20$, the transition is
+
+$$
+x_i\longrightarrow x_i+2.
+$$
+
+For a reading of at least $20$, the transition is
+
+$$
+x_i\longrightarrow x_i.
+$$
+
+The second branch is not the absence of a rule. Preservation is itself a mathematical requirement. The computation must guarantee that the original value passes into the new state without alteration.
+
+The concrete behavior can be displayed as follows:
+
+| Position $i$ | Original $x_i$ | Condition $x_i<20$ | Required updated value $x_i'$ |
+|---:|---:|:---:|---:|
+| $1$ | $18$ | true | $20$ |
+| $2$ | $24$ | false | $24$ |
+| $3$ | $16$ | true | $18$ |
+| $4$ | $27$ | false | $27$ |
+| $5$ | $19$ | true | $21$ |
+
+The condition from Chapter 5 can be encoded as the mask component
+
+$$
+m_i=\mathbf{1}[x_i<20].
+$$
+
+For the concrete collection,
+
+$$
+m_1=1,
+\qquad
+m_2=0,
+\qquad
+m_3=1,
+\qquad
+m_4=0,
+\qquad
+m_5=1.
+$$
+
+Thus,
+
+$$
+\mathbf{m}
+=
+\begin{bmatrix}
+1\\
+0\\
+1\\
+0\\
+1
+\end{bmatrix}.
+$$
+
+The mask correctly describes where correction is required. It does not yet describe how the corrected state should be constructed.
+
+### Why Masking the Existing Value Solves the Wrong Problem
+
+Chapter 5 used elementwise gating:
+
+$$
+y_i=m_ix_i.
+$$
+
+If we apply that construction directly to the temperature readings, we obtain
+
+$$
+\mathbf{m}\odot\mathbf{x}
+=
+\begin{bmatrix}
+1\\
+0\\
+1\\
+0\\
+1
+\end{bmatrix}
+\odot
+\begin{bmatrix}
+18\\
+24\\
+16\\
+27\\
+19
+\end{bmatrix}
+=
+\begin{bmatrix}
+18\\
+0\\
+16\\
+0\\
+19
+\end{bmatrix}.
+$$
+
+This output identifies the readings requiring correction by preserving them and suppressing the others. It may be useful for some purpose, but it is not the corrected collection. The failure occurs because the gates are controlling the existing values:
+
+$$
+m_ix_i.
+$$
+
+When $m_i=0$, the gate produces
+
+$$
+0x_i=0.
+$$
+
+The update requirement is different. When $m_i=0$, we need
+
+$$
+x_i'=x_i,
+$$
+
+not
+
+$$
+x_i'=0.
+$$
+
+The nonqualifying values must pass unchanged from the original state to the updated state. The selected values also reveal a problem. When $m_i=1$, the gated expression produces
+
+$$
+m_ix_i=x_i.
+$$
+
+It preserves the old reading, but the required updated value is
+
+$$
+x_i+2.
+$$
+
+Thus direct masking fails in both cases:
+
+$$
+m_ix_i
+=
+\begin{cases}
+x_i, & m_i=1,\\
+0, & m_i=0,
+\end{cases}
+$$
+
+whereas the update requires
+
+$$
+x_i'
+=
+\begin{cases}
+x_i+2, & m_i=1,\\
+x_i, & m_i=0.
+\end{cases}
+$$
+
+The issue is not that the mask is incorrect. The issue is that it has been attached to the wrong mathematical quantity.
+
+### Separating What Persists from What Changes
+
+Every updated reading contains the original reading as its starting point. For selected positions,
+
+$$
+x_i'=x_i+2.
+$$
+
+For unselected positions,
+
+$$
+x_i'=x_i.
+$$
+
+The original value $x_i$ therefore appears in both cases. It is the persistent part of the state transition. What differs between the two cases is the additional correction:
+
+$$
+2
+\quad\text{or}\quad
+0.
+$$
+
+The required correction at each position is
+
+$$
+\text{correction at position }i
+=
+\begin{cases}
+2, & m_i=1,\\
+0, & m_i=0.
+\end{cases}
+$$
+
+This reveals a new place for the gate. The condition should not control whether the existing state survives. The existing state must survive in every case. The condition should control whether the proposed change contributes. The update can therefore be decomposed conceptually into two parts:
+
+$$
+\boxed{
+\text{updated state}
+=
+\text{original state}
++
+\text{conditionally active change}.
+}
+$$
+
+For the first reading, the original state is $18$ and the active change is $2$:
+
+$$
+18\longrightarrow18+2=20.
+$$
+
+For the second reading, the original state is $24$ and the inactive change is $0$:
+
+$$
+24\longrightarrow24+0=24.
+$$
+
+The value remains unchanged not because the update forgot about it, but because the change applied to it is the additive identity $0$. This gives zero a different role from the one it played in direct masking. In
+
+$$
+m_ix_i,
+$$
+
+zero suppresses the existing value. In a selective update, zero should suppress only the change. The original value must remain outside that suppression. The new construction problem is therefore:
+
+> How can $m_i$ produce a change of $2$ when it equals $1$ and a change of $0$ when it equals $0$, while the original value $x_i$ remains present in both cases?
+
+Section 6.2 will construct the algebraic relationship that satisfies this requirement.
