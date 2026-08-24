@@ -384,3 +384,631 @@ zero suppresses the existing value. In a selective update, zero should suppress 
 > How can $m_i$ produce a change of $2$ when it equals $1$ and a change of $0$ when it equals $0$, while the original value $x_i$ remains present in both cases?
 
 Section 6.2 will construct the algebraic relationship that satisfies this requirement.
+
+## 6.2 Gating the Change Instead of the Value
+
+Section 6.1 established the required transition for the sensor readings:
+
+$$
+x_i'
+=
+\begin{cases}
+x_i+2, & m_i=1,\\
+x_i, & m_i=0.
+\end{cases}
+$$
+
+The original value $x_i$ appears in both branches. What changes between the two cases is not whether $x_i$ survives, but whether the correction of $2$ degrees contributes. The mathematical problem is therefore to construct a correction that behaves as
+
+$$
+\text{correction at position }i
+=
+\begin{cases}
+2, & m_i=1,\\
+0, & m_i=0.
+\end{cases}
+$$
+
+Chapter 3 already constructed precisely this type of behavior. A binary gate can preserve or suppress an arbitrary contribution through multiplication. If the possible correction is $2$, then
+
+$$
+m_i(2)
+$$
+
+has the required behavior. When $m_i=1$,
+
+$$
+m_i(2)=1(2)=2,
+$$
+
+and when $m_i=0$,
+
+$$
+m_i(2)=0(2)=0.
+$$
+
+The conditionally active correction is therefore
+
+$$
+2m_i.
+$$
+
+The order of the factors does not change the numerical product:
+
+$$
+m_i(2)=2m_i.
+$$
+
+The notation $2m_i$ is convenient here because it can be read as a correction of magnitude $2$ whose presence is controlled by $m_i$.
+
+### Constructing the New State
+
+The correction alone is not the updated reading. It describes only how much should be added to the original state. The new state must therefore be constructed as
+
+$$
+\text{new state}
+=
+\text{old state}
++
+\text{active correction}.
+$$
+
+Substituting the quantities from the sensor problem gives
+
+$$
+\boxed{
+x_i'=x_i+2m_i.
+}
+$$
+
+Every part of this equation now has a computational role:
+
+- $x_i$ preserves the original reading;
+- $2$ is the proposed correction;
+- $m_i$ determines whether that correction contributes;
+- addition combines the original state with the active change;
+- $x_i'$ represents the resulting state.
+
+The equation should be verified at both possible gate values. When a reading is below $20$ degrees Celsius, $m_i=1$, so
+
+$$
+\begin{aligned}
+x_i'
+&=x_i+2m_i\\
+&=x_i+2(1)\\
+&=x_i+2.
+\end{aligned}
+$$
+
+The correction survives. When a reading is at least $20$ degrees Celsius, $m_i=0$, so
+
+$$
+\begin{aligned}
+x_i'
+&=x_i+2m_i\\
+&=x_i+2(0)\\
+&=x_i+0\\
+&=x_i.
+\end{aligned}
+$$
+
+The correction disappears, while the original reading remains unchanged.
+
+The final equality
+
+$$
+x_i+0=x_i
+$$
+
+is the algebraic reason that the unselected state is preserved. Zero is the additive identity: adding it changes nothing. Multiplication by zero suppresses the proposed correction, and addition of the resulting zero preserves the existing state. Selective updating therefore coordinates two algebraic roles:
+
+$$
+0\Delta=0
+$$
+
+suppresses the change, while
+
+$$
+x+0=x
+$$
+
+preserves the state. This combination is the central mechanism of an additive selective update.
+
+### Verifying the Concrete Collection
+
+For the original readings,
+
+$$
+\mathbf{x}
+=
+\begin{bmatrix}
+18\\
+24\\
+16\\
+27\\
+19
+\end{bmatrix}
+$$
+
+and the mask is
+
+$$
+\mathbf{m}
+=
+\begin{bmatrix}
+1\\
+0\\
+1\\
+0\\
+1
+\end{bmatrix}.
+$$
+
+At position $1$,
+
+$$
+x_1'=18+2(1)=20.
+$$
+
+At position $2$,
+
+$$
+x_2'=24+2(0)=24.
+$$
+
+At position $3$,
+
+$$
+x_3'=16+2(1)=18.
+$$
+
+At position $4$,
+
+$$
+x_4'=27+2(0)=27.
+$$
+
+At position $5$,
+
+$$
+x_5'=19+2(1)=21.
+$$
+
+The five relationships can be organized as
+
+$$
+\mathbf{x}'
+=
+\begin{bmatrix}
+18+2(1)\\
+24+2(0)\\
+16+2(1)\\
+27+2(0)\\
+19+2(1)
+\end{bmatrix}
+=
+\begin{bmatrix}
+20\\
+24\\
+18\\
+27\\
+21
+\end{bmatrix}.
+$$
+
+The correction vector is
+
+$$
+2\mathbf{m}
+=
+2
+\begin{bmatrix}
+1\\
+0\\
+1\\
+0\\
+1
+\end{bmatrix}
+=
+\begin{bmatrix}
+2\\
+0\\
+2\\
+0\\
+2
+\end{bmatrix}.
+$$
+
+The updated collection is therefore
+
+$$
+\begin{aligned}
+\mathbf{x}'
+&=\mathbf{x}+2\mathbf{m}\\
+&=
+\begin{bmatrix}
+18\\
+24\\
+16\\
+27\\
+19
+\end{bmatrix}
++
+\begin{bmatrix}
+2\\
+0\\
+2\\
+0\\
+2
+\end{bmatrix}\\
+&=
+\begin{bmatrix}
+20\\
+24\\
+18\\
+27\\
+21
+\end{bmatrix}.
+\end{aligned}
+$$
+
+The vector equation
+
+$$
+\boxed{
+\mathbf{x}'=\mathbf{x}+2\mathbf{m}
+}
+$$
+
+does not introduce a new update rule. It organizes the componentwise relationships
+
+$$
+x_i'=x_i+2m_i
+$$
+
+into one structured transformation.
+
+### From a Particular Correction to a General Change
+
+The correction of $2$ degrees is specific to the sensor example. A general update may add a different quantity. Let
+
+$$
+\Delta_i
+$$
+
+denote the proposed change at position $i$. The symbol $\Delta$, the Greek capital letter delta, commonly represents change. It describes the displacement between an original state and a possible new state. Without a condition, the proposed update would be
+
+$$
+x_i'=x_i+\Delta_i.
+$$
+
+If the change should occur only where $m_i=1$, then the mask must gate $\Delta_i$:
+
+$$
+m_i\Delta_i.
+$$
+
+The complete selective update becomes
+
+$$
+\boxed{
+x_i'=x_i+m_i\Delta_i.
+}
+$$
+
+The equation is derived from two independent requirements. First, the original state must provide the baseline:
+
+$$
+x_i.
+$$
+
+Second, the proposed change must contribute only at selected positions:
+
+$$
+m_i\Delta_i.
+$$
+
+Addition combines these roles:
+
+$$
+\text{updated state}
+=
+\text{original state}
++
+\text{gated change}.
+$$
+
+Verification shows that the equation reproduces the desired two cases. When $m_i=1$,
+
+$$
+\begin{aligned}
+x_i'
+&=x_i+m_i\Delta_i\\
+&=x_i+1\Delta_i\\
+&=x_i+\Delta_i.
+\end{aligned}
+$$
+
+When $m_i=0$,
+
+$$
+\begin{aligned}
+x_i'
+&=x_i+m_i\Delta_i\\
+&=x_i+0\Delta_i\\
+&=x_i.
+\end{aligned}
+$$
+
+Therefore,
+
+$$
+x_i+m_i\Delta_i
+=
+\begin{cases}
+x_i+\Delta_i, & m_i=1,\\
+x_i, & m_i=0.
+\end{cases}
+$$
+
+The algebraic expression and the selective branch describe the same state transition.
+
+### The Change May Be Shared or Position-Dependent
+
+In the sensor example, every selected position receives the same correction:
+
+$$
+\Delta_i=2.
+$$
+
+This is a constant selective update:
+
+$$
+x_i'=x_i+2m_i.
+$$
+
+Other computations may propose a different change at every position. Suppose
+
+$$
+\boldsymbol{\Delta}
+=
+\begin{bmatrix}
+2\\
+1\\
+3\\
+2\\
+4
+\end{bmatrix}.
+$$
+
+The mask remains
+
+$$
+\mathbf{m}
+=
+\begin{bmatrix}
+1\\
+0\\
+1\\
+0\\
+1
+\end{bmatrix}.
+$$
+
+Elementwise gating produces the active changes:
+
+$$
+\mathbf{m}\odot\boldsymbol{\Delta}
+=
+\begin{bmatrix}
+1(2)\\
+0(1)\\
+1(3)\\
+0(2)\\
+1(4)
+\end{bmatrix}
+=
+\begin{bmatrix}
+2\\
+0\\
+3\\
+0\\
+4
+\end{bmatrix}.
+$$
+
+The complete vector update is
+
+$$
+\boxed{
+\mathbf{x}'
+=
+\mathbf{x}
++
+\mathbf{m}\odot\boldsymbol{\Delta}.
+}
+$$
+
+Its componentwise definition is
+
+$$
+x_i'=x_i+m_i\Delta_i.
+$$
+
+The mask and the change vector perform different roles. The mask answers:
+
+> At which positions may a change occur?
+
+The change vector answers:
+
+> If a change occurs at position $i$, what change is proposed there?
+
+These roles should not be conflated. Two update problems can use the same mask while proposing different changes. Conversely, the same proposed changes can be activated under different masks.
+
+### Change Has the Same Units as the State
+
+The addition
+
+$$
+x_i+\Delta_i
+$$
+
+is meaningful only if $\Delta_i$ has units compatible with $x_i$. In the sensor example, $x_i$ is measured in degrees Celsius, so $\Delta_i$ must also represent a temperature difference measured in degrees Celsius.
+
+The mask $m_i$ has no physical unit. It is a binary selector:
+
+$$
+m_i\in\{0,1\}.
+$$
+
+Multiplication by the dimensionless mask preserves the units of the change:
+
+$$
+m_i\Delta_i
+$$
+
+has the same units as $\Delta_i$. The complete equation is therefore dimensionally coherent:
+
+$$
+\underbrace{x_i'}_{\text{degrees}}
+=
+\underbrace{x_i}_{\text{degrees}}
++
+\underbrace{m_i}_{\text{dimensionless}}
+\underbrace{\Delta_i}_{\text{degrees}}.
+$$
+
+This unit analysis reinforces the semantic roles of the quantities. The mask is not an amount of temperature. It controls whether an amount of temperature contributes.
+
+### A Change Can Be Positive, Negative, or Zero
+
+The symbol $\Delta_i$ does not imply an increase. Its sign determines the direction of change.
+
+If
+
+$$
+\Delta_i>0,
+$$
+
+then an active update increases the state. If
+
+$$
+\Delta_i<0,
+$$
+
+then an active update decreases the state. If
+
+$$
+\Delta_i=0,
+$$
+
+then the proposed update leaves the state unchanged even when the gate is open.
+
+For example, if a selected value must be reduced by $3$, then
+
+$$
+\Delta_i=-3
+$$
+
+and
+
+$$
+x_i'=x_i+m_i(-3)=x_i-3m_i.
+$$
+
+When $m_i=1$,
+
+$$
+x_i'=x_i-3,
+$$
+
+and when $m_i=0$,
+
+$$
+x_i'=x_i.
+$$
+
+The general equation therefore represents conditional change rather than conditional increase:
+
+$$
+\boxed{
+x_i'=x_i+m_i\Delta_i.
+}
+$$
+
+The condition controls whether the displacement is active; the sign and magnitude of $\Delta_i$ determine where the active update moves the state.
+
+### State and Change Are Different Mathematical Roles
+
+The equation
+
+$$
+x_i'=x_i+m_i\Delta_i
+$$
+
+contains two quantities that may have the same units but different meanings. The term $x_i$ is a state: it describes where the system currently is. The term $\Delta_i$ is a change: it describes a movement relative to that state. This distinction is analogous to the difference between a location and a displacement. If a position is $10$ meters from an origin and a displacement of $3$ meters is applied, the new position is
+
+$$
+10+3=13.
+$$
+
+The number $10$ identifies a state relative to the chosen origin. The number $3$ describes a change from that state. They can be added because their units are compatible, but they play different semantic roles. The mask acts on the displacement:
+
+$$
+m_i\Delta_i.
+$$
+
+It decides whether the movement occurs. It does not decide whether the original location exists. This produces a useful philosophical interpretation of selective updating:
+
+$$
+\boxed{
+\text{the state is preserved by default; the condition governs departure from it}.
+}
+$$
+
+An unselected position remains invariant because its proposed change is mapped to the additive identity:
+
+$$
+m_i=0
+\quad\Longrightarrow\quad
+m_i\Delta_i=0
+\quad\Longrightarrow\quad
+x_i'=x_i.
+$$
+
+A selected position changes because the proposed displacement is preserved:
+
+$$
+m_i=1
+\quad\Longrightarrow\quad
+m_i\Delta_i=\Delta_i
+\quad\Longrightarrow\quad
+x_i'=x_i+\Delta_i.
+$$
+
+The mask has therefore moved from controlling data to controlling change. In Chapter 5,
+
+$$
+m_ix_i
+$$
+
+asked whether the value itself should contribute. In Chapter 6,
+
+$$
+x_i+m_i\Delta_i
+$$
+
+preserves the value and asks whether a change should contribute. The conceptual transition is
+
+$$
+\boxed{
+\begin{aligned}
+\text{masked value}
+&:\quad m_ix_i,\\
+\text{selectively updated value}
+&:\quad x_i+m_i\Delta_i.
+\end{aligned}
+}
+$$
+
+The selective-update equation now handles changes expressed as additions or displacements. A different requirement remains: sometimes a selected value should not receive a known increment but should be replaced by a specified target value. To express replacement through the same update structure, we must determine the exact change that moves $x_i$ to that target.
