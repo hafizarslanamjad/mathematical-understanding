@@ -1,0 +1,2620 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="How masks control mathematical changes while preserving values that should remain unchanged.">
+
+<title>Chapter 6 — Selective Updates – Mathematical Understanding</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../../">
+<script src="../../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../../site_libs/bootstrap/bootstrap-e3adbaa939bcd423dddc8c8a834270b4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../../../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../../index.html">
+    <span class="navbar-title">Mathematical Understanding</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../index.html"> 
+<span class="menu-text">Articles</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../books/mathematical-programming/index.html"> 
+<span class="menu-text">Mathematical Programming</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/hafizarslanamjad/mathematical-understanding"> <i class="bi bi-github" role="img" aria-label="GitHub repository">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#a-condition-that-changes-some-values" id="toc-a-condition-that-changes-some-values" class="nav-link active" data-scroll-target="#a-condition-that-changes-some-values">6.1 A Condition That Changes Some Values</a>
+  <ul class="collapse">
+  <li><a href="#the-original-state-and-the-updated-state" id="toc-the-original-state-and-the-updated-state" class="nav-link" data-scroll-target="#the-original-state-and-the-updated-state">The Original State and the Updated State</a></li>
+  <li><a href="#constructing-the-required-behavior" id="toc-constructing-the-required-behavior" class="nav-link" data-scroll-target="#constructing-the-required-behavior">Constructing the Required Behavior</a></li>
+  <li><a href="#why-masking-the-existing-value-solves-the-wrong-problem" id="toc-why-masking-the-existing-value-solves-the-wrong-problem" class="nav-link" data-scroll-target="#why-masking-the-existing-value-solves-the-wrong-problem">Why Masking the Existing Value Solves the Wrong Problem</a></li>
+  <li><a href="#separating-what-persists-from-what-changes" id="toc-separating-what-persists-from-what-changes" class="nav-link" data-scroll-target="#separating-what-persists-from-what-changes">Separating What Persists from What Changes</a></li>
+  </ul></li>
+  <li><a href="#gating-the-change-instead-of-the-value" id="toc-gating-the-change-instead-of-the-value" class="nav-link" data-scroll-target="#gating-the-change-instead-of-the-value">6.2 Gating the Change Instead of the Value</a>
+  <ul class="collapse">
+  <li><a href="#constructing-the-new-state" id="toc-constructing-the-new-state" class="nav-link" data-scroll-target="#constructing-the-new-state">Constructing the New State</a></li>
+  <li><a href="#verifying-the-concrete-collection" id="toc-verifying-the-concrete-collection" class="nav-link" data-scroll-target="#verifying-the-concrete-collection">Verifying the Concrete Collection</a></li>
+  <li><a href="#from-a-particular-correction-to-a-general-change" id="toc-from-a-particular-correction-to-a-general-change" class="nav-link" data-scroll-target="#from-a-particular-correction-to-a-general-change">From a Particular Correction to a General Change</a></li>
+  <li><a href="#the-change-may-be-shared-or-position-dependent" id="toc-the-change-may-be-shared-or-position-dependent" class="nav-link" data-scroll-target="#the-change-may-be-shared-or-position-dependent">The Change May Be Shared or Position-Dependent</a></li>
+  <li><a href="#change-has-the-same-units-as-the-state" id="toc-change-has-the-same-units-as-the-state" class="nav-link" data-scroll-target="#change-has-the-same-units-as-the-state">Change Has the Same Units as the State</a></li>
+  <li><a href="#a-change-can-be-positive-negative-or-zero" id="toc-a-change-can-be-positive-negative-or-zero" class="nav-link" data-scroll-target="#a-change-can-be-positive-negative-or-zero">A Change Can Be Positive, Negative, or Zero</a></li>
+  <li><a href="#state-and-change-are-different-mathematical-roles" id="toc-state-and-change-are-different-mathematical-roles" class="nav-link" data-scroll-target="#state-and-change-are-different-mathematical-roles">State and Change Are Different Mathematical Roles</a></li>
+  </ul></li>
+  <li><a href="#conditional-replacement-as-a-difference-update" id="toc-conditional-replacement-as-a-difference-update" class="nav-link" data-scroll-target="#conditional-replacement-as-a-difference-update">6.3 Conditional Replacement as a Difference Update</a>
+  <ul class="collapse">
+  <li><a href="#a-target-is-not-the-same-object-as-a-change" id="toc-a-target-is-not-the-same-object-as-a-change" class="nav-link" data-scroll-target="#a-target-is-not-the-same-object-as-a-change">A Target Is Not the Same Object as a Change</a></li>
+  <li><a href="#gating-the-displacement-to-the-target" id="toc-gating-the-displacement-to-the-target" class="nav-link" data-scroll-target="#gating-the-displacement-to-the-target">Gating the Displacement to the Target</a></li>
+  <li><a href="#verifying-the-concrete-replacements" id="toc-verifying-the-concrete-replacements" class="nav-link" data-scroll-target="#verifying-the-concrete-replacements">Verifying the Concrete Replacements</a></li>
+  <li><a href="#the-vector-form-of-conditional-replacement" id="toc-the-vector-form-of-conditional-replacement" class="nav-link" data-scroll-target="#the-vector-form-of-conditional-replacement">The Vector Form of Conditional Replacement</a></li>
+  <li><a href="#recovering-the-complementary-gate-form" id="toc-recovering-the-complementary-gate-form" class="nav-link" data-scroll-target="#recovering-the-complementary-gate-form">Recovering the Complementary-Gate Form</a></li>
+  <li><a href="#replacement-is-a-special-kind-of-update" id="toc-replacement-is-a-special-kind-of-update" class="nav-link" data-scroll-target="#replacement-is-a-special-kind-of-update">Replacement Is a Special Kind of Update</a></li>
+  <li><a href="#translating-the-equation-back-into-code" id="toc-translating-the-equation-back-into-code" class="nav-link" data-scroll-target="#translating-the-equation-back-into-code">Translating the Equation Back into Code</a></li>
+  </ul></li>
+  <li><a href="#families-of-selective-updates" id="toc-families-of-selective-updates" class="nav-link" data-scroll-target="#families-of-selective-updates">6.4 Families of Selective Updates</a>
+  <ul class="collapse">
+  <li><a href="#selecting-between-two-transformations" id="toc-selecting-between-two-transformations" class="nav-link" data-scroll-target="#selecting-between-two-transformations">Selecting Between Two Transformations</a></li>
+  <li><a href="#the-same-update-as-a-gated-difference" id="toc-the-same-update-as-a-gated-difference" class="nav-link" data-scroll-target="#the-same-update-as-a-gated-difference">The Same Update as a Gated Difference</a></li>
+  <li><a href="#additive-updates" id="toc-additive-updates" class="nav-link" data-scroll-target="#additive-updates">Additive Updates</a></li>
+  <li><a href="#replacement-updates" id="toc-replacement-updates" class="nav-link" data-scroll-target="#replacement-updates">Replacement Updates</a></li>
+  <li><a href="#multiplicative-updates" id="toc-multiplicative-updates" class="nav-link" data-scroll-target="#multiplicative-updates">Multiplicative Updates</a></li>
+  <li><a href="#nonlinear-transformations" id="toc-nonlinear-transformations" class="nav-link" data-scroll-target="#nonlinear-transformations">Nonlinear Transformations</a></li>
+  <li><a href="#a-concrete-comparison-of-update-families" id="toc-a-concrete-comparison-of-update-families" class="nav-link" data-scroll-target="#a-concrete-comparison-of-update-families">A Concrete Comparison of Update Families</a></li>
+  <li><a href="#the-vector-form" id="toc-the-vector-form" class="nav-link" data-scroll-target="#the-vector-form">The Vector Form</a></li>
+  <li><a href="#repeated-application-reveals-the-nature-of-an-update" id="toc-repeated-application-reveals-the-nature-of-an-update" class="nav-link" data-scroll-target="#repeated-application-reveals-the-nature-of-an-update">Repeated Application Reveals the Nature of an Update</a></li>
+  <li><a href="#a-general-method-for-designing-selective-updates" id="toc-a-general-method-for-designing-selective-updates" class="nav-link" data-scroll-target="#a-general-method-for-designing-selective-updates">A General Method for Designing Selective Updates</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Chapter 6 — Selective Updates</h1>
+</div>
+
+<div>
+  <div class="description">
+    How masks control mathematical changes while preserving values that should remain unchanged.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="a-condition-that-changes-some-values" class="level2">
+<h2 class="anchored" data-anchor-id="a-condition-that-changes-some-values">6.1 A Condition That Changes Some Values</h2>
+<p>Consider five temperature readings produced by a sensor:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>readings <span class="op">=</span> [<span class="dv">18</span>, <span class="dv">24</span>, <span class="dv">16</span>, <span class="dv">27</span>, <span class="dv">19</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A calibration test has established that readings below <span class="math inline">\(20\)</span> degrees Celsius under-report the actual temperature by <span class="math inline">\(2\)</span> degrees. Such readings must therefore be increased by <span class="math inline">\(2\)</span>, while readings of at least <span class="math inline">\(20\)</span> degrees must remain unchanged. An ordinary program can express this requirement through a branch inside a loop:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>readings <span class="op">=</span> [<span class="dv">18</span>, <span class="dv">24</span>, <span class="dv">16</span>, <span class="dv">27</span>, <span class="dv">19</span>]</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>corrected_readings <span class="op">=</span> []</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> reading <span class="kw">in</span> readings:</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> reading <span class="op">&lt;</span> <span class="dv">20</span>:</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        corrected_readings.append(reading <span class="op">+</span> <span class="dv">2</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        corrected_readings.append(reading)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The resulting collection is</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>[<span class="dv">20</span>, <span class="dv">24</span>, <span class="dv">18</span>, <span class="dv">27</span>, <span class="dv">21</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This computation begins with one collection and constructs another:</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+18\\
+24\\
+16\\
+27\\
+19
+\end{bmatrix}
+\longrightarrow
+\begin{bmatrix}
+20\\
+24\\
+18\\
+27\\
+21
+\end{bmatrix}.
+\]</span></p>
+<p>The condition does not determine whether a value should exist in the output. Every sensor position remains present. Instead, the condition determines whether the value at that position should change. This is the central distinction between masking and selective updating. In Chapter 5, masking answered:</p>
+<blockquote class="blockquote">
+<p>Should the numerical contribution at this position survive or be suppressed to zero?</p>
+</blockquote>
+<p>The present computation asks:</p>
+<blockquote class="blockquote">
+<p>Should the value at this position be changed or preserved?</p>
+</blockquote>
+<p>Suppression and preservation are not interchangeable. If a reading does not require correction, the required result is not zero. The required result is the original reading itself.</p>
+<section id="the-original-state-and-the-updated-state" class="level3">
+<h3 class="anchored" data-anchor-id="the-original-state-and-the-updated-state">The Original State and the Updated State</h3>
+<p>To represent change mathematically, we must distinguish the value before the update from the value after the update. Let</p>
+<p><span class="math display">\[
+x_i
+\]</span></p>
+<p>denote the original reading at position <span class="math inline">\(i\)</span>, and let</p>
+<p><span class="math display">\[
+x_i'
+\]</span></p>
+<p>denote the corrected reading at the same position. The prime symbol in <span class="math inline">\(x_i'\)</span> does not mean differentiation here. It labels a new version of the quantity. Both <span class="math inline">\(x_i\)</span> and <span class="math inline">\(x_i'\)</span> refer to the same sensor position, but they refer to different states of its value:</p>
+<p><span class="math display">\[
+x_i
+=
+\text{value before correction},
+\]</span></p>
+<p><span class="math display">\[
+x_i'
+=
+\text{value after correction}.
+\]</span></p>
+<p>This notation prevents a conceptual ambiguity that ordinary assignment syntax can hide. In code such as</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>reading <span class="op">=</span> reading <span class="op">+</span> <span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>the name <code>reading</code> appears on both sides. On the right, it refers to the old value; after assignment, the same name refers to the new value. Mathematics makes the two roles explicit:</p>
+<p><span class="math display">\[
+\text{old state}
+\longrightarrow
+\text{new state}.
+\]</span></p>
+<p>For the five readings, the corresponding state pairs are</p>
+<p><span class="math display">\[
+x_1=18
+\longrightarrow
+x_1'=20,
+\]</span></p>
+<p><span class="math display">\[
+x_2=24
+\longrightarrow
+x_2'=24,
+\]</span></p>
+<p><span class="math display">\[
+x_3=16
+\longrightarrow
+x_3'=18,
+\]</span></p>
+<p><span class="math display">\[
+x_4=27
+\longrightarrow
+x_4'=27,
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+x_5=19
+\longrightarrow
+x_5'=21.
+\]</span></p>
+<p>Some positions undergo a numerical change, while others satisfy</p>
+<p><span class="math display">\[
+x_i'=x_i.
+\]</span></p>
+<p>This equality expresses preservation. It says that the transition from the original state to the updated state leaves the value invariant.</p>
+</section>
+<section id="constructing-the-required-behavior" class="level3">
+<h3 class="anchored" data-anchor-id="constructing-the-required-behavior">Constructing the Required Behavior</h3>
+<p>Before searching for one algebraic expression, write the required update as a piecewise relationship:</p>
+<p><span class="math display">\[
+x_i'
+=
+\begin{cases}
+x_i+2, &amp; x_i&lt;20,\\
+x_i, &amp; x_i\geq20.
+\end{cases}
+\]</span></p>
+<p>This relationship contains two different state transitions. For a reading below <span class="math inline">\(20\)</span>, the transition is</p>
+<p><span class="math display">\[
+x_i\longrightarrow x_i+2.
+\]</span></p>
+<p>For a reading of at least <span class="math inline">\(20\)</span>, the transition is</p>
+<p><span class="math display">\[
+x_i\longrightarrow x_i.
+\]</span></p>
+<p>The second branch is not the absence of a rule. Preservation is itself a mathematical requirement. The computation must guarantee that the original value passes into the new state without alteration.</p>
+<p>The concrete behavior can be displayed as follows:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 23%">
+<col style="width: 29%">
+<col style="width: 23%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Position <span class="math inline">\(i\)</span></th>
+<th style="text-align: right;">Original <span class="math inline">\(x_i\)</span></th>
+<th style="text-align: center;">Condition <span class="math inline">\(x_i&lt;20\)</span></th>
+<th style="text-align: right;">Required updated value <span class="math inline">\(x_i'\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><span class="math inline">\(1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(18\)</span></td>
+<td style="text-align: center;">true</td>
+<td style="text-align: right;"><span class="math inline">\(20\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><span class="math inline">\(2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(24\)</span></td>
+<td style="text-align: center;">false</td>
+<td style="text-align: right;"><span class="math inline">\(24\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><span class="math inline">\(3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(16\)</span></td>
+<td style="text-align: center;">true</td>
+<td style="text-align: right;"><span class="math inline">\(18\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><span class="math inline">\(4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(27\)</span></td>
+<td style="text-align: center;">false</td>
+<td style="text-align: right;"><span class="math inline">\(27\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><span class="math inline">\(5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(19\)</span></td>
+<td style="text-align: center;">true</td>
+<td style="text-align: right;"><span class="math inline">\(21\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The condition from Chapter 5 can be encoded as the mask component</p>
+<p><span class="math display">\[
+m_i=\mathbf{1}[x_i&lt;20].
+\]</span></p>
+<p>For the concrete collection,</p>
+<p><span class="math display">\[
+m_1=1,
+\qquad
+m_2=0,
+\qquad
+m_3=1,
+\qquad
+m_4=0,
+\qquad
+m_5=1.
+\]</span></p>
+<p>Thus,</p>
+<p><span class="math display">\[
+\mathbf{m}
+=
+\begin{bmatrix}
+1\\
+0\\
+1\\
+0\\
+1
+\end{bmatrix}.
+\]</span></p>
+<p>The mask correctly describes where correction is required. It does not yet describe how the corrected state should be constructed.</p>
+</section>
+<section id="why-masking-the-existing-value-solves-the-wrong-problem" class="level3">
+<h3 class="anchored" data-anchor-id="why-masking-the-existing-value-solves-the-wrong-problem">Why Masking the Existing Value Solves the Wrong Problem</h3>
+<p>Chapter 5 used elementwise gating:</p>
+<p><span class="math display">\[
+y_i=m_ix_i.
+\]</span></p>
+<p>If we apply that construction directly to the temperature readings, we obtain</p>
+<p><span class="math display">\[
+\mathbf{m}\odot\mathbf{x}
+=
+\begin{bmatrix}
+1\\
+0\\
+1\\
+0\\
+1
+\end{bmatrix}
+\odot
+\begin{bmatrix}
+18\\
+24\\
+16\\
+27\\
+19
+\end{bmatrix}
+=
+\begin{bmatrix}
+18\\
+0\\
+16\\
+0\\
+19
+\end{bmatrix}.
+\]</span></p>
+<p>This output identifies the readings requiring correction by preserving them and suppressing the others. It may be useful for some purpose, but it is not the corrected collection. The failure occurs because the gates are controlling the existing values:</p>
+<p><span class="math display">\[
+m_ix_i.
+\]</span></p>
+<p>When <span class="math inline">\(m_i=0\)</span>, the gate produces</p>
+<p><span class="math display">\[
+0x_i=0.
+\]</span></p>
+<p>The update requirement is different. When <span class="math inline">\(m_i=0\)</span>, we need</p>
+<p><span class="math display">\[
+x_i'=x_i,
+\]</span></p>
+<p>not</p>
+<p><span class="math display">\[
+x_i'=0.
+\]</span></p>
+<p>The nonqualifying values must pass unchanged from the original state to the updated state. The selected values also reveal a problem. When <span class="math inline">\(m_i=1\)</span>, the gated expression produces</p>
+<p><span class="math display">\[
+m_ix_i=x_i.
+\]</span></p>
+<p>It preserves the old reading, but the required updated value is</p>
+<p><span class="math display">\[
+x_i+2.
+\]</span></p>
+<p>Thus direct masking fails in both cases:</p>
+<p><span class="math display">\[
+m_ix_i
+=
+\begin{cases}
+x_i, &amp; m_i=1,\\
+0, &amp; m_i=0,
+\end{cases}
+\]</span></p>
+<p>whereas the update requires</p>
+<p><span class="math display">\[
+x_i'
+=
+\begin{cases}
+x_i+2, &amp; m_i=1,\\
+x_i, &amp; m_i=0.
+\end{cases}
+\]</span></p>
+<p>The issue is not that the mask is incorrect. The issue is that it has been attached to the wrong mathematical quantity.</p>
+</section>
+<section id="separating-what-persists-from-what-changes" class="level3">
+<h3 class="anchored" data-anchor-id="separating-what-persists-from-what-changes">Separating What Persists from What Changes</h3>
+<p>Every updated reading contains the original reading as its starting point. For selected positions,</p>
+<p><span class="math display">\[
+x_i'=x_i+2.
+\]</span></p>
+<p>For unselected positions,</p>
+<p><span class="math display">\[
+x_i'=x_i.
+\]</span></p>
+<p>The original value <span class="math inline">\(x_i\)</span> therefore appears in both cases. It is the persistent part of the state transition. What differs between the two cases is the additional correction:</p>
+<p><span class="math display">\[
+2
+\quad\text{or}\quad
+0.
+\]</span></p>
+<p>The required correction at each position is</p>
+<p><span class="math display">\[
+\text{correction at position }i
+=
+\begin{cases}
+2, &amp; m_i=1,\\
+0, &amp; m_i=0.
+\end{cases}
+\]</span></p>
+<p>This reveals a new place for the gate. The condition should not control whether the existing state survives. The existing state must survive in every case. The condition should control whether the proposed change contributes. The update can therefore be decomposed conceptually into two parts:</p>
+<p><span class="math display">\[
+\boxed{
+\text{updated state}
+=
+\text{original state}
++
+\text{conditionally active change}.
+}
+\]</span></p>
+<p>For the first reading, the original state is <span class="math inline">\(18\)</span> and the active change is <span class="math inline">\(2\)</span>:</p>
+<p><span class="math display">\[
+18\longrightarrow18+2=20.
+\]</span></p>
+<p>For the second reading, the original state is <span class="math inline">\(24\)</span> and the inactive change is <span class="math inline">\(0\)</span>:</p>
+<p><span class="math display">\[
+24\longrightarrow24+0=24.
+\]</span></p>
+<p>The value remains unchanged not because the update forgot about it, but because the change applied to it is the additive identity <span class="math inline">\(0\)</span>. This gives zero a different role from the one it played in direct masking. In</p>
+<p><span class="math display">\[
+m_ix_i,
+\]</span></p>
+<p>zero suppresses the existing value. In a selective update, zero should suppress only the change. The original value must remain outside that suppression. The new construction problem is therefore:</p>
+<blockquote class="blockquote">
+<p>How can <span class="math inline">\(m_i\)</span> produce a change of <span class="math inline">\(2\)</span> when it equals <span class="math inline">\(1\)</span> and a change of <span class="math inline">\(0\)</span> when it equals <span class="math inline">\(0\)</span>, while the original value <span class="math inline">\(x_i\)</span> remains present in both cases?</p>
+</blockquote>
+<p>Section 6.2 will construct the algebraic relationship that satisfies this requirement.</p>
+</section>
+</section>
+<section id="gating-the-change-instead-of-the-value" class="level2">
+<h2 class="anchored" data-anchor-id="gating-the-change-instead-of-the-value">6.2 Gating the Change Instead of the Value</h2>
+<p>Section 6.1 established the required transition for the sensor readings:</p>
+<p><span class="math display">\[
+x_i'
+=
+\begin{cases}
+x_i+2, &amp; m_i=1,\\
+x_i, &amp; m_i=0.
+\end{cases}
+\]</span></p>
+<p>The original value <span class="math inline">\(x_i\)</span> appears in both branches. What changes between the two cases is not whether <span class="math inline">\(x_i\)</span> survives, but whether the correction of <span class="math inline">\(2\)</span> degrees contributes. The mathematical problem is therefore to construct a correction that behaves as</p>
+<p><span class="math display">\[
+\text{correction at position }i
+=
+\begin{cases}
+2, &amp; m_i=1,\\
+0, &amp; m_i=0.
+\end{cases}
+\]</span></p>
+<p>Chapter 3 already constructed precisely this type of behavior. A binary gate can preserve or suppress an arbitrary contribution through multiplication. If the possible correction is <span class="math inline">\(2\)</span>, then</p>
+<p><span class="math display">\[
+m_i(2)
+\]</span></p>
+<p>has the required behavior. When <span class="math inline">\(m_i=1\)</span>,</p>
+<p><span class="math display">\[
+m_i(2)=1(2)=2,
+\]</span></p>
+<p>and when <span class="math inline">\(m_i=0\)</span>,</p>
+<p><span class="math display">\[
+m_i(2)=0(2)=0.
+\]</span></p>
+<p>The conditionally active correction is therefore</p>
+<p><span class="math display">\[
+2m_i.
+\]</span></p>
+<p>The order of the factors does not change the numerical product:</p>
+<p><span class="math display">\[
+m_i(2)=2m_i.
+\]</span></p>
+<p>The notation <span class="math inline">\(2m_i\)</span> is convenient here because it can be read as a correction of magnitude <span class="math inline">\(2\)</span> whose presence is controlled by <span class="math inline">\(m_i\)</span>.</p>
+<section id="constructing-the-new-state" class="level3">
+<h3 class="anchored" data-anchor-id="constructing-the-new-state">Constructing the New State</h3>
+<p>The correction alone is not the updated reading. It describes only how much should be added to the original state. The new state must therefore be constructed as</p>
+<p><span class="math display">\[
+\text{new state}
+=
+\text{old state}
++
+\text{active correction}.
+\]</span></p>
+<p>Substituting the quantities from the sensor problem gives</p>
+<p><span class="math display">\[
+\boxed{
+x_i'=x_i+2m_i.
+}
+\]</span></p>
+<p>Every part of this equation now has a computational role:</p>
+<ul>
+<li><span class="math inline">\(x_i\)</span> preserves the original reading;</li>
+<li><span class="math inline">\(2\)</span> is the proposed correction;</li>
+<li><span class="math inline">\(m_i\)</span> determines whether that correction contributes;</li>
+<li>addition combines the original state with the active change;</li>
+<li><span class="math inline">\(x_i'\)</span> represents the resulting state.</li>
+</ul>
+<p>The equation should be verified at both possible gate values. When a reading is below <span class="math inline">\(20\)</span> degrees Celsius, <span class="math inline">\(m_i=1\)</span>, so</p>
+<p><span class="math display">\[
+\begin{aligned}
+x_i'
+&amp;=x_i+2m_i\\
+&amp;=x_i+2(1)\\
+&amp;=x_i+2.
+\end{aligned}
+\]</span></p>
+<p>The correction survives. When a reading is at least <span class="math inline">\(20\)</span> degrees Celsius, <span class="math inline">\(m_i=0\)</span>, so</p>
+<p><span class="math display">\[
+\begin{aligned}
+x_i'
+&amp;=x_i+2m_i\\
+&amp;=x_i+2(0)\\
+&amp;=x_i+0\\
+&amp;=x_i.
+\end{aligned}
+\]</span></p>
+<p>The correction disappears, while the original reading remains unchanged.</p>
+<p>The final equality</p>
+<p><span class="math display">\[
+x_i+0=x_i
+\]</span></p>
+<p>is the algebraic reason that the unselected state is preserved. Zero is the additive identity: adding it changes nothing. Multiplication by zero suppresses the proposed correction, and addition of the resulting zero preserves the existing state. Selective updating therefore coordinates two algebraic roles:</p>
+<p><span class="math display">\[
+0\Delta=0
+\]</span></p>
+<p>suppresses the change, while</p>
+<p><span class="math display">\[
+x+0=x
+\]</span></p>
+<p>preserves the state. This combination is the central mechanism of an additive selective update.</p>
+</section>
+<section id="verifying-the-concrete-collection" class="level3">
+<h3 class="anchored" data-anchor-id="verifying-the-concrete-collection">Verifying the Concrete Collection</h3>
+<p>For the original readings,</p>
+<p><span class="math display">\[
+\mathbf{x}
+=
+\begin{bmatrix}
+18\\
+24\\
+16\\
+27\\
+19
+\end{bmatrix}
+\]</span></p>
+<p>and the mask is</p>
+<p><span class="math display">\[
+\mathbf{m}
+=
+\begin{bmatrix}
+1\\
+0\\
+1\\
+0\\
+1
+\end{bmatrix}.
+\]</span></p>
+<p>At position <span class="math inline">\(1\)</span>,</p>
+<p><span class="math display">\[
+x_1'=18+2(1)=20.
+\]</span></p>
+<p>At position <span class="math inline">\(2\)</span>,</p>
+<p><span class="math display">\[
+x_2'=24+2(0)=24.
+\]</span></p>
+<p>At position <span class="math inline">\(3\)</span>,</p>
+<p><span class="math display">\[
+x_3'=16+2(1)=18.
+\]</span></p>
+<p>At position <span class="math inline">\(4\)</span>,</p>
+<p><span class="math display">\[
+x_4'=27+2(0)=27.
+\]</span></p>
+<p>At position <span class="math inline">\(5\)</span>,</p>
+<p><span class="math display">\[
+x_5'=19+2(1)=21.
+\]</span></p>
+<p>The five relationships can be organized as</p>
+<p><span class="math display">\[
+\mathbf{x}'
+=
+\begin{bmatrix}
+18+2(1)\\
+24+2(0)\\
+16+2(1)\\
+27+2(0)\\
+19+2(1)
+\end{bmatrix}
+=
+\begin{bmatrix}
+20\\
+24\\
+18\\
+27\\
+21
+\end{bmatrix}.
+\]</span></p>
+<p>The correction vector is</p>
+<p><span class="math display">\[
+2\mathbf{m}
+=
+2
+\begin{bmatrix}
+1\\
+0\\
+1\\
+0\\
+1
+\end{bmatrix}
+=
+\begin{bmatrix}
+2\\
+0\\
+2\\
+0\\
+2
+\end{bmatrix}.
+\]</span></p>
+<p>The updated collection is therefore</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mathbf{x}'
+&amp;=\mathbf{x}+2\mathbf{m}\\
+&amp;=
+\begin{bmatrix}
+18\\
+24\\
+16\\
+27\\
+19
+\end{bmatrix}
++
+\begin{bmatrix}
+2\\
+0\\
+2\\
+0\\
+2
+\end{bmatrix}\\
+&amp;=
+\begin{bmatrix}
+20\\
+24\\
+18\\
+27\\
+21
+\end{bmatrix}.
+\end{aligned}
+\]</span></p>
+<p>The vector equation</p>
+<p><span class="math display">\[
+\boxed{
+\mathbf{x}'=\mathbf{x}+2\mathbf{m}
+}
+\]</span></p>
+<p>does not introduce a new update rule. It organizes the componentwise relationships</p>
+<p><span class="math display">\[
+x_i'=x_i+2m_i
+\]</span></p>
+<p>into one structured transformation.</p>
+</section>
+<section id="from-a-particular-correction-to-a-general-change" class="level3">
+<h3 class="anchored" data-anchor-id="from-a-particular-correction-to-a-general-change">From a Particular Correction to a General Change</h3>
+<p>The correction of <span class="math inline">\(2\)</span> degrees is specific to the sensor example. A general update may add a different quantity. Let</p>
+<p><span class="math display">\[
+\Delta_i
+\]</span></p>
+<p>denote the proposed change at position <span class="math inline">\(i\)</span>. The symbol <span class="math inline">\(\Delta\)</span>, the Greek capital letter delta, commonly represents change. It describes the displacement between an original state and a possible new state. Without a condition, the proposed update would be</p>
+<p><span class="math display">\[
+x_i'=x_i+\Delta_i.
+\]</span></p>
+<p>If the change should occur only where <span class="math inline">\(m_i=1\)</span>, then the mask must gate <span class="math inline">\(\Delta_i\)</span>:</p>
+<p><span class="math display">\[
+m_i\Delta_i.
+\]</span></p>
+<p>The complete selective update becomes</p>
+<p><span class="math display">\[
+\boxed{
+x_i'=x_i+m_i\Delta_i.
+}
+\]</span></p>
+<p>The equation is derived from two independent requirements. First, the original state must provide the baseline:</p>
+<p><span class="math display">\[
+x_i.
+\]</span></p>
+<p>Second, the proposed change must contribute only at selected positions:</p>
+<p><span class="math display">\[
+m_i\Delta_i.
+\]</span></p>
+<p>Addition combines these roles:</p>
+<p><span class="math display">\[
+\text{updated state}
+=
+\text{original state}
++
+\text{gated change}.
+\]</span></p>
+<p>Verification shows that the equation reproduces the desired two cases. When <span class="math inline">\(m_i=1\)</span>,</p>
+<p><span class="math display">\[
+\begin{aligned}
+x_i'
+&amp;=x_i+m_i\Delta_i\\
+&amp;=x_i+1\Delta_i\\
+&amp;=x_i+\Delta_i.
+\end{aligned}
+\]</span></p>
+<p>When <span class="math inline">\(m_i=0\)</span>,</p>
+<p><span class="math display">\[
+\begin{aligned}
+x_i'
+&amp;=x_i+m_i\Delta_i\\
+&amp;=x_i+0\Delta_i\\
+&amp;=x_i.
+\end{aligned}
+\]</span></p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+x_i+m_i\Delta_i
+=
+\begin{cases}
+x_i+\Delta_i, &amp; m_i=1,\\
+x_i, &amp; m_i=0.
+\end{cases}
+\]</span></p>
+<p>The algebraic expression and the selective branch describe the same state transition.</p>
+</section>
+<section id="the-change-may-be-shared-or-position-dependent" class="level3">
+<h3 class="anchored" data-anchor-id="the-change-may-be-shared-or-position-dependent">The Change May Be Shared or Position-Dependent</h3>
+<p>In the sensor example, every selected position receives the same correction:</p>
+<p><span class="math display">\[
+\Delta_i=2.
+\]</span></p>
+<p>This is a constant selective update:</p>
+<p><span class="math display">\[
+x_i'=x_i+2m_i.
+\]</span></p>
+<p>Other computations may propose a different change at every position. Suppose</p>
+<p><span class="math display">\[
+\boldsymbol{\Delta}
+=
+\begin{bmatrix}
+2\\
+1\\
+3\\
+2\\
+4
+\end{bmatrix}.
+\]</span></p>
+<p>The mask remains</p>
+<p><span class="math display">\[
+\mathbf{m}
+=
+\begin{bmatrix}
+1\\
+0\\
+1\\
+0\\
+1
+\end{bmatrix}.
+\]</span></p>
+<p>Elementwise gating produces the active changes:</p>
+<p><span class="math display">\[
+\mathbf{m}\odot\boldsymbol{\Delta}
+=
+\begin{bmatrix}
+1(2)\\
+0(1)\\
+1(3)\\
+0(2)\\
+1(4)
+\end{bmatrix}
+=
+\begin{bmatrix}
+2\\
+0\\
+3\\
+0\\
+4
+\end{bmatrix}.
+\]</span></p>
+<p>The complete vector update is</p>
+<p><span class="math display">\[
+\boxed{
+\mathbf{x}'
+=
+\mathbf{x}
++
+\mathbf{m}\odot\boldsymbol{\Delta}.
+}
+\]</span></p>
+<p>Its componentwise definition is</p>
+<p><span class="math display">\[
+x_i'=x_i+m_i\Delta_i.
+\]</span></p>
+<p>The mask and the change vector perform different roles. The mask answers:</p>
+<blockquote class="blockquote">
+<p>At which positions may a change occur?</p>
+</blockquote>
+<p>The change vector answers:</p>
+<blockquote class="blockquote">
+<p>If a change occurs at position <span class="math inline">\(i\)</span>, what change is proposed there?</p>
+</blockquote>
+<p>These roles should not be conflated. Two update problems can use the same mask while proposing different changes. Conversely, the same proposed changes can be activated under different masks.</p>
+</section>
+<section id="change-has-the-same-units-as-the-state" class="level3">
+<h3 class="anchored" data-anchor-id="change-has-the-same-units-as-the-state">Change Has the Same Units as the State</h3>
+<p>The addition</p>
+<p><span class="math display">\[
+x_i+\Delta_i
+\]</span></p>
+<p>is meaningful only if <span class="math inline">\(\Delta_i\)</span> has units compatible with <span class="math inline">\(x_i\)</span>. In the sensor example, <span class="math inline">\(x_i\)</span> is measured in degrees Celsius, so <span class="math inline">\(\Delta_i\)</span> must also represent a temperature difference measured in degrees Celsius.</p>
+<p>The mask <span class="math inline">\(m_i\)</span> has no physical unit. It is a binary selector:</p>
+<p><span class="math display">\[
+m_i\in\{0,1\}.
+\]</span></p>
+<p>Multiplication by the dimensionless mask preserves the units of the change:</p>
+<p><span class="math display">\[
+m_i\Delta_i
+\]</span></p>
+<p>has the same units as <span class="math inline">\(\Delta_i\)</span>. The complete equation is therefore dimensionally coherent:</p>
+<p><span class="math display">\[
+\underbrace{x_i'}_{\text{degrees}}
+=
+\underbrace{x_i}_{\text{degrees}}
++
+\underbrace{m_i}_{\text{dimensionless}}
+\underbrace{\Delta_i}_{\text{degrees}}.
+\]</span></p>
+<p>This unit analysis reinforces the semantic roles of the quantities. The mask is not an amount of temperature. It controls whether an amount of temperature contributes.</p>
+</section>
+<section id="a-change-can-be-positive-negative-or-zero" class="level3">
+<h3 class="anchored" data-anchor-id="a-change-can-be-positive-negative-or-zero">A Change Can Be Positive, Negative, or Zero</h3>
+<p>The symbol <span class="math inline">\(\Delta_i\)</span> does not imply an increase. Its sign determines the direction of change.</p>
+<p>If</p>
+<p><span class="math display">\[
+\Delta_i&gt;0,
+\]</span></p>
+<p>then an active update increases the state. If</p>
+<p><span class="math display">\[
+\Delta_i&lt;0,
+\]</span></p>
+<p>then an active update decreases the state. If</p>
+<p><span class="math display">\[
+\Delta_i=0,
+\]</span></p>
+<p>then the proposed update leaves the state unchanged even when the gate is open.</p>
+<p>For example, if a selected value must be reduced by <span class="math inline">\(3\)</span>, then</p>
+<p><span class="math display">\[
+\Delta_i=-3
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+x_i'=x_i+m_i(-3)=x_i-3m_i.
+\]</span></p>
+<p>When <span class="math inline">\(m_i=1\)</span>,</p>
+<p><span class="math display">\[
+x_i'=x_i-3,
+\]</span></p>
+<p>and when <span class="math inline">\(m_i=0\)</span>,</p>
+<p><span class="math display">\[
+x_i'=x_i.
+\]</span></p>
+<p>The general equation therefore represents conditional change rather than conditional increase:</p>
+<p><span class="math display">\[
+\boxed{
+x_i'=x_i+m_i\Delta_i.
+}
+\]</span></p>
+<p>The condition controls whether the displacement is active; the sign and magnitude of <span class="math inline">\(\Delta_i\)</span> determine where the active update moves the state.</p>
+</section>
+<section id="state-and-change-are-different-mathematical-roles" class="level3">
+<h3 class="anchored" data-anchor-id="state-and-change-are-different-mathematical-roles">State and Change Are Different Mathematical Roles</h3>
+<p>The equation</p>
+<p><span class="math display">\[
+x_i'=x_i+m_i\Delta_i
+\]</span></p>
+<p>contains two quantities that may have the same units but different meanings. The term <span class="math inline">\(x_i\)</span> is a state: it describes where the system currently is. The term <span class="math inline">\(\Delta_i\)</span> is a change: it describes a movement relative to that state. This distinction is analogous to the difference between a location and a displacement. If a position is <span class="math inline">\(10\)</span> meters from an origin and a displacement of <span class="math inline">\(3\)</span> meters is applied, the new position is</p>
+<p><span class="math display">\[
+10+3=13.
+\]</span></p>
+<p>The number <span class="math inline">\(10\)</span> identifies a state relative to the chosen origin. The number <span class="math inline">\(3\)</span> describes a change from that state. They can be added because their units are compatible, but they play different semantic roles. The mask acts on the displacement:</p>
+<p><span class="math display">\[
+m_i\Delta_i.
+\]</span></p>
+<p>It decides whether the movement occurs. It does not decide whether the original location exists. This produces a useful philosophical interpretation of selective updating:</p>
+<p><span class="math display">\[
+\boxed{
+\text{the state is preserved by default; the condition governs departure from it}.
+}
+\]</span></p>
+<p>An unselected position remains invariant because its proposed change is mapped to the additive identity:</p>
+<p><span class="math display">\[
+m_i=0
+\quad\Longrightarrow\quad
+m_i\Delta_i=0
+\quad\Longrightarrow\quad
+x_i'=x_i.
+\]</span></p>
+<p>A selected position changes because the proposed displacement is preserved:</p>
+<p><span class="math display">\[
+m_i=1
+\quad\Longrightarrow\quad
+m_i\Delta_i=\Delta_i
+\quad\Longrightarrow\quad
+x_i'=x_i+\Delta_i.
+\]</span></p>
+<p>The mask has therefore moved from controlling data to controlling change. In Chapter 5,</p>
+<p><span class="math display">\[
+m_ix_i
+\]</span></p>
+<p>asked whether the value itself should contribute. In Chapter 6,</p>
+<p><span class="math display">\[
+x_i+m_i\Delta_i
+\]</span></p>
+<p>preserves the value and asks whether a change should contribute. The conceptual transition is</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+\text{masked value}
+&amp;:\quad m_ix_i,\\
+\text{selectively updated value}
+&amp;:\quad x_i+m_i\Delta_i.
+\end{aligned}
+}
+\]</span></p>
+<p>The selective-update equation now handles changes expressed as additions or displacements. A different requirement remains: sometimes a selected value should not receive a known increment but should be replaced by a specified target value. To express replacement through the same update structure, we must determine the exact change that moves <span class="math inline">\(x_i\)</span> to that target.</p>
+</section>
+</section>
+<section id="conditional-replacement-as-a-difference-update" class="level2">
+<h2 class="anchored" data-anchor-id="conditional-replacement-as-a-difference-update">6.3 Conditional Replacement as a Difference Update</h2>
+<p>The update in Section 6.2 added a correction of <span class="math inline">\(2\)</span> degrees to every selected reading:</p>
+<p><span class="math display">\[
+x_i'=x_i+2m_i.
+\]</span></p>
+<p>When the gate was open, the new value was determined relative to the old value:</p>
+<p><span class="math display">\[
+x_i'=x_i+2.
+\]</span></p>
+<p>Thus different original readings remained different after the update:</p>
+<p><span class="math display">\[
+18\longrightarrow20,
+\]</span></p>
+<p><span class="math display">\[
+16\longrightarrow18,
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+19\longrightarrow21.
+\]</span></p>
+<p>Suppose the calibration requirement changes. Instead of increasing every reading below <span class="math inline">\(20\)</span> by a fixed amount, assume that every such reading must be replaced by the common target value <span class="math inline">\(20\)</span>. Readings of at least <span class="math inline">\(20\)</span> must remain unchanged.</p>
+<p>The ordinary program becomes</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>readings <span class="op">=</span> [<span class="dv">18</span>, <span class="dv">24</span>, <span class="dv">16</span>, <span class="dv">27</span>, <span class="dv">19</span>]</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>corrected_readings <span class="op">=</span> []</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> reading <span class="kw">in</span> readings:</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> reading <span class="op">&lt;</span> <span class="dv">20</span>:</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        corrected_readings.append(<span class="dv">20</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        corrected_readings.append(reading)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The required transformation is now</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+18\\
+24\\
+16\\
+27\\
+19
+\end{bmatrix}
+\longrightarrow
+\begin{bmatrix}
+20\\
+24\\
+20\\
+27\\
+20
+\end{bmatrix}.
+\]</span></p>
+<p>This is not the same transformation as adding <span class="math inline">\(2\)</span> to every selected value. The reading <span class="math inline">\(18\)</span> must increase by <span class="math inline">\(2\)</span>, but the reading <span class="math inline">\(16\)</span> must increase by <span class="math inline">\(4\)</span>, and the reading <span class="math inline">\(19\)</span> must increase by <span class="math inline">\(1\)</span>. The required change depends on the original value. The piecewise requirement is</p>
+<p><span class="math display">\[
+x_i'
+=
+\begin{cases}
+20, &amp; x_i&lt;20,\\
+x_i, &amp; x_i\geq20.
+\end{cases}
+\]</span></p>
+<p>Using the mask</p>
+<p><span class="math display">\[
+m_i=\mathbf{1}[x_i&lt;20],
+\]</span></p>
+<p>the same requirement becomes</p>
+<p><span class="math display">\[
+x_i'
+=
+\begin{cases}
+20, &amp; m_i=1,\\
+x_i, &amp; m_i=0.
+\end{cases}
+\]</span></p>
+<p>The problem is no longer merely to activate a known correction. We must determine what correction would move each selected value from its present state <span class="math inline">\(x_i\)</span> to the target state <span class="math inline">\(20\)</span>.</p>
+<section id="a-target-is-not-the-same-object-as-a-change" class="level3">
+<h3 class="anchored" data-anchor-id="a-target-is-not-the-same-object-as-a-change">A Target Is Not the Same Object as a Change</h3>
+<p>The number <span class="math inline">\(20\)</span> in this program is a target value. It describes where a selected reading should end. It does not directly describe how far the reading must move. For an original reading of <span class="math inline">\(18\)</span>, reaching <span class="math inline">\(20\)</span> requires the change</p>
+<p><span class="math display">\[
+20-18=2.
+\]</span></p>
+<p>For an original reading of <span class="math inline">\(16\)</span>, reaching <span class="math inline">\(20\)</span> requires</p>
+<p><span class="math display">\[
+20-16=4.
+\]</span></p>
+<p>For an original reading of <span class="math inline">\(19\)</span>, reaching <span class="math inline">\(20\)</span> requires</p>
+<p><span class="math display">\[
+20-19=1.
+\]</span></p>
+<p>The target is the same in all three cases, but the required changes are different. This exposes a distinction between two mathematical roles:</p>
+<p><span class="math display">\[
+\text{target}
+=
+\text{desired final state},
+\]</span></p>
+<p>whereas</p>
+<p><span class="math display">\[
+\text{change}
+=
+\text{displacement from the current state to the target}.
+\]</span></p>
+<p>Let <span class="math inline">\(r_i\)</span> denote the replacement target at position <span class="math inline">\(i\)</span>. To discover the required change, begin with the defining requirement</p>
+<p><span class="math display">\[
+x_i+\Delta_i=r_i.
+\]</span></p>
+<p>This equation says that applying the correct change <span class="math inline">\(\Delta_i\)</span> to the current value <span class="math inline">\(x_i\)</span> must produce the target <span class="math inline">\(r_i\)</span>. Subtracting <span class="math inline">\(x_i\)</span> from both sides gives</p>
+<p><span class="math display">\[
+\Delta_i=r_i-x_i.
+\]</span></p>
+<p>The difference</p>
+<p><span class="math display">\[
+r_i-x_i
+\]</span></p>
+<p>is therefore not an arbitrary algebraic rearrangement. It is the unique additive correction that transforms <span class="math inline">\(x_i\)</span> into <span class="math inline">\(r_i\)</span>:</p>
+<p><span class="math display">\[
+x_i+(r_i-x_i)=r_i.
+\]</span></p>
+<p>The order of subtraction is determined by the direction of the required movement. We are moving from the current state <span class="math inline">\(x_i\)</span> to the target state <span class="math inline">\(r_i\)</span>. Therefore the displacement is</p>
+<p><span class="math display">\[
+\boxed{
+\text{target}-\text{current state}
+=
+r_i-x_i.
+}
+\]</span></p>
+<p>Writing <span class="math inline">\(x_i-r_i\)</span> would describe the displacement in the opposite direction. Adding that quantity to <span class="math inline">\(x_i\)</span> would not generally produce <span class="math inline">\(r_i\)</span>. For the target <span class="math inline">\(20\)</span>, the required change is</p>
+<p><span class="math display">\[
+\Delta_i=20-x_i.
+\]</span></p>
+<p>This one expression generates the different corrections required by different starting values.</p>
+</section>
+<section id="gating-the-displacement-to-the-target" class="level3">
+<h3 class="anchored" data-anchor-id="gating-the-displacement-to-the-target">Gating the Displacement to the Target</h3>
+<p>Section 6.2 established the general selective-update equation</p>
+<p><span class="math display">\[
+x_i'=x_i+m_i\Delta_i.
+\]</span></p>
+<p>For conditional replacement, the required change is</p>
+<p><span class="math display">\[
+\Delta_i=r_i-x_i.
+\]</span></p>
+<p>Substituting this change into the selective-update equation gives</p>
+<p><span class="math display">\[
+\boxed{
+x_i'=x_i+m_i(r_i-x_i).
+}
+\]</span></p>
+<p>This expression can be read in stages:</p>
+<ol type="1">
+<li>begin at the current state <span class="math inline">\(x_i\)</span>;</li>
+<li>calculate the displacement <span class="math inline">\(r_i-x_i\)</span> needed to reach the target;</li>
+<li>use <span class="math inline">\(m_i\)</span> to decide whether that displacement is active;</li>
+<li>add the active displacement to the current state.</li>
+</ol>
+<p>When <span class="math inline">\(m_i=1\)</span>, the displacement is preserved:</p>
+<p><span class="math display">\[
+\begin{aligned}
+x_i'
+&amp;=x_i+1(r_i-x_i)\\
+&amp;=x_i+r_i-x_i\\
+&amp;=r_i.
+\end{aligned}
+\]</span></p>
+<p>The old value is replaced by the target. When <span class="math inline">\(m_i=0\)</span>, the displacement is suppressed:</p>
+<p><span class="math display">\[
+\begin{aligned}
+x_i'
+&amp;=x_i+0(r_i-x_i)\\
+&amp;=x_i+0\\
+&amp;=x_i.
+\end{aligned}
+\]</span></p>
+<p>The old value is preserved. Therefore,</p>
+<p><span class="math display">\[
+x_i+m_i(r_i-x_i)
+=
+\begin{cases}
+r_i, &amp; m_i=1,\\
+x_i, &amp; m_i=0.
+\end{cases}
+\]</span></p>
+<p>The expression satisfies both branches of the replacement requirement.</p>
+</section>
+<section id="verifying-the-concrete-replacements" class="level3">
+<h3 class="anchored" data-anchor-id="verifying-the-concrete-replacements">Verifying the Concrete Replacements</h3>
+<p>For the sensor example, the target is the constant value</p>
+<p><span class="math display">\[
+r_i=20
+\]</span></p>
+<p>at every position. The update is</p>
+<p><span class="math display">\[
+x_i'=x_i+m_i(20-x_i).
+\]</span></p>
+<p>For <span class="math inline">\(x_1=18\)</span> and <span class="math inline">\(m_1=1\)</span>,</p>
+<p><span class="math display">\[
+\begin{aligned}
+x_1'
+&amp;=18+1(20-18)\\
+&amp;=18+2\\
+&amp;=20.
+\end{aligned}
+\]</span></p>
+<p>For <span class="math inline">\(x_2=24\)</span> and <span class="math inline">\(m_2=0\)</span>,</p>
+<p><span class="math display">\[
+\begin{aligned}
+x_2'
+&amp;=24+0(20-24)\\
+&amp;=24+0(-4)\\
+&amp;=24.
+\end{aligned}
+\]</span></p>
+<p>The difference <span class="math inline">\(20-24=-4\)</span> is calculated, but the closed gate prevents it from contributing. This illustrates an important point: the proposed target does not alter an unselected value. Selection is controlled by <span class="math inline">\(m_i\)</span>, not by whether the target lies above or below the current state.</p>
+<p>For <span class="math inline">\(x_3=16\)</span> and <span class="math inline">\(m_3=1\)</span>,</p>
+<p><span class="math display">\[
+\begin{aligned}
+x_3'
+&amp;=16+1(20-16)\\
+&amp;=16+4\\
+&amp;=20.
+\end{aligned}
+\]</span></p>
+<p>For <span class="math inline">\(x_4=27\)</span> and <span class="math inline">\(m_4=0\)</span>,</p>
+<p><span class="math display">\[
+\begin{aligned}
+x_4'
+&amp;=27+0(20-27)\\
+&amp;=27+0(-7)\\
+&amp;=27.
+\end{aligned}
+\]</span></p>
+<p>For <span class="math inline">\(x_5=19\)</span> and <span class="math inline">\(m_5=1\)</span>,</p>
+<p><span class="math display">\[
+\begin{aligned}
+x_5'
+&amp;=19+1(20-19)\\
+&amp;=19+1\\
+&amp;=20.
+\end{aligned}
+\]</span></p>
+<p>The computation produces</p>
+<p><span class="math display">\[
+\mathbf{x}'
+=
+\begin{bmatrix}
+20\\
+24\\
+20\\
+27\\
+20
+\end{bmatrix}.
+\]</span></p>
+<p>The selected values all reach the common target even though they require different changes.</p>
+</section>
+<section id="the-vector-form-of-conditional-replacement" class="level3">
+<h3 class="anchored" data-anchor-id="the-vector-form-of-conditional-replacement">The Vector Form of Conditional Replacement</h3>
+<p>Let</p>
+<p><span class="math display">\[
+\mathbf{x}
+=
+\begin{bmatrix}
+18\\
+24\\
+16\\
+27\\
+19
+\end{bmatrix},
+\qquad
+\mathbf{m}
+=
+\begin{bmatrix}
+1\\
+0\\
+1\\
+0\\
+1
+\end{bmatrix},
+\]</span></p>
+<p>and let the target vector be</p>
+<p><span class="math display">\[
+\mathbf{r}
+=
+\begin{bmatrix}
+20\\
+20\\
+20\\
+20\\
+20
+\end{bmatrix}.
+\]</span></p>
+<p>The displacement from the current state to the target is</p>
+<p><span class="math display">\[
+\mathbf{r}-\mathbf{x}
+=
+\begin{bmatrix}
+20-18\\
+20-24\\
+20-16\\
+20-27\\
+20-19
+\end{bmatrix}
+=
+\begin{bmatrix}
+2\\
+-4\\
+4\\
+-7\\
+1
+\end{bmatrix}.
+\]</span></p>
+<p>The mask suppresses the displacements at unselected positions:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mathbf{m}\odot(\mathbf{r}-\mathbf{x})
+&amp;=
+\begin{bmatrix}
+1\\
+0\\
+1\\
+0\\
+1
+\end{bmatrix}
+\odot
+\begin{bmatrix}
+2\\
+-4\\
+4\\
+-7\\
+1
+\end{bmatrix}\\
+&amp;=
+\begin{bmatrix}
+2\\
+0\\
+4\\
+0\\
+1
+\end{bmatrix}.
+\end{aligned}
+\]</span></p>
+<p>Adding the active displacement to the original state gives</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mathbf{x}'
+&amp;=
+\mathbf{x}
++
+\mathbf{m}\odot(\mathbf{r}-\mathbf{x})\\
+&amp;=
+\begin{bmatrix}
+18\\
+24\\
+16\\
+27\\
+19
+\end{bmatrix}
++
+\begin{bmatrix}
+2\\
+0\\
+4\\
+0\\
+1
+\end{bmatrix}\\
+&amp;=
+\begin{bmatrix}
+20\\
+24\\
+20\\
+27\\
+20
+\end{bmatrix}.
+\end{aligned}
+\]</span></p>
+<p>Thus the vector form is</p>
+<p><span class="math display">\[
+\boxed{
+\mathbf{x}'
+=
+\mathbf{x}
++
+\mathbf{m}\odot(\mathbf{r}-\mathbf{x}).
+}
+\]</span></p>
+<p>This equation permits a different target <span class="math inline">\(r_i\)</span> at every position. A constant target is only the special case in which every component of <span class="math inline">\(\mathbf{r}\)</span> has the same value.</p>
+</section>
+<section id="recovering-the-complementary-gate-form" class="level3">
+<h3 class="anchored" data-anchor-id="recovering-the-complementary-gate-form">Recovering the Complementary-Gate Form</h3>
+<p>The replacement equation can be reorganized algebraically:</p>
+<p><span class="math display">\[
+x_i'=x_i+m_i(r_i-x_i).
+\]</span></p>
+<p>Distribute <span class="math inline">\(m_i\)</span>:</p>
+<p><span class="math display">\[
+x_i'=x_i+m_ir_i-m_ix_i.
+\]</span></p>
+<p>Group the terms involving <span class="math inline">\(x_i\)</span>:</p>
+<p><span class="math display">\[
+x_i'=x_i-m_ix_i+m_ir_i.
+\]</span></p>
+<p>Factor <span class="math inline">\(x_i\)</span> from the first two terms:</p>
+<p><span class="math display">\[
+x_i'=(1-m_i)x_i+m_ir_i.
+\]</span></p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+\boxed{
+x_i+m_i(r_i-x_i)
+=
+(1-m_i)x_i+m_ir_i.
+}
+\]</span></p>
+<p>The right-hand side is the algebraic two-way selector developed in Chapter 4. The two alternatives are now:</p>
+<ul>
+<li>preserve the current value <span class="math inline">\(x_i\)</span>;</li>
+<li>replace it with the target <span class="math inline">\(r_i\)</span>.</li>
+</ul>
+<p>The gate <span class="math inline">\(m_i\)</span> controls the target, while its complement <span class="math inline">\(1-m_i\)</span> controls the original value:</p>
+<p><span class="math display">\[
+x_i'=(1-m_i)x_i+m_ir_i.
+\]</span></p>
+<p>When <span class="math inline">\(m_i=1\)</span>,</p>
+<p><span class="math display">\[
+\begin{aligned}
+x_i'
+&amp;=(1-1)x_i+1r_i\\
+&amp;=0+r_i\\
+&amp;=r_i.
+\end{aligned}
+\]</span></p>
+<p>When <span class="math inline">\(m_i=0\)</span>,</p>
+<p><span class="math display">\[
+\begin{aligned}
+x_i'
+&amp;=(1-0)x_i+0r_i\\
+&amp;=x_i+0\\
+&amp;=x_i.
+\end{aligned}
+\]</span></p>
+<p>The two equivalent forms reveal different mathematical interpretations:</p>
+<p><span class="math display">\[
+\boxed{
+x_i+m_i(r_i-x_i)
+}
+\]</span></p>
+<p>describes replacement as a selective displacement from the current state to the target, whereas</p>
+<p><span class="math display">\[
+\boxed{
+(1-m_i)x_i+m_ir_i
+}
+\]</span></p>
+<p>describes replacement as complementary selection between the current value and the target value. Neither form is merely shorter notation. Each exposes a different structure hidden in the same computation.</p>
+</section>
+<section id="replacement-is-a-special-kind-of-update" class="level3">
+<h3 class="anchored" data-anchor-id="replacement-is-a-special-kind-of-update">Replacement Is a Special Kind of Update</h3>
+<p>The general selective update is</p>
+<p><span class="math display">\[
+x_i'=x_i+m_i\Delta_i.
+\]</span></p>
+<p>Conditional replacement fits this form by defining</p>
+<p><span class="math display">\[
+\Delta_i=r_i-x_i.
+\]</span></p>
+<p>Thus replacement is not mathematically separate from updating. It is an update whose change has been constructed to land exactly on a target. A fixed increment uses a change independent of the current state:</p>
+<p><span class="math display">\[
+\Delta_i=c.
+\]</span></p>
+<p>The selected output becomes</p>
+<p><span class="math display">\[
+x_i'=x_i+c.
+\]</span></p>
+<p>Replacement uses a change dependent on both the current state and the target:</p>
+<p><span class="math display">\[
+\Delta_i=r_i-x_i.
+\]</span></p>
+<p>The selected output becomes</p>
+<p><span class="math display">\[
+x_i'=r_i.
+\]</span></p>
+<p>This difference explains why adding the same constant and replacing by the same target produce different results. A constant increment preserves differences among selected values:</p>
+<p><span class="math display">\[
+x_a-x_b
+=
+(x_a+c)-(x_b+c).
+\]</span></p>
+<p>If two selected readings differ by <span class="math inline">\(2\)</span> before the update, they still differ by <span class="math inline">\(2\)</span> after receiving the same correction.Replacement by a common target removes those differences:</p>
+<p><span class="math display">\[
+x_a'=r,
+\qquad
+x_b'=r,
+\]</span></p>
+<p>so</p>
+<p><span class="math display">\[
+x_a'-x_b'=0.
+\]</span></p>
+<p>The update rule therefore determines what structure is preserved. Constant addition preserves relative differences among selected values. Replacement forces selected values to share a specified final state.</p>
+</section>
+<section id="translating-the-equation-back-into-code" class="level3">
+<h3 class="anchored" data-anchor-id="translating-the-equation-back-into-code">Translating the Equation Back into Code</h3>
+<p>The direct branch implementation is</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> selected:</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    updated <span class="op">=</span> target</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    updated <span class="op">=</span> current</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The difference-update form corresponds to</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>updated <span class="op">=</span> current <span class="op">+</span> selected <span class="op">*</span> (target <span class="op">-</span> current)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The complementary-gate form corresponds to</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>updated <span class="op">=</span> (<span class="dv">1</span> <span class="op">-</span> selected) <span class="op">*</span> current <span class="op">+</span> selected <span class="op">*</span> target</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For a binary value</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>selected <span class="op">=</span> <span class="bu">int</span>(condition)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>all three representations produce the same result.</p>
+<p>The purpose of deriving the algebraic forms is not to insist that the arithmetic versions replace a clear scalar branch. The derivation reveals that replacement can be understood in two general ways:</p>
+<p><span class="math display">\[
+\boxed{
+\text{replacement}
+=
+\text{current state}
++
+\text{gated displacement to target}
+}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\boxed{
+\text{replacement}
+=
+\text{complementary selection between current state and target}.
+}
+\]</span></p>
+<p>The next step is to examine how the same reasoning generates a family of selective updates. Addition and replacement are not isolated formulas; they are instances of a broader design method in which we identify what must remain invariant, determine the proposed transformation, and use a mask to control where that transformation affects the state.</p>
+</section>
+</section>
+<section id="families-of-selective-updates" class="level2">
+<h2 class="anchored" data-anchor-id="families-of-selective-updates">6.4 Families of Selective Updates</h2>
+<p>The preceding sections constructed two selective-update patterns. A selected value could receive a proposed change,</p>
+<p><span class="math display">\[
+x_i'=x_i+m_i\Delta_i,
+\]</span></p>
+<p>or it could be moved to a target,</p>
+<p><span class="math display">\[
+x_i'=x_i+m_i(r_i-x_i).
+\]</span></p>
+<p>These expressions may initially appear to be separate formulas. The first seems to describe addition, while the second seems to describe replacement. A more general structure becomes visible when we return to the computational requirement shared by both:</p>
+<blockquote class="blockquote">
+<p>At an unselected position, preserve the original value. At a selected position, apply a specified transformation.</p>
+</blockquote>
+<p>The invariant branch is always</p>
+<p><span class="math display">\[
+x_i'=x_i.
+\]</span></p>
+<p>The selected branch depends on the task. It may increase the value, decrease it, scale it, replace it, clip it, or apply some other transformation. Let</p>
+<p><span class="math display">\[
+f_i(x_i)
+\]</span></p>
+<p>denote the value proposed for position <span class="math inline">\(i\)</span> when that position is selected. The selective requirement is then</p>
+<p><span class="math display">\[
+x_i'
+=
+\begin{cases}
+f_i(x_i), &amp; m_i=1,\\
+x_i, &amp; m_i=0.
+\end{cases}
+\]</span></p>
+<p>This piecewise relationship contains the essential design before any compact formula is introduced. The two alternatives are not arbitrary values. They are two transformations of the current state:</p>
+<ul>
+<li>the identity transformation, which returns <span class="math inline">\(x_i\)</span> unchanged;</li>
+<li>the proposed transformation, which returns <span class="math inline">\(f_i(x_i)\)</span>.</li>
+</ul>
+<p>The identity transformation can be written as</p>
+<p><span class="math display">\[
+\operatorname{id}(x_i)=x_i.
+\]</span></p>
+<p>Thus selective updating chooses between</p>
+<p><span class="math display">\[
+\operatorname{id}(x_i)
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+f_i(x_i).
+\]</span></p>
+<p>This changes the philosophical interpretation of the mask. The mask no longer chooses merely between two stored numbers. It chooses which transformation governs the transition from <span class="math inline">\(x_i\)</span> to <span class="math inline">\(x_i'\)</span>.</p>
+<section id="selecting-between-two-transformations" class="level3">
+<h3 class="anchored" data-anchor-id="selecting-between-two-transformations">Selecting Between Two Transformations</h3>
+<p>Chapter 4 constructed algebraic choice between alternatives <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>:</p>
+<p><span class="math display">\[
+IA+(1-I)B.
+\]</span></p>
+<p>For a selective update, the two alternatives are the transformed value <span class="math inline">\(f_i(x_i)\)</span> and the unchanged value <span class="math inline">\(x_i\)</span>. Using <span class="math inline">\(m_i\)</span> as the selector gives</p>
+<p><span class="math display">\[
+\boxed{
+x_i'
+=
+m_if_i(x_i)
++
+(1-m_i)x_i.
+}
+\]</span></p>
+<p>When <span class="math inline">\(m_i=1\)</span>,</p>
+<p><span class="math display">\[
+\begin{aligned}
+x_i'
+&amp;=1f_i(x_i)+(1-1)x_i\\
+&amp;=f_i(x_i)+0\\
+&amp;=f_i(x_i).
+\end{aligned}
+\]</span></p>
+<p>When <span class="math inline">\(m_i=0\)</span>,</p>
+<p><span class="math display">\[
+\begin{aligned}
+x_i'
+&amp;=0f_i(x_i)+(1-0)x_i\\
+&amp;=0+x_i\\
+&amp;=x_i.
+\end{aligned}
+\]</span></p>
+<p>The complementary-gate form therefore reproduces the selective transformation exactly:</p>
+<p><span class="math display">\[
+m_if_i(x_i)+(1-m_i)x_i
+=
+\begin{cases}
+f_i(x_i), &amp; m_i=1,\\
+x_i, &amp; m_i=0.
+\end{cases}
+\]</span></p>
+<p>This expression emphasizes choice between two candidate states. One gate controls the transformed state, while the complementary gate controls the original state.</p>
+</section>
+<section id="the-same-update-as-a-gated-difference" class="level3">
+<h3 class="anchored" data-anchor-id="the-same-update-as-a-gated-difference">The Same Update as a Gated Difference</h3>
+<p>The complementary-gate expression can be rearranged:</p>
+<p><span class="math display">\[
+x_i'
+=
+m_if_i(x_i)+(1-m_i)x_i.
+\]</span></p>
+<p>Distribute <span class="math inline">\(x_i\)</span>:</p>
+<p><span class="math display">\[
+x_i'
+=
+m_if_i(x_i)+x_i-m_ix_i.
+\]</span></p>
+<p>Group the terms controlled by <span class="math inline">\(m_i\)</span>:</p>
+<p><span class="math display">\[
+x_i'
+=
+x_i+m_i\bigl(f_i(x_i)-x_i\bigr).
+\]</span></p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+\boxed{
+m_if_i(x_i)+(1-m_i)x_i
+=
+x_i+m_i\bigl(f_i(x_i)-x_i\bigr).
+}
+\]</span></p>
+<p>The quantity</p>
+<p><span class="math display">\[
+f_i(x_i)-x_i
+\]</span></p>
+<p>is the change required to move from the current state to the proposed transformed state. This is the same target-minus-current reasoning used in Section 6.3. Here, however, the target is generated by the transformation <span class="math inline">\(f_i\)</span> rather than supplied directly as <span class="math inline">\(r_i\)</span>. The difference form can be read as:</p>
+<blockquote class="blockquote">
+<p>Begin with the current state <span class="math inline">\(x_i\)</span>, calculate how far the proposed transformation would move it, and use <span class="math inline">\(m_i\)</span> to decide whether that movement occurs. This produces the general selective-update equation</p>
+</blockquote>
+<p><span class="math display">\[
+\boxed{
+x_i'
+=
+x_i
++
+m_i\bigl(f_i(x_i)-x_i\bigr).
+}
+\]</span></p>
+<p>It has the same structure as</p>
+<p><span class="math display">\[
+x_i'=x_i+m_i\Delta_i,
+\]</span></p>
+<p>with the change defined by</p>
+<p><span class="math display">\[
+\Delta_i=f_i(x_i)-x_i.
+\]</span></p>
+<p>The general design method is therefore:</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+\text{proposed state}
+&amp;=f_i(x_i),\\
+\text{required change}
+&amp;=f_i(x_i)-x_i,\\
+\text{active change}
+&amp;=m_i\bigl(f_i(x_i)-x_i\bigr),\\
+\text{updated state}
+&amp;=x_i+m_i\bigl(f_i(x_i)-x_i\bigr).
+\end{aligned}
+}
+\]</span></p>
+<p>The formulas for particular update families can now be derived by specifying <span class="math inline">\(f_i\)</span>.</p>
+</section>
+<section id="additive-updates" class="level3">
+<h3 class="anchored" data-anchor-id="additive-updates">Additive Updates</h3>
+<p>Suppose the selected transformation adds a change <span class="math inline">\(\Delta_i\)</span>:</p>
+<p><span class="math display">\[
+f_i(x_i)=x_i+\Delta_i.
+\]</span></p>
+<p>Substituting this proposed state into the general equation gives</p>
+<p><span class="math display">\[
+x_i'
+=
+x_i
++
+m_i\bigl((x_i+\Delta_i)-x_i\bigr).
+\]</span></p>
+<p>The current-state terms cancel inside the difference:</p>
+<p><span class="math display">\[
+(x_i+\Delta_i)-x_i=\Delta_i.
+\]</span></p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+\boxed{
+x_i'=x_i+m_i\Delta_i.
+}
+\]</span></p>
+<p>The additive formula from Section 6.2 is not a separate rule. It emerges from the general selective-transformation equation when the proposed transformation is addition. If every selected position receives the same change <span class="math inline">\(c\)</span>, then</p>
+<p><span class="math display">\[
+f_i(x_i)=x_i+c
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+x_i'=x_i+cm_i.
+\]</span></p>
+<p>If the changes differ by position, then</p>
+<p><span class="math display">\[
+\mathbf{x}'
+=
+\mathbf{x}
++
+\mathbf{m}\odot\boldsymbol{\Delta}.
+\]</span></p>
+<p>The invariant structure is the same in both cases: the original state remains present everywhere, while the mask controls the displacement.</p>
+</section>
+<section id="replacement-updates" class="level3">
+<h3 class="anchored" data-anchor-id="replacement-updates">Replacement Updates</h3>
+<p>Suppose the proposed transformation ignores the current value and returns a target:</p>
+<p><span class="math display">\[
+f_i(x_i)=r_i.
+\]</span></p>
+<p>Then</p>
+<p><span class="math display">\[
+f_i(x_i)-x_i=r_i-x_i.
+\]</span></p>
+<p>Substituting into the general equation gives</p>
+<p><span class="math display">\[
+\boxed{
+x_i'=x_i+m_i(r_i-x_i).
+}
+\]</span></p>
+<p>The complementary-gate form is</p>
+<p><span class="math display">\[
+\boxed{
+x_i'=(1-m_i)x_i+m_ir_i.
+}
+\]</span></p>
+<p>Thus replacement is the special case in which the selected transformation maps the current state directly to a specified target. The phrase “ignores the current value” refers to the proposed final state <span class="math inline">\(f_i(x_i)=r_i\)</span>. The displacement required to reach that state still depends on the current value:</p>
+<p><span class="math display">\[
+r_i-x_i.
+\]</span></p>
+<p>This explains why replacement can produce different changes at different starting states even when the target is common.</p>
+</section>
+<section id="multiplicative-updates" class="level3">
+<h3 class="anchored" data-anchor-id="multiplicative-updates">Multiplicative Updates</h3>
+<p>Suppose selected values should be scaled by a factor <span class="math inline">\(\alpha_i\)</span>:</p>
+<p><span class="math display">\[
+f_i(x_i)=\alpha_ix_i.
+\]</span></p>
+<p>For example, if a selected quantity should increase by <span class="math inline">\(10\%\)</span>, then</p>
+<p><span class="math display">\[
+\alpha_i=1.1.
+\]</span></p>
+<p>If it should be halved, then</p>
+<p><span class="math display">\[
+\alpha_i=0.5.
+\]</span></p>
+<p>If it should change sign, then</p>
+<p><span class="math display">\[
+\alpha_i=-1.
+\]</span></p>
+<p>The change produced by scaling is</p>
+<p><span class="math display">\[
+\begin{aligned}
+f_i(x_i)-x_i
+&amp;=\alpha_ix_i-x_i\\
+&amp;=(\alpha_i-1)x_i.
+\end{aligned}
+\]</span></p>
+<p>Substituting this difference into the general selective-update equation gives</p>
+<p><span class="math display">\[
+\boxed{
+x_i'
+=
+x_i
++
+m_i(\alpha_i-1)x_i.
+}
+\]</span></p>
+<p>Factoring out <span class="math inline">\(x_i\)</span> produces an equivalent form:</p>
+<p><span class="math display">\[
+\boxed{
+x_i'
+=
+\bigl(1+m_i(\alpha_i-1)\bigr)x_i.
+}
+\]</span></p>
+<p>This expression reveals the effective scaling factor:</p>
+<p><span class="math display">\[
+1+m_i(\alpha_i-1).
+\]</span></p>
+<p>When <span class="math inline">\(m_i=0\)</span>, the factor is</p>
+<p><span class="math display">\[
+1+0(\alpha_i-1)=1,
+\]</span></p>
+<p>so</p>
+<p><span class="math display">\[
+x_i'=1x_i=x_i.
+\]</span></p>
+<p>The identity scaling factor preserves the original value. When <span class="math inline">\(m_i=1\)</span>, the factor is</p>
+<p><span class="math display">\[
+1+1(\alpha_i-1)=\alpha_i,
+\]</span></p>
+<p>so</p>
+<p><span class="math display">\[
+x_i'=\alpha_ix_i.
+\]</span></p>
+<p>The requested scaling becomes active. The same relationship can be derived from complementary selection:</p>
+<p><span class="math display">\[
+\begin{aligned}
+x_i'
+&amp;=(1-m_i)x_i+m_i(\alpha_ix_i)\\
+&amp;=\bigl((1-m_i)+m_i\alpha_i\bigr)x_i\\
+&amp;=\bigl(1+m_i(\alpha_i-1)\bigr)x_i.
+\end{aligned}
+\]</span></p>
+<p>This shows that selective scaling chooses between two multiplicative identities:</p>
+<ul>
+<li>a factor of <span class="math inline">\(1\)</span>, which preserves the value;</li>
+<li>a factor of <span class="math inline">\(\alpha_i\)</span>, which applies the proposed scaling.</li>
+</ul>
+<p>The mask does not directly multiply the state to zero. It selects the effective scaling factor.</p>
+</section>
+<section id="nonlinear-transformations" class="level3">
+<h3 class="anchored" data-anchor-id="nonlinear-transformations">Nonlinear Transformations</h3>
+<p>The proposed transformation need not be addition, replacement, or multiplication. Suppose selected negative values should be reflected across zero:</p>
+<p><span class="math display">\[
+f_i(x_i)=|x_i|.
+\]</span></p>
+<p>The selective update is</p>
+<p><span class="math display">\[
+x_i'
+=
+x_i
++
+m_i\bigl(|x_i|-x_i\bigr).
+\]</span></p>
+<p>When <span class="math inline">\(m_i=1\)</span>,</p>
+<p><span class="math display">\[
+x_i'=|x_i|,
+\]</span></p>
+<p>and when <span class="math inline">\(m_i=0\)</span>,</p>
+<p><span class="math display">\[
+x_i'=x_i.
+\]</span></p>
+<p>Or suppose selected values should be limited to an upper bound <span class="math inline">\(u\)</span>:</p>
+<p><span class="math display">\[
+f_i(x_i)=\min(x_i,u).
+\]</span></p>
+<p>Then</p>
+<p><span class="math display">\[
+x_i'
+=
+x_i
++
+m_i\bigl(\min(x_i,u)-x_i\bigr).
+\]</span></p>
+<p>Again, the mask does not need to know how the transformation works internally. It controls whether the difference between the proposed state and the current state contributes.</p>
+<p>This separation creates two independent questions:</p>
+<ol type="1">
+<li>What transformation should produce the proposed state?</li>
+<li>At which positions should that transformation replace the identity?</li>
+</ol>
+<p>The function <span class="math inline">\(f_i\)</span> answers the first question. The mask <span class="math inline">\(m_i\)</span> answers the second.</p>
+</section>
+<section id="a-concrete-comparison-of-update-families" class="level3">
+<h3 class="anchored" data-anchor-id="a-concrete-comparison-of-update-families">A Concrete Comparison of Update Families</h3>
+<p>Consider one current value:</p>
+<p><span class="math display">\[
+x_i=10
+\]</span></p>
+<p>with an open gate:</p>
+<p><span class="math display">\[
+m_i=1.
+\]</span></p>
+<p>Different proposed transformations produce different new states. If the rule adds <span class="math inline">\(3\)</span>,</p>
+<p><span class="math display">\[
+f_i(x_i)=x_i+3=13,
+\]</span></p>
+<p>so</p>
+<p><span class="math display">\[
+x_i'=10+1(13-10)=13.
+\]</span></p>
+<p>If the rule replaces the value by <span class="math inline">\(20\)</span>,</p>
+<p><span class="math display">\[
+f_i(x_i)=20,
+\]</span></p>
+<p>so</p>
+<p><span class="math display">\[
+x_i'=10+1(20-10)=20.
+\]</span></p>
+<p>If the rule doubles the value,</p>
+<p><span class="math display">\[
+f_i(x_i)=2x_i=20,
+\]</span></p>
+<p>so</p>
+<p><span class="math display">\[
+x_i'=10+1(20-10)=20.
+\]</span></p>
+<p>The replacement and doubling transformations happen to produce the same output for <span class="math inline">\(x_i=10\)</span>, but they do not represent the same rule. For <span class="math inline">\(x_i=7\)</span>, replacement by <span class="math inline">\(20\)</span> gives</p>
+<p><span class="math display">\[
+f_i(7)=20,
+\]</span></p>
+<p>whereas doubling gives</p>
+<p><span class="math display">\[
+f_i(7)=14.
+\]</span></p>
+<p>A numerical coincidence at one input does not establish equivalence between transformations. Two transformations are equivalent only if they produce the same output over the domain under consideration. When the gate is closed,</p>
+<p><span class="math display">\[
+m_i=0,
+\]</span></p>
+<p>every one of these proposed transformations produces the same final state:</p>
+<p><span class="math display">\[
+x_i'
+=
+x_i+0\bigl(f_i(x_i)-x_i\bigr)
+=
+x_i.
+\]</span></p>
+<p>This is the invariant supplied by selective updating. The proposed transformations may differ radically, but the unselected behavior is always the identity transformation.</p>
+</section>
+<section id="the-vector-form" class="level3">
+<h3 class="anchored" data-anchor-id="the-vector-form">The Vector Form</h3>
+<p>Let the proposed transformation act elementwise on the collection:</p>
+<p><span class="math display">\[
+\mathbf{f}(\mathbf{x})
+=
+\begin{bmatrix}
+f_1(x_1)\\
+f_2(x_2)\\
+\vdots\\
+f_n(x_n)
+\end{bmatrix}.
+\]</span></p>
+<p>The vector of required changes is</p>
+<p><span class="math display">\[
+\mathbf{f}(\mathbf{x})-\mathbf{x}.
+\]</span></p>
+<p>The mask preserves only the changes at selected positions:</p>
+<p><span class="math display">\[
+\mathbf{m}\odot
+\bigl(\mathbf{f}(\mathbf{x})-\mathbf{x}\bigr).
+\]</span></p>
+<p>Adding the active changes to the original state gives</p>
+<p><span class="math display">\[
+\boxed{
+\mathbf{x}'
+=
+\mathbf{x}
++
+\mathbf{m}\odot
+\bigl(\mathbf{f}(\mathbf{x})-\mathbf{x}\bigr).
+}
+\]</span></p>
+<p>The equivalent complementary-gate form is</p>
+<p><span class="math display">\[
+\boxed{
+\mathbf{x}'
+=
+(\mathbf{1}-\mathbf{m})\odot\mathbf{x}
++
+\mathbf{m}\odot\mathbf{f}(\mathbf{x}),
+}
+\]</span></p>
+<p>where <span class="math inline">\(\mathbf{1}\)</span> is a vector of ones with the same shape as <span class="math inline">\(\mathbf{m}\)</span>. These equations are defined componentwise:</p>
+<p><span class="math display">\[
+x_i'
+=
+x_i+m_i\bigl(f_i(x_i)-x_i\bigr)
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+x_i'
+=
+(1-m_i)x_i+m_if_i(x_i).
+\]</span></p>
+<p>The vector notation does not remove the local decisions. It states that the same selective relationship holds at every corresponding position.</p>
+</section>
+<section id="repeated-application-reveals-the-nature-of-an-update" class="level3">
+<h3 class="anchored" data-anchor-id="repeated-application-reveals-the-nature-of-an-update">Repeated Application Reveals the Nature of an Update</h3>
+<p>Different transformations also behave differently when applied repeatedly. An additive update with a fixed change <span class="math inline">\(c\)</span> gives</p>
+<p><span class="math display">\[
+x_i'=x_i+c
+\]</span></p>
+<p>at a selected position. Applying it again gives</p>
+<p><span class="math display">\[
+x_i''=x_i'+c=x_i+2c.
+\]</span></p>
+<p>The effect accumulates. A multiplicative update gives</p>
+<p><span class="math display">\[
+x_i'=\alpha x_i.
+\]</span></p>
+<p>Applying it again gives</p>
+<p><span class="math display">\[
+x_i''=\alpha x_i'=\alpha^2x_i.
+\]</span></p>
+<p>The factors compose multiplicatively. Replacement by a fixed target gives</p>
+<p><span class="math display">\[
+x_i'=r.
+\]</span></p>
+<p>Applying the same replacement again gives</p>
+<p><span class="math display">\[
+x_i''=r.
+\]</span></p>
+<p>After the target has been reached, repeating the operation produces no further change. Such a transformation is idempotent:</p>
+<p><span class="math display">\[
+f(f(x))=f(x).
+\]</span></p>
+<p>These differences matter because the phrase “update this value” does not specify how repeated execution behaves. Additive changes accumulate, scaling compounds, and fixed replacement stabilizes after one application. The algebraic form makes these behaviors visible. The mask controls where a transformation acts, but the transformation determines what repeated action means.</p>
+</section>
+<section id="a-general-method-for-designing-selective-updates" class="level3">
+<h3 class="anchored" data-anchor-id="a-general-method-for-designing-selective-updates">A General Method for Designing Selective Updates</h3>
+<p>The chapter’s update equations can now be replaced by a single reasoning procedure.</p>
+<p>First, identify the original state:</p>
+<p><span class="math display">\[
+x_i.
+\]</span></p>
+<p>Second, determine the proposed state at a selected position:</p>
+<p><span class="math display">\[
+f_i(x_i).
+\]</span></p>
+<p>Third, construct the displacement from the original state to the proposed state:</p>
+<p><span class="math display">\[
+f_i(x_i)-x_i.
+\]</span></p>
+<p>Fourth, use the mask to preserve or suppress that displacement:</p>
+<p><span class="math display">\[
+m_i\bigl(f_i(x_i)-x_i\bigr).
+\]</span></p>
+<p>Finally, add the active displacement to the original state:</p>
+<p><span class="math display">\[
+\boxed{
+x_i'
+=
+x_i
++
+m_i\bigl(f_i(x_i)-x_i\bigr).
+}
+\]</span></p>
+<p>This method prevents a common mistake: attaching the mask to the original value when the requirement is to preserve the original value and control only its transformation. The correct question is not merely</p>
+<blockquote class="blockquote">
+<p>Which values are selected?</p>
+</blockquote>
+<p>It is</p>
+<blockquote class="blockquote">
+<p>Which candidate transformation should govern the transition at each position?</p>
+</blockquote>
+<p>The complete conceptual progression of the chapter is</p>
+<p><span class="math display">\[
+\boxed{
+\text{original state}
+\rightarrow
+\text{proposed state}
+\rightarrow
+\text{difference between states}
+\rightarrow
+\text{gated difference}
+\rightarrow
+\text{selectively updated state}.
+}
+\]</span></p>
+<p>Chapter 5 constructed a mask as a structured description of where a predicate holds. Chapter 6 has now turned that description into controlled change. At every position, the mask selects between leaving the state invariant and applying a proposed transformation:</p>
+<p><span class="math display">\[
+\boxed{
+x_i'
+=
+(1-m_i)x_i
++
+m_if_i(x_i)
+=
+x_i
++
+m_i\bigl(f_i(x_i)-x_i\bigr).
+}
+\]</span></p>
+<p>Selective updating is therefore not a collection of unrelated programming tricks. It is a general mathematical method for combining an identity transformation with a conditionally active alternative.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/hafizarslanamjad\.github\.io\/mathematical-understanding\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Articles and books by Hafiz Arslan Amjad</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="https://github.com/hafizarslanamjad/mathematical-understanding">
+<p>Source</p>
+</a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
