@@ -28,6 +28,8 @@ The book is being written and published one comprehensive mini-section at a time
 
 - **[Chapter 5 — Masks: Turning Many Conditions into One Mathematical Object](https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/chapters/05-masks/)** derives masks as structured collections of positionally corresponding indicators, develops elementwise gating, and distinguishes structure-preserving masking from subset extraction.
 
+- **[Chapter 6 — Selective Updates](https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/chapters/06-selective-updates/)** derives selective state changes by gating proposed transformations rather than suppressing original values, connecting additive updates, replacement, scaling, and nonlinear transformations through one mathematical structure.
+
 ## Published Blog Posts
 
 ### Before Mathematics Begins
@@ -92,7 +94,9 @@ mathematical-understanding/
 │       │   │   └── index.qmd
 │       │   ├── 04-algebraic-if-else/
 │       │   │   └── index.qmd
-│       │   └── 05-masks/
+│       │   ├── 05-masks/
+│       │   │   └── index.qmd
+│       │   └── 06-selective-updates/
 │       │       └── index.qmd
 │       └── index.qmd
 ├── .gitignore

@@ -48,6 +48,10 @@ This chapter constructs algebraic selection from ordinary conditional branches. 
 
 This chapter generalizes a single binary indicator into a structured mask over an indexed collection. It develops positional correspondence, derives elementwise gating as $\mathbf{y}=\mathbf{m}\odot\mathbf{x}$, distinguishes the Hadamard product from reduction, and explains why masking and filtering preserve different mathematical structures.
 
+### [Chapter 6 — Selective Updates](chapters/06-selective-updates/index.qmd)
+
+This chapter develops masks from descriptions of selected positions into mechanisms for controlled change. It distinguishes original and updated states, derives $x_i'=x_i+m_i\Delta_i$, constructs conditional replacement through $x_i'=x_i+m_i(r_i-x_i)$, and unifies additive, multiplicative, replacement, and nonlinear updates through selectively applied transformations.
+
 ## How This Book Is Being Written
 
 This is a book in progress. It is being written and published one comprehensive mini-section at a time. Each mini-section answers one precise conceptual question, begins with concrete examples, and develops its abstraction only after the underlying experience is clear.
