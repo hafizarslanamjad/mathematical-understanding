@@ -1,0 +1,1891 @@
+---
+title: "Chapter 5 — Masks: Turning Many Conditions into One Mathematical Object"
+description: "How repeated conditions become structured masks that preserve positional meaning, control elementwise contributions, and distinguish masking from filtering."
+number-sections: false
+---
+
+## 5.1 One Condition for Every Element
+
+Consider five packages whose weights, measured in kilograms, are
+
+```python
+weights = [12, 7, 15, 4, 10]
+```
+
+Suppose a package qualifies for a particular transport category when its weight is at least $10$ kilograms. For one package, the program can evaluate a single comparison:
+
+```python
+weight = 12
+qualifies = weight >= 10
+```
+
+The comparison produces `True` because $12\geq10$. The collection, however, does not contain only one package. The transport requirement must be answered separately for every package:
+
+```python
+weights = [12, 7, 15, 4, 10]
+
+for weight in weights:
+    if weight >= 10:
+        print(1)
+    else:
+        print(0)
+```
+
+The program produces
+
+```text
+1
+0
+1
+0
+1
+```
+
+The five outputs are the results of applying the same decision rule to five different objects. The first evaluation asks
+
+$$
+12\geq10,
+$$
+
+the second asks
+
+$$
+7\geq10,
+$$
+
+the third asks
+
+$$
+15\geq10,
+$$
+
+the fourth asks
+
+$$
+4\geq10,
+$$
+
+and the fifth asks
+
+$$
+10\geq10.
+$$
+
+These propositions have the respective truth values
+
+$$
+\text{True},
+\quad
+\text{False},
+\quad
+\text{True},
+\quad
+\text{False},
+\quad
+\text{True}.
+$$
+
+Their numerical encodings are therefore
+
+$$
+1,
+\quad
+0,
+\quad
+1,
+\quad
+0,
+\quad
+1.
+$$
+
+One comparison rule has produced several results because the object to which the rule refers has changed. The expression
+
+$$
+x\geq10
+$$
+
+does not possess one permanent truth value. Its truth value depends on the value substituted for $x$. For $x=12$, the proposition is true; for $x=7$, it is false. The comparison is therefore better understood as a rule that maps an input value to a truth value:
+
+$$
+P(x)=
+\begin{cases}
+\text{True}, & x\geq10,\\
+\text{False}, & x<10.
+\end{cases}
+$$
+
+A rule of this kind is called a **predicate**. It is a condition that can be evaluated at different inputs. Each evaluation $P(x_i)$ produces the answer associated with the particular value $x_i$. This distinction separates the invariant part of the computation from the varying part. The qualifying rule remains fixed:
+
+$$
+x\geq10.
+$$
+
+The package value changes:
+
+$$
+x_1=12,\quad
+x_2=7,\quad
+x_3=15,\quad
+x_4=4,\quad
+x_5=10.
+$$
+
+Consequently, the truth value also changes from position to position. The program is repeating one rule, but it is not repeating one result.
+
+### From Collection Positions to Indexed Decisions
+
+To describe this structure mathematically, assign an index to every package weight:
+
+$$
+x_1=12,
+\qquad
+x_2=7,
+\qquad
+x_3=15,
+\qquad
+x_4=4,
+\qquad
+x_5=10.
+$$
+
+The purpose of subscript is to identify the position and therefore the particular object about which a decision is being made. The expression $x_3=15$ means that the third package has weight $15$ kilograms. The index $3$ is part of the referential meaning: it connects the quantity to the third package rather than merely presenting an isolated number.
+
+Because there is one condition evaluation for every indexed weight, there must also be one binary decision for every indexed weight. Let $m_i$ denote the numerical result of asking whether $x_i$ satisfies the qualifying condition:
+
+$$
+m_i=
+\begin{cases}
+1, & x_i\geq10,\\
+0, & x_i<10.
+\end{cases}
+$$
+
+Equivalently, using indicator notation,
+
+$$
+m_i=\mathbf{1}[x_i\geq10].
+$$
+
+The index $i$ acts as a placeholder that allows the same relationship to be instantiated at every position. For the first package,
+
+$$
+m_1=\mathbf{1}[x_1\geq10]
+=\mathbf{1}[12\geq10]
+=1.
+$$
+
+For the second package,
+
+$$
+m_2=\mathbf{1}[x_2\geq10]
+=\mathbf{1}[7\geq10]
+=0.
+$$
+
+For the third package,
+
+$$
+m_3=\mathbf{1}[x_3\geq10]
+=\mathbf{1}[15\geq10]
+=1.
+$$
+
+For the fourth package,
+
+$$
+m_4=\mathbf{1}[x_4\geq10]
+=\mathbf{1}[4\geq10]
+=0.
+$$
+
+For the fifth package,
+
+$$
+m_5=\mathbf{1}[x_5\geq10]
+=\mathbf{1}[10\geq10]
+=1.
+$$
+
+We have therefore constructed five related binary quantities:
+
+$$
+m_1=1,
+\qquad
+m_2=0,
+\qquad
+m_3=1,
+\qquad
+m_4=0,
+\qquad
+m_5=1.
+$$
+
+Notice that every $m_i$ has two simultaneous dependencies. It depends on the common predicate $x\geq10$, which determines what qualifying means, and it depends on the corresponding value $x_i$, which determines whether qualification occurs at position $i$. Removing either dependency destroys part of the meaning. Without the predicate, a value of $1$ does not tell us what property is present. Without the index, it does not tell us where that property is present. This is the conceptual step that occurs when a condition is applied to a collection. For a single value, the result is one binary decision:
+
+$$
+x\longrightarrow m.
+$$
+
+For an indexed collection, the same predicate produces an indexed family of binary decisions:
+
+$$
+x_i\longrightarrow m_i
+\qquad
+\text{for }i=1,2,\ldots,n.
+$$
+
+The relationship can be written generally as
+
+$$
+\boxed{
+m_i=\mathbf{1}[P(x_i)]
+\qquad
+\text{for }i=1,2,\ldots,n
+}
+$$
+
+where $P$ is the shared predicate, $x_i$ is the value at position $i$, and $m_i$ is the binary result associated with that same position.
+
+### The Index Preserves the Meaning of Each Decision
+
+The index is not merely a device for counting through the values. It preserves correspondence. The decision $m_1$ belongs to $x_1$, $m_2$ belongs to $x_2$, and in general $m_i$ belongs to $x_i$. This relationship is what allows the decisions to control the original values later. Suppose the five numerical decisions were rearranged:
+
+$$
+1,\quad1,\quad0,\quad1,\quad0.
+$$
+
+They would still contain three ones and two zeroes, just like the original decisions. They would therefore preserve the total number of qualifying packages. Nevertheless, they would no longer describe correctly which packages qualify. A count preserves only how many conditions succeeded:
+
+$$
+\sum_{i=1}^{5}m_i=3.
+$$
+
+Indexed decisions preserve additional information: they record where those successes occurred. This distinction separates aggregation from structure. The sum
+
+$$
+\sum_{i=1}^{n}m_i
+$$
+
+compresses many binary decisions into one count. After summation, the positional information has disappeared. The indexed family
+
+$$
+m_1,m_2,\ldots,m_n
+$$
+
+retains that positional information because every decision remains attached to its corresponding index. The program has therefore created something richer than five unrelated Boolean results and more informative than one total count. It has created a decision for every position in the original collection:
+
+$$
+\boxed{
+x_i
+\longleftrightarrow
+m_i
+}
+$$
+
+The double arrow does not claim that $x_i$ and $m_i$ are numerically equal. It records their semantic correspondence: $m_i$ states whether the value at position $i$ satisfies the predicate. At this stage, the decisions remain written separately as
+
+$$
+m_1,m_2,\ldots,m_n.
+$$
+
+The next mathematical problem is to determine whether these related decisions can be organized into one structured object without losing their positional correspondence. That object will become the mask.
+
+## 5.2 When Separate Decisions Become One Object
+
+Section 5.1 produced one binary decision for every package weight:
+
+$$
+m_1=1,
+\qquad
+m_2=0,
+\qquad
+m_3=1,
+\qquad
+m_4=0,
+\qquad
+m_5=1.
+$$
+
+These decisions were derived from the indexed weights
+
+$$
+x_1=12,
+\qquad
+x_2=7,
+\qquad
+x_3=15,
+\qquad
+x_4=4,
+\qquad
+x_5=10
+$$
+
+through the common relationship
+
+$$
+m_i=\mathbf{1}[x_i\geq10].
+$$
+
+At this stage, the decisions can be written one after another, but merely writing several numbers beside one another does not explain why they form a single mathematical object. To construct that object, we must identify what the decisions share.
+
+Every $m_i$ answers the same kind of question:
+
+> Does the value at position $i$ satisfy the qualifying condition?
+
+The predicate is common, the collection is common, and the index system is common. Only the position being examined changes. The decisions are therefore not unrelated binary facts. They are components of one position-dependent relationship.
+
+### A Collection Has an Index Structure
+
+The package weights can be organized as the vector
+
+$$
+\mathbf{x}
+=
+\begin{bmatrix}
+12\\
+7\\
+15\\
+4\\
+10
+\end{bmatrix}.
+$$
+
+The bold symbol $\mathbf{x}$ refers to the complete collection, while $x_i$ refers to the component at position $i$. Thus,
+
+$$
+x_1=12,
+\qquad
+x_2=7,
+\qquad
+\ldots,
+\qquad
+x_5=10.
+$$
+
+A vector is not merely several numbers enclosed by brackets. It is an ordered mathematical object whose components are identified by positions. If the order changes, the vector changes:
+
+$$
+\begin{bmatrix}
+12\\
+7\\
+15\\
+4\\
+10
+\end{bmatrix}
+\neq
+\begin{bmatrix}
+7\\
+12\\
+15\\
+4\\
+10
+\end{bmatrix}.
+$$
+
+Both vectors contain the same five numerical values, but the values occupy different positions. If the positions refer to five particular packages, rearranging the components changes which weight belongs to which package. The index is therefore part of the object's meaning, not merely part of its notation.
+
+The binary decisions inherit this same index structure. Because there is one $m_i$ for every $x_i$, the decisions can be organized as
+
+$$
+\mathbf{m}
+=
+\begin{bmatrix}
+m_1\\
+m_2\\
+m_3\\
+m_4\\
+m_5
+\end{bmatrix}
+=
+\begin{bmatrix}
+1\\
+0\\
+1\\
+0\\
+1
+\end{bmatrix}.
+$$
+
+The bold symbol $\mathbf{m}$ refers to the complete structured collection of decisions. Each component retains its original correspondence:
+
+$$
+m_i=\mathbf{1}[x_i\geq10].
+$$
+
+The two vectors can therefore be placed side by side:
+
+$$
+\mathbf{x}
+=
+\begin{bmatrix}
+12\\
+7\\
+15\\
+4\\
+10
+\end{bmatrix},
+\qquad
+\mathbf{m}
+=
+\begin{bmatrix}
+1\\
+0\\
+1\\
+0\\
+1
+\end{bmatrix}.
+$$
+
+The first component of $\mathbf{m}$ describes the first component of $\mathbf{x}$, the second describes the second, and so forth. The relationship is componentwise:
+
+$$
+\begin{aligned}
+m_1&=\mathbf{1}[x_1\geq10],\\
+m_2&=\mathbf{1}[x_2\geq10],\\
+m_3&=\mathbf{1}[x_3\geq10],\\
+m_4&=\mathbf{1}[x_4\geq10],\\
+m_5&=\mathbf{1}[x_5\geq10].
+\end{aligned}
+$$
+
+The structure of $\mathbf{m}$ mirrors the structure of $\mathbf{x}$. There are five data components and five decision components. The position of each decision matches the position of the value about which that decision was made. This organized binary object is called a **mask**.
+
+### Why a Binary Vector Is Not Automatically a Mask
+
+The numerical vector
+
+$$
+\begin{bmatrix}
+1\\
+0\\
+1\\
+0\\
+1
+\end{bmatrix}
+$$
+
+does not have an intrinsic meaning independent of context. By itself, it is only a vector whose components happen to be zeroes and ones. It becomes a mask over $\mathbf{x}$ because three relationships have been established. First, every component is produced by a defined predicate:
+
+$$
+m_i=\mathbf{1}[x_i\geq10].
+$$
+
+The values $1$ and $0$ therefore mean “qualifies” and “does not qualify” with respect to a specific condition. Second, every component of $\mathbf{m}$ corresponds to a component of $\mathbf{x}$ through the same index:
+
+$$
+m_i\longleftrightarrow x_i.
+$$
+
+The mask does not merely state that three packages qualify. It states that the packages at positions $1$, $3$, and $5$ qualify. Third, the mask and the data possess compatible structures. In this example, both have five components:
+
+$$
+\mathbf{x}\in\mathbb{R}^{5},
+\qquad
+\mathbf{m}\in\{0,1\}^{5}.
+$$
+
+The notation $\mathbb{R}^{5}$ says that $\mathbf{x}$ has five real-valued components. The notation $\{0,1\}^{5}$ says that $\mathbf{m}$ has five components, each selected from the set $\{0,1\}$. The common exponent $5$ expresses the structural compatibility that allows each decision to be paired with one data value. A binary collection becomes a mask only relative to the object and predicate it describes:
+
+$$
+\boxed{
+\text{mask}
+=
+\text{binary components}
++
+\text{predicate meaning}
++
+\text{positional correspondence}
+}
+$$
+
+This is why an arbitrary rearrangement of the mask destroys its meaning even though it preserves the number of zeroes and ones. Consider
+
+$$
+\widetilde{\mathbf{m}}
+=
+\begin{bmatrix}
+1\\
+1\\
+0\\
+1\\
+0
+\end{bmatrix}.
+$$
+
+Like the original mask, $\widetilde{\mathbf{m}}$ contains three ones and two zeroes. Nevertheless, its components claim that positions $1$, $2$, and $4$ qualify. Applied to the original package ordering, those claims are false. The count is unchanged, but the correspondence is corrupted. A mask must therefore remain aligned with the collection from which it was constructed.
+
+### The Mask Describes a Subset of Positions
+
+There is another way to understand what the mask represents. The package collection has the index set
+
+$$
+\mathcal{I}=\{1,2,3,4,5\}.
+$$
+
+The symbol $\mathcal{I}$ represents the available positions rather than the package weights themselves. The condition $x_i\geq10$ divides these positions into two groups. The qualifying positions are
+
+$$
+\mathcal{Q}
+=
+\{i\in\mathcal{I}:x_i\geq10\}.
+$$
+
+For the concrete weights,
+
+$$
+\mathcal{Q}=\{1,3,5\}.
+$$
+
+The nonqualifying positions form the complementary subset
+
+$$
+\mathcal{I}\setminus\mathcal{Q}=\{2,4\}.
+$$
+
+The mask numerically describes membership in $\mathcal{Q}$:
+
+$$
+m_i=
+\begin{cases}
+1, & i\in\mathcal{Q},\\
+0, & i\notin\mathcal{Q}.
+\end{cases}
+$$
+
+Thus,
+
+$$
+\mathbf{m}
+=
+\begin{bmatrix}
+1\\
+0\\
+1\\
+0\\
+1
+\end{bmatrix}
+$$
+
+is the binary representation of the subset $\mathcal{Q}=\{1,3,5\}$ relative to the ordered index set $\mathcal{I}=\{1,2,3,4,5\}$. This representation is sometimes called the **indicator vector** or **characteristic vector** of the subset. The terminology emphasizes that the vector records a property of every position:
+
+$$
+m_i=1
+\quad\Longleftrightarrow\quad
+i\in\mathcal{Q}.
+$$
+
+The set notation and the mask notation preserve related but different views of the same structure. The set
+
+$$
+\mathcal{Q}=\{1,3,5\}
+$$
+
+lists only the positions that qualify. The mask
+
+$$
+\mathbf{m}
+=
+\begin{bmatrix}
+1\\
+0\\
+1\\
+0\\
+1
+\end{bmatrix}
+$$
+
+retains an explicit binary statement for every position, including those that do not qualify. The mask therefore preserves the complete positional frame of the original collection. This is an important philosophical change in representation. The ordinary loop describes a sequence of actions:
+
+> inspect the first value, decide; inspect the second value, decide; continue until the collection ends.
+
+The mask describes the completed relationship:
+
+> for every position $i$, $m_i$ records whether $x_i$ belongs to the subset defined by the predicate.
+
+The first view emphasizes temporal execution. The second emphasizes a mathematical object whose components simultaneously describe the condition across the collection.
+
+### Shape Generalizes Positional Correspondence
+
+For a one-dimensional collection, compatibility can be described through equal length. Both $\mathbf{x}$ and $\mathbf{m}$ have five components. In more structured data, length alone is insufficient.
+
+Consider a $2\times3$ grid of measurements:
+
+$$
+\mathbf{X}
+=
+\begin{bmatrix}
+4 & 11 & 7\\
+15 & 3 & 12
+\end{bmatrix}.
+$$
+
+Applying the condition $X_{ij}\geq10$ produces one decision for every row-and-column position:
+
+$$
+M_{ij}=\mathbf{1}[X_{ij}\geq10].
+$$
+
+The resulting mask is
+
+$$
+\mathbf{M}
+=
+\begin{bmatrix}
+0 & 1 & 0\\
+1 & 0 & 1
+\end{bmatrix}.
+$$
+
+Here, a single index is no longer enough. The component $M_{ij}$ corresponds to the measurement $X_{ij}$ at row $i$ and column $j$. The mask must preserve both dimensions because both dimensions contribute to the identity of a position.
+
+For example,
+
+$$
+M_{1,2}=1
+$$
+
+describes
+
+$$
+X_{1,2}=11,
+$$
+
+whereas
+
+$$
+M_{2,1}=1
+$$
+
+describes
+
+$$
+X_{2,1}=15.
+$$
+
+The two mask components have the same numerical value, but they refer to different locations. Their meaning comes from their indices. The data and mask therefore share the same shape:
+
+$$
+\mathbf{X}\in\mathbb{R}^{2\times3},
+\qquad
+\mathbf{M}\in\{0,1\}^{2\times3}.
+$$
+
+Shape is the multidimensional generalization of positional correspondence. It states how components are organized and which indices are required to identify them. A mask over an image, matrix, or tensor is meaningful because its index structure corresponds to the index structure of the object it describes.
+
+At this point, the mask has been constructed as a complete mathematical representation of many related decisions:
+
+$$
+\boxed{
+m_i=\mathbf{1}[P(x_i)]
+}
+$$
+
+and
+
+$$
+\boxed{
+\mathbf{m}
+=
+\begin{bmatrix}
+m_1\\
+m_2\\
+\vdots\\
+m_n
+\end{bmatrix}
+\in\{0,1\}^{n}.
+}
+$$
+
+For multidimensional data, the same relationship becomes
+
+$$
+\boxed{
+M_{ij}=\mathbf{1}[P(X_{ij})]
+}
+$$
+
+with a mask whose shape matches the data. The mask tells us where the predicate holds, but we have not yet used it to transform the corresponding values. The next problem is to connect the binary component $m_i$ with the numerical component $x_i$ so that all qualifying values are preserved and all nonqualifying values are suppressed without destroying their positions.
+
+## 5.3 Applying Many Gates at Once
+
+The package weights and their mask are
+
+$$
+\mathbf{x}
+=
+\begin{bmatrix}
+12\\
+7\\
+15\\
+4\\
+10
+\end{bmatrix},
+\qquad
+\mathbf{m}
+=
+\begin{bmatrix}
+1\\
+0\\
+1\\
+0\\
+1
+\end{bmatrix}.
+$$
+
+The mask records where the qualifying condition holds:
+
+$$
+m_i=\mathbf{1}[x_i\geq10].
+$$
+
+At this point, $\mathbf{m}$ describes the decisions, but it has not yet acted on the weights. The values $12$, $7$, $15$, $4$, and $10$ remain unchanged in $\mathbf{x}$. We now want to construct a new collection in which qualifying weights retain their values and nonqualifying weights contribute zero. The required output is
+
+$$
+\mathbf{y}
+=
+\begin{bmatrix}
+12\\
+0\\
+15\\
+0\\
+10
+\end{bmatrix}.
+$$
+
+This result must preserve more than the qualifying values. It must preserve their original positions. The value $12$ must remain at position $1$, $15$ at position $3$, and $10$ at position $5$. Positions $2$ and $4$ must remain present, but their contributions must become zero. We should not begin by searching for one operation over the complete vectors. First, we must determine what has to happen at one position.
+
+### Reconstructing the Scalar Gate at Each Position
+
+At position $1$, the value is
+
+$$
+x_1=12
+$$
+
+and the decision is
+
+$$
+m_1=1.
+$$
+
+Because the package qualifies, the required output is
+
+$$
+y_1=12.
+$$
+
+Chapter 3 established that multiplication by $1$ preserves a numerical contribution:
+
+$$
+1x=x.
+$$
+
+Therefore,
+
+$$
+y_1=m_1x_1=1(12)=12.
+$$
+
+At position $2$, the value is
+
+$$
+x_2=7
+$$
+
+and the decision is
+
+$$
+m_2=0.
+$$
+
+Because this package does not qualify, the required output is
+
+$$
+y_2=0.
+$$
+
+Multiplication by zero suppresses a contribution:
+
+$$
+0x=0.
+$$
+
+Therefore,
+
+$$
+y_2=m_2x_2=0(7)=0.
+$$
+
+The same reasoning applies independently at every remaining position:
+
+$$
+y_3=m_3x_3=1(15)=15,
+$$
+
+$$
+y_4=m_4x_4=0(4)=0,
+$$
+
+and
+
+$$
+y_5=m_5x_5=1(10)=10.
+$$
+
+The complete componentwise construction is
+
+$$
+\begin{aligned}
+y_1&=m_1x_1=1(12)=12,\\
+y_2&=m_2x_2=0(7)=0,\\
+y_3&=m_3x_3=1(15)=15,\\
+y_4&=m_4x_4=0(4)=0,\\
+y_5&=m_5x_5=1(10)=10.
+\end{aligned}
+$$
+
+Every output component is produced by the gate located at the same position:
+
+$$
+\boxed{
+y_i=m_ix_i.
+}
+$$
+
+This equation is the scalar gate from Chapter 3 with an index attached to every quantity. Chapter 3 established
+
+$$
+y=mx
+$$
+
+for one value and one binary gate. Chapter 5 now establishes
+
+$$
+y_i=m_ix_i
+\qquad
+\text{for }i=1,2,\ldots,n.
+$$
+
+The additional index does essential work. It states that $m_i$ controls $x_i$ and produces $y_i$. The gate at one position does not control a value at another position:
+
+$$
+m_i\longleftrightarrow x_i\longrightarrow y_i.
+$$
+
+The relationship is local to each index.
+
+### One Rule Generates the Complete Output
+
+For a general predicate $P$, the mask component is
+
+$$
+m_i=\mathbf{1}[P(x_i)].
+$$
+
+Substituting this definition into the output relationship gives
+
+$$
+y_i=\mathbf{1}[P(x_i)]x_i.
+$$
+
+This equation combines the condition and the possible contribution at each position. If $P(x_i)$ is true, then
+
+$$
+\mathbf{1}[P(x_i)]=1
+$$
+
+and therefore
+
+$$
+y_i=1x_i=x_i.
+$$
+
+If $P(x_i)$ is false, then
+
+$$
+\mathbf{1}[P(x_i)]=0
+$$
+
+and therefore
+
+$$
+y_i=0x_i=0.
+$$
+
+Thus,
+
+$$
+y_i=
+\begin{cases}
+x_i, & P(x_i)\text{ is true},\\
+0, & P(x_i)\text{ is false}.
+\end{cases}
+$$
+
+For the package condition $P(x_i)\equiv x_i\geq10$, this becomes
+
+$$
+y_i=
+\begin{cases}
+x_i, & x_i\geq10,\\
+0, & x_i<10.
+\end{cases}
+$$
+
+The indexed equation and the piecewise equation express the same transformation:
+
+$$
+\boxed{
+y_i
+=
+\mathbf{1}[x_i\geq10]x_i
+=
+\begin{cases}
+x_i, & x_i\geq10,\\
+0, & x_i<10.
+\end{cases}
+}
+$$
+
+The piecewise form describes the two possible cases explicitly. The indicator form places the condition inside an algebraic expression. Neither changes the meaning of the computation.
+
+### Organizing the Componentwise Relationships
+
+The five separately derived equations can be assembled according to their shared index structure:
+
+$$
+\mathbf{y}
+=
+\begin{bmatrix}
+y_1\\
+y_2\\
+y_3\\
+y_4\\
+y_5
+\end{bmatrix}
+=
+\begin{bmatrix}
+m_1x_1\\
+m_2x_2\\
+m_3x_3\\
+m_4x_4\\
+m_5x_5
+\end{bmatrix}.
+$$
+
+Substituting the concrete values gives
+
+$$
+\mathbf{y}
+=
+\begin{bmatrix}
+1(12)\\
+0(7)\\
+1(15)\\
+0(4)\\
+1(10)
+\end{bmatrix}
+=
+\begin{bmatrix}
+12\\
+0\\
+15\\
+0\\
+10
+\end{bmatrix}.
+$$
+
+This is not one gate acting indiscriminately on a collection. It is a structured family of gates:
+
+$$
+m_1\text{ controls }x_1,
+\quad
+m_2\text{ controls }x_2,
+\quad
+\ldots,
+\quad
+m_n\text{ controls }x_n.
+$$
+
+Because the same local relationship holds at every position, mathematics provides a compact notation for the complete construction:
+
+$$
+\boxed{
+\mathbf{y}=\mathbf{m}\odot\mathbf{x}.
+}
+$$
+
+The symbol $\odot$ denotes **elementwise multiplication**, also called the **Hadamard product**. Its meaning is defined by
+
+$$
+(\mathbf{m}\odot\mathbf{x})_i=m_ix_i.
+$$
+
+The subscripted definition is more fundamental than the compact notation. It tells us what the operation does at each position. The vector equation is a compression of the indexed family
+
+$$
+y_i=m_ix_i
+\qquad
+\text{for every }i.
+$$
+
+Consequently,
+
+$$
+\begin{bmatrix}
+1\\
+0\\
+1\\
+0\\
+1
+\end{bmatrix}
+\odot
+\begin{bmatrix}
+12\\
+7\\
+15\\
+4\\
+10
+\end{bmatrix}
+=
+\begin{bmatrix}
+1(12)\\
+0(7)\\
+1(15)\\
+0(4)\\
+1(10)
+\end{bmatrix}
+=
+\begin{bmatrix}
+12\\
+0\\
+15\\
+0\\
+10
+\end{bmatrix}.
+$$
+
+The operation is possible because the two vectors possess corresponding component structures:
+
+$$
+\mathbf{m}\in\{0,1\}^{n},
+\qquad
+\mathbf{x}\in\mathbb{R}^{n}.
+$$
+
+Each of the $n$ mask components is paired with one of the $n$ data components. The result also has $n$ components:
+
+$$
+\mathbf{y}\in\mathbb{R}^{n}.
+$$
+
+Thus elementwise masking preserves the dimensional structure:
+
+$$
+\{0,1\}^{n}\times\mathbb{R}^{n}
+\longrightarrow
+\mathbb{R}^{n}.
+$$
+
+The notation states that the operation accepts a binary vector and a numerical vector of compatible size and produces another numerical vector of that size.
+
+### Why This Is Not a Dot Product
+
+The expression
+
+$$
+\mathbf{m}\odot\mathbf{x}
+$$
+
+must be distinguished from
+
+$$
+\mathbf{m}^{\mathsf T}\mathbf{x}.
+$$
+
+The first is an elementwise product. It preserves every position:
+
+$$
+\mathbf{m}\odot\mathbf{x}
+=
+\begin{bmatrix}
+m_1x_1\\
+m_2x_2\\
+\vdots\\
+m_nx_n
+\end{bmatrix}.
+$$
+
+Its output is a vector.
+
+The dot product multiplies corresponding components and then adds them:
+
+$$
+\mathbf{m}^{\mathsf T}\mathbf{x}
+=
+\sum_{i=1}^{n}m_ix_i.
+$$
+
+Its output is one scalar.
+
+For the package data, elementwise masking produces
+
+$$
+\mathbf{m}\odot\mathbf{x}
+=
+\begin{bmatrix}
+12\\
+0\\
+15\\
+0\\
+10
+\end{bmatrix}.
+$$
+
+The qualifying values remain identifiable by position. In contrast, the dot product produces
+
+$$
+\begin{aligned}
+\mathbf{m}^{\mathsf T}\mathbf{x}
+&=1(12)+0(7)+1(15)+0(4)+1(10)\\
+&=12+0+15+0+10\\
+&=37.
+\end{aligned}
+$$
+
+The scalar $37$ is the total weight of the qualifying packages. It no longer records that the contributing weights came from positions $1$, $3$, and $5$. The two operations therefore answer different computational questions:
+
+$$
+\mathbf{m}\odot\mathbf{x}
+$$
+
+asks:
+
+> What contribution remains at every original position?
+
+Whereas
+
+$$
+\mathbf{m}^{\mathsf T}\mathbf{x}
+=
+\sum_{i=1}^{n}m_ix_i
+$$
+
+asks:
+
+> What is the total of all surviving contributions?
+
+The distinction can be expressed as
+
+$$
+\boxed{
+\text{elementwise gating preserves positions},
+\qquad
+\text{reduction combines positions}.
+}
+$$
+
+The dot product contains masking as its first local step, but it continues by summing the masked contributions. Elementwise multiplication stops before that reduction.
+
+An ordinary program could construct the masked values procedurally:
+
+```python
+weights = [12, 7, 15, 4, 10]
+masked_weights = []
+
+for weight in weights:
+    if weight >= 10:
+        masked_weights.append(weight)
+    else:
+        masked_weights.append(0)
+```
+
+This code says what to do in time: inspect a value, test it, append either the value or zero, and repeat.
+
+The indexed equation says what relationship holds at every position:
+
+$$
+y_i=\mathbf{1}[x_i\geq10]x_i.
+$$
+
+The vector equation organizes all those relationships into one transformation:
+
+$$
+\mathbf{y}=\mathbf{m}\odot\mathbf{x}.
+$$
+
+These are not three unrelated solutions. They are three levels of description of the same computation:
+
+$$
+\boxed{
+\begin{aligned}
+\text{procedural description}
+&:\quad
+\text{visit each position and branch},\\
+\text{indexed description}
+&:\quad
+y_i=m_ix_i,\\
+\text{vector description}
+&:\quad
+\mathbf{y}=\mathbf{m}\odot\mathbf{x}.
+\end{aligned}
+}
+$$
+
+### Extending the Relationship to a Grid
+
+Section 5.2 introduced the measurement grid
+
+$$
+\mathbf{X}
+=
+\begin{bmatrix}
+4 & 11 & 7\\
+15 & 3 & 12
+\end{bmatrix}
+$$
+
+and its mask
+
+$$
+\mathbf{M}
+=
+\begin{bmatrix}
+0 & 1 & 0\\
+1 & 0 & 1
+\end{bmatrix},
+$$
+
+where
+
+$$
+M_{ij}=\mathbf{1}[X_{ij}\geq10].
+$$
+
+The required output at every row-and-column position is
+
+$$
+Y_{ij}=M_{ij}X_{ij}.
+$$
+
+Evaluating these local gates gives
+
+$$
+\begin{aligned}
+Y_{1,1}&=0(4)=0,\\
+Y_{1,2}&=1(11)=11,\\
+Y_{1,3}&=0(7)=0,\\
+Y_{2,1}&=1(15)=15,\\
+Y_{2,2}&=0(3)=0,\\
+Y_{2,3}&=1(12)=12.
+\end{aligned}
+$$
+
+Organizing the results in the same shape produces
+
+$$
+\mathbf{Y}
+=
+\mathbf{M}\odot\mathbf{X}
+=
+\begin{bmatrix}
+0 & 1 & 0\\
+1 & 0 & 1
+\end{bmatrix}
+\odot
+\begin{bmatrix}
+4 & 11 & 7\\
+15 & 3 & 12
+\end{bmatrix}
+=
+\begin{bmatrix}
+0 & 11 & 0\\
+15 & 0 & 12
+\end{bmatrix}.
+$$
+
+The mask does not flatten the grid or discard its coordinate system. Every output remains associated with its original row and column. The general relationship is
+
+$$
+\boxed{
+Y_{ij}=M_{ij}X_{ij}.
+}
+$$
+
+The matrix notation
+
+$$
+\boxed{
+\mathbf{Y}=\mathbf{M}\odot\mathbf{X}
+}
+$$
+
+again compresses the family of componentwise gates without changing their positional meaning.
+
+## 5.4 Masking and Filtering Are Different Transformations
+
+The package weights and their mask are
+
+$$
+\mathbf{x}
+=
+\begin{bmatrix}
+12\\
+7\\
+15\\
+4\\
+10
+\end{bmatrix},
+\qquad
+\mathbf{m}
+=
+\begin{bmatrix}
+1\\
+0\\
+1\\
+0\\
+1
+\end{bmatrix}.
+$$
+
+The qualifying positions are
+
+$$
+\mathcal{Q}=\{1,3,5\}.
+$$
+
+Section 5.3 applied the mask through elementwise multiplication:
+
+$$
+\mathbf{y}=\mathbf{m}\odot\mathbf{x}.
+$$
+
+This produced
+
+$$
+\mathbf{y}
+=
+\begin{bmatrix}
+12\\
+0\\
+15\\
+0\\
+10
+\end{bmatrix}.
+$$
+
+The values at positions $2$ and $4$ have been suppressed, but the positions themselves remain present. The output still has five components:
+
+$$
+\mathbf{x}\in\mathbb{R}^{5}
+\quad\longrightarrow\quad
+\mathbf{y}\in\mathbb{R}^{5}.
+$$
+
+Another program might use the same qualifying condition differently:
+
+```python
+weights = [12, 7, 15, 4, 10]
+
+qualifying_weights = []
+
+for weight in weights:
+    if weight >= 10:
+        qualifying_weights.append(weight)
+```
+
+This program produces
+
+```python
+[12, 15, 10]
+```
+
+In mathematical notation, the resulting collection can be written as
+
+$$
+\mathbf{z}
+=
+\begin{bmatrix}
+12\\
+15\\
+10
+\end{bmatrix}.
+$$
+
+The outputs $\mathbf{y}$ and $\mathbf{z}$ contain the same qualifying numerical values, but they are not the same mathematical object:
+
+$$
+\begin{bmatrix}
+12\\
+0\\
+15\\
+0\\
+10
+\end{bmatrix}
+\neq
+\begin{bmatrix}
+12\\
+15\\
+10
+\end{bmatrix}.
+$$
+
+The difference is not merely that one output contains zeroes and the other does not. The two transformations preserve different information.
+
+### Masking Preserves the Original Index Domain
+
+The original collection is indexed by
+
+$$
+\mathcal{I}=\{1,2,3,4,5\}.
+$$
+
+Elementwise masking defines an output for every original index:
+
+$$
+y_i=m_ix_i
+\qquad
+\text{for every }i\in\mathcal{I}.
+$$
+
+Therefore,
+
+$$
+y_1=12,
+\qquad
+y_2=0,
+\qquad
+y_3=15,
+\qquad
+y_4=0,
+\qquad
+y_5=10.
+$$
+
+The output still answers a question about each of the five original positions. At position $2$, it says that the contribution has been suppressed. At position $4$, it says the same. The zeroes are not empty spaces. They are numerical results attached to positions that continue to exist. The transformation can be viewed as a function
+
+$$
+T_{\mathbf{m}}:\mathbb{R}^{5}\rightarrow\mathbb{R}^{5}
+$$
+
+defined by
+
+$$
+T_{\mathbf{m}}(\mathbf{x})=\mathbf{m}\odot\mathbf{x}.
+$$
+
+The input and output belong to spaces of the same dimension. More generally,
+
+$$
+T_{\mathbf{m}}:\mathbb{R}^{n}\rightarrow\mathbb{R}^{n}.
+$$
+
+Masking changes component values while preserving the surrounding coordinate system:
+
+$$
+\boxed{
+\text{same positions},
+\qquad
+\text{same order},
+\qquad
+\text{same length},
+\qquad
+\text{different contributions}.
+}
+$$
+
+This is why masking can be described as a structure-preserving form of suppression. It does not preserve every numerical value, but it preserves the frame in which those values are located.
+
+### Filtering Restricts the Index Domain
+
+Filtering performs a different operation. It retains only the values whose indices belong to
+
+$$
+\mathcal{Q}=\{1,3,5\}.
+$$
+
+The filtered values are
+
+$$
+x_1=12,
+\qquad
+x_3=15,
+\qquad
+x_5=10.
+$$
+
+They can be written as
+
+$$
+\mathbf{x}_{\mathcal{Q}}
+=
+\begin{bmatrix}
+x_1\\
+x_3\\
+x_5
+\end{bmatrix}
+=
+\begin{bmatrix}
+12\\
+15\\
+10
+\end{bmatrix}.
+$$
+
+The notation $\mathbf{x}_{\mathcal{Q}}$ means that the collection has been restricted to positions in $\mathcal{Q}$. It is not the result of multiplying the complete vector by binary gates. It is the result of selecting a subset of its components. The transformation now has the form
+
+$$
+F_{\mathcal{Q}}:\mathbb{R}^{5}\rightarrow\mathbb{R}^{3},
+$$
+
+because three of the five positions qualify. In general, if
+
+$$
+|\mathcal{Q}|=q,
+$$
+
+then filtering has the form
+
+$$
+F_{\mathcal{Q}}:\mathbb{R}^{n}\rightarrow\mathbb{R}^{q},
+$$
+
+where $q$ depends on how many components satisfy the condition. Filtering therefore changes the dimensional description of the collection:
+
+$$
+\boxed{
+\text{remove excluded positions},
+\qquad
+\text{retain qualifying values},
+\qquad
+\text{produce a possibly shorter object}.
+}
+$$
+
+The predicate is the same in both transformations. The subset $\mathcal{Q}$ is the same. What differs is the output requirement. Masking asks:
+
+> What should remain at every original position after nonqualifying contributions have been suppressed?
+
+Filtering asks:
+
+> Which values should remain after nonqualifying positions have been removed?
+
+### Zero Is a Value, Not an Absence of Position
+
+The distinction becomes clearer when the original data already contains zero. Consider
+
+$$
+\mathbf{a}
+=
+\begin{bmatrix}
+12\\
+0\\
+7
+\end{bmatrix}
+$$
+
+and suppose the mask is
+
+$$
+\mathbf{r}
+=
+\begin{bmatrix}
+1\\
+1\\
+0
+\end{bmatrix}.
+$$
+
+Elementwise masking gives
+
+$$
+\mathbf{r}\odot\mathbf{a}
+=
+\begin{bmatrix}
+1(12)\\
+1(0)\\
+0(7)
+\end{bmatrix}
+=
+\begin{bmatrix}
+12\\
+0\\
+0
+\end{bmatrix}.
+$$
+
+The two output zeroes have different origins. The zero at position $2$ is a genuine data value preserved by an open gate:
+
+$$
+1(0)=0.
+$$
+
+The zero at position $3$ is produced by suppressing a nonzero value:
+
+$$
+0(7)=0.
+$$
+
+The masked output alone does not distinguish these histories. Both results are numerically zero. The mask must be retained if the distinction between “originally zero” and “suppressed to zero” matters. This shows why zero should not be interpreted as a missing position. Under masking, zero is a value occupying a position. It may arise from the original data or from a closed gate. In either case, the position remains part of the output. Filtering avoids introducing suppressed zeroes because it removes excluded positions:
+
+$$
+\mathbf{a}_{\mathcal{R}}
+=
+\begin{bmatrix}
+12\\
+0
+\end{bmatrix},
+$$
+
+where
+
+$$
+\mathcal{R}=\{1,2\}.
+$$
+
+The genuine zero remains because its position qualifies. The value $7$ disappears because its position does not qualify.
+
+### Filtering Creates a New Positional System
+
+The filtered vector
+
+$$
+\mathbf{z}
+=
+\begin{bmatrix}
+12\\
+15\\
+10
+\end{bmatrix}
+$$
+
+has three output positions. If these are labeled consecutively, then
+
+$$
+z_1=12,
+\qquad
+z_2=15,
+\qquad
+z_3=10.
+$$
+
+But the original positions were
+
+$$
+x_1=12,
+\qquad
+x_3=15,
+\qquad
+x_5=10.
+$$
+
+Thus the second component of the filtered vector came from the third component of the original vector. The third filtered component came from the fifth original component. Filtering therefore introduces a mapping between the new index system and the old one. If the ordered qualifying indices are
+
+$$
+q_1=1,
+\qquad
+q_2=3,
+\qquad
+q_3=5,
+$$
+
+then the filtered output satisfies
+
+$$
+z_j=x_{q_j}
+\qquad
+\text{for }j=1,2,3.
+$$
+
+More generally, if
+
+$$
+\mathcal{Q}=\{q_1,q_2,\ldots,q_q\}
+$$
+
+with the indices written in their retained order, then
+
+$$
+\boxed{
+z_j=x_{q_j}
+\qquad
+\text{for }j=1,2,\ldots,q.
+}
+$$
+
+This equation exposes a structural fact that ordinary filtering syntax can hide. The output index $j$ and the original index $q_j$ are not necessarily the same. Filtering compresses the surviving components into a new collection. If the original locations will be needed later, the values alone are insufficient. The indices must also be retained:
+
+$$
+(q_j,z_j).
+$$
+
+For the package example, this gives
+
+$$
+(1,12),
+\qquad
+(3,15),
+\qquad
+(5,10).
+$$
+
+Without the original indices, the filtered vector preserves the qualifying values and their relative order, but it does not by itself preserve their absolute positions in the original collection.
+
+### The Same Predicate Can Support Different Mathematical Objectives
+
+Both masking and filtering begin with
+
+$$
+m_i=\mathbf{1}[P(x_i)].
+$$
+
+The mask records where the predicate holds. What happens next depends on what the computation must preserve. If the requirement is
+
+> keep the original structure but eliminate nonqualifying contributions,
+
+then the appropriate relationship is
+
+$$
+y_i=m_ix_i
+$$
+
+or
+
+$$
+\mathbf{y}=\mathbf{m}\odot\mathbf{x}.
+$$
+
+If the requirement is
+
+> construct a collection containing only qualifying values,
+
+then the appropriate relationship is
+
+$$
+z_j=x_{q_j},
+$$
+
+where $q_j$ is the original index of the $j$th qualifying value. This distinction can be summarized exactly:
+
+| Property | Masking | Filtering |
+|---|---|---|
+| Uses the predicate | Yes | Yes |
+| Uses qualifying positions | Yes | Yes |
+| Preserves original length | Yes | Not necessarily |
+| Preserves every original position | Yes | No |
+| Replaces excluded values by zero | Yes | No |
+| Removes excluded positions | No | Yes |
+| Produces a new index system | No | Usually |
+| Retains original locations without extra information | Yes | No |
+
+### The Distinction Becomes More Important in Higher Dimensions
+
+Consider the measurement grid
+
+$$
+\mathbf{X}
+=
+\begin{bmatrix}
+4 & 11 & 7\\
+15 & 3 & 12
+\end{bmatrix}
+$$
+
+and its mask
+
+$$
+\mathbf{M}
+=
+\begin{bmatrix}
+0 & 1 & 0\\
+1 & 0 & 1
+\end{bmatrix}.
+$$
+
+Elementwise masking gives
+
+$$
+\mathbf{M}\odot\mathbf{X}
+=
+\begin{bmatrix}
+0 & 11 & 0\\
+15 & 0 & 12
+\end{bmatrix}.
+$$
+
+The result remains a $2\times3$ grid. The values $11$, $15$, and $12$ remain at coordinates $(1,2)$, $(2,1)$, and $(2,3)$. The spatial organization is preserved. Filtering the same grid by the same condition could instead produce the one-dimensional collection
+
+$$
+\begin{bmatrix}
+11\\
+15\\
+12
+\end{bmatrix}.
+$$
+
+The qualifying values remain, but the $2\times3$ grid structure has disappeared. From this vector alone, we cannot determine that $11$ came from coordinate $(1,2)$ or that $12$ came from coordinate $(2,3)$.
+
+If the coordinates matter, they must be retained separately:
+
+$$
+((1,2),11),
+\qquad
+((2,1),15),
+\qquad
+((2,3),12).
+$$
+
+This is why masking is especially important for images, spatial measurements, matrices, and tensors. A zeroed image region remains located inside the image. A filtered list of pixel values no longer possesses the original image geometry. The mathematical choice therefore depends on what kind of meaning the structure carries. If position represents time, space, identity, or correspondence with another collection, removing positions may destroy information that the computation still needs.
+
+### A Mask Is a Description Before It Is an Action
+
+The mask
+
+$$
+\mathbf{m}
+=
+\begin{bmatrix}
+1\\
+0\\
+1\\
+0\\
+1
+\end{bmatrix}
+$$
+
+first describes the subset
+
+$$
+\mathcal{Q}=\{1,3,5\}.
+$$
+
+That same description can support several later operations. It can suppress excluded contributions:
+
+$$
+\mathbf{m}\odot\mathbf{x}.
+$$
+
+It can count qualifying positions:
+
+$$
+\sum_{i=1}^{n}m_i.
+$$
+
+It can total qualifying values:
+
+$$
+\sum_{i=1}^{n}m_ix_i.
+$$
+
+It can also determine which positions should be extracted into a filtered collection. The mask and the operation performed with it must therefore be distinguished. The mask answers:
+
+> Where does the predicate hold?
+
+The subsequent operation answers:
+
+> What should be done with that positional information?
+
+This separation prevents the word *mask* from being reduced to one library operation. Mathematically, a mask is a structured binary representation of membership across an indexed domain. Multiplication, counting, summation, filtering, and later selective updating are different uses of that representation.
+
+A mask is not merely a row of Boolean values produced by a programming library. It is the characteristic representation of a subset over an indexed domain. Its components preserve the connection between a predicate and the positions where that predicate holds. Once this object has been constructed, the programmer can decide whether the computation should preserve the original structure, reduce contributions, extract a subset, or later modify selected values.

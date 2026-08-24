@@ -26,6 +26,8 @@ The book is being written and published one comprehensive mini-section at a time
 
 - **[Chapter 4 — Algebraic If/Else](https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/chapters/04-algebraic-if-else/)** derives complementary binary gates, constructs algebraic two-way selection, and generalizes the same reasoning to ordered `if/elif/else` chains.
 
+- **[Chapter 5 — Masks: Turning Many Conditions into One Mathematical Object](https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/chapters/05-masks/)** derives masks as structured collections of positionally corresponding indicators, develops elementwise gating, and distinguishes structure-preserving masking from subset extraction.
+
 ## Published Blog Posts
 
 ### Before Mathematics Begins
@@ -88,7 +90,9 @@ mathematical-understanding/
 │       │   │   └── index.qmd
 │       │   ├── 03-multiplication-as-a-gate/
 │       │   │   └── index.qmd
-│       │   └── 04-algebraic-if-else/
+│       │   ├── 04-algebraic-if-else/
+│       │   │   └── index.qmd
+│       │   └── 05-masks/
 │       │       └── index.qmd
 │       └── index.qmd
 ├── .gitignore

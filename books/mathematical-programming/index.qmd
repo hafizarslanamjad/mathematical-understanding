@@ -44,6 +44,10 @@ This chapter develops multiplication as a mathematical mechanism for conditional
 
 This chapter constructs algebraic selection from ordinary conditional branches. It derives complementary binary gates, develops the two-way selector $IA+(1-I)B$, interprets the equivalent form $B+I(A-B)$ as baseline plus conditional change, and generalizes the construction to ordered `if/elif/else` chains.
 
+### [Chapter 5 — Masks: Turning Many Conditions into One Mathematical Object](chapters/05-masks/index.qmd)
+
+This chapter generalizes a single binary indicator into a structured mask over an indexed collection. It develops positional correspondence, derives elementwise gating as $\mathbf{y}=\mathbf{m}\odot\mathbf{x}$, distinguishes the Hadamard product from reduction, and explains why masking and filtering preserve different mathematical structures.
+
 ## How This Book Is Being Written
 
 This is a book in progress. It is being written and published one comprehensive mini-section at a time. Each mini-section answers one precise conceptual question, begins with concrete examples, and develops its abstraction only after the underlying experience is clear.
