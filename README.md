@@ -30,6 +30,8 @@ The book is being written and published one comprehensive mini-section at a time
 
 - **[Chapter 6 — Selective Updates](https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/chapters/06-selective-updates/)** derives selective state changes by gating proposed transformations rather than suppressing original values, connecting additive updates, replacement, scaling, and nonlinear transformations through one mathematical structure.
 
+- **[Chapter 9 — From Element-by-Element Thinking to Vector Thinking](https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/chapters/09-vector-thinking/)** develops collection-level mathematical reasoning by lifting scalar functions, decoding vector expressions componentwise, and distinguishing independent transformations from coupled dependencies.
+
 ## Published Blog Posts
 
 ### Before Mathematics Begins
@@ -96,7 +98,9 @@ mathematical-understanding/
 │       │   │   └── index.qmd
 │       │   ├── 05-masks/
 │       │   │   └── index.qmd
-│       │   └── 06-selective-updates/
+│       │   ├── 06-selective-updates/
+│       │   │   └── index.qmd
+│       │   └── 09-vector-thinking/
 │       │       └── index.qmd
 │       └── index.qmd
 ├── .gitignore

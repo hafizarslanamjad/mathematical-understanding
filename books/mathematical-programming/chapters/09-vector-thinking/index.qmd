@@ -1,0 +1,1386 @@
+---
+title: "Chapter 9 — From Element-by-Element Thinking to Vector Thinking"
+description: "How repeated scalar operations become transformations of structured collections, and how vector expressions reveal independent and coupled dependencies."
+number-sections: false
+---
+
+## 9.1 A Collection Is More Than a Sequence of Visits
+
+Consider four positions measured in a local coordinate system:
+
+```python
+local_positions = [1, 4, -2, 5]
+```
+
+Suppose the corresponding global coordinate is obtained by scaling each local position by $2$ and then translating it by $3$:
+
+```python
+global_positions = []
+
+for position in local_positions:
+    transformed = 2 * position + 3
+    global_positions.append(transformed)
+```
+
+The program produces
+
+```python
+[5, 11, -1, 13]
+```
+
+A procedural reading emphasizes the sequence of execution. The program takes the first value, transforms it, appends the result, returns to the beginning of the loop, and repeats the process for the next value. From this viewpoint, the computation appears to be a sequence of four actions:
+
+$$
+1\longrightarrow5,
+$$
+
+then
+
+$$
+4\longrightarrow11,
+$$
+
+then
+
+$$
+-2\longrightarrow-1,
+$$
+
+and finally
+
+$$
+5\longrightarrow13.
+$$
+
+This description is correct, but it combines two different kinds of information. It describes both the mathematical relationship between an input and its output and the order in which a particular machine happens to construct the outputs. To move toward vector thinking, these ideas must be separated.
+
+### Execution Order Is Not Necessarily Mathematical Dependence
+
+The first result is calculated as
+
+$$
+2(1)+3=5.
+$$
+
+The second is calculated as
+
+$$
+2(4)+3=11.
+$$
+
+The third is calculated as
+
+$$
+2(-2)+3=-1.
+$$
+
+The fourth is calculated as
+
+$$
+2(5)+3=13.
+$$
+
+The computation of $11$ does not use the previously computed value $5$. The computation of $-1$ does not use $5$ or $11$. The computation of $13$ does not depend on any earlier result. Each output requires only one corresponding input and the common transformation rule.
+
+This means that the temporal statement
+
+> the computer calculates the first output before the second output
+
+does not imply the mathematical statement
+
+> the second output depends on the first output.
+
+These are different relationships. **Execution order** describes when operations occur. **Mathematical dependence** describes which quantities are required to determine another quantity. A program may choose a sequential execution order even when no mathematical dependency forces that order. The loop gives the computer an itinerary through the collection:
+
+$$
+1\rightarrow2\rightarrow3\rightarrow4.
+$$
+
+The transformation rule gives the mathematical dependency at each position:
+
+$$
+\text{output at position }i
+\longleftarrow
+\text{input at position }i.
+$$
+
+The itinerary is a property of the procedure. The dependency is a property of the computation being represented.
+
+### Naming the Corresponding Positions
+
+Let the local positions be denoted by
+
+$$
+x_1=1,
+\qquad
+x_2=4,
+\qquad
+x_3=-2,
+\qquad
+x_4=5.
+$$
+
+Let the corresponding global positions be
+
+$$
+y_1=5,
+\qquad
+y_2=11,
+\qquad
+y_3=-1,
+\qquad
+y_4=13.
+$$
+
+The subscript $i$ identifies a position in the collection. The value $x_i$ is the input at position $i$, while $y_i$ is the output at that same position. The four calculations can now be written as
+
+$$
+y_1=2x_1+3,
+$$
+
+$$
+y_2=2x_2+3,
+$$
+
+$$
+y_3=2x_3+3,
+$$
+
+and
+
+$$
+y_4=2x_4+3.
+$$
+
+The equations differ only in their subscripts. Their mathematical structure is identical. Instead of writing the relationship four times, we can use an arbitrary index $i$:
+
+$$
+\boxed{
+y_i=2x_i+3
+\qquad
+\text{for }i=1,2,3,4.
+}
+$$
+
+The index $i$ does not represent one additional numerical input to the transformation. It identifies which corresponding input-output pair is under consideration. The relationship
+
+$$
+y_i=2x_i+3
+$$
+
+states that whichever position is chosen, its output is obtained by applying the same rule to its input. This is the first movement from element-by-element thinking toward structural thinking. The loop says:
+
+> Repeat this instruction for every element.
+
+The indexed equation says:
+
+> This relationship holds at every position.
+
+The two statements describe the same local computations, but they organize the meaning differently.
+
+### One Rule, Several Instances
+
+The transformation applied to one numerical value is
+
+$$
+f(x)=2x+3.
+$$
+
+Each loop iteration instantiates this same rule at a different input:
+
+$$
+y_1=f(x_1),
+$$
+
+$$
+y_2=f(x_2),
+$$
+
+$$
+y_3=f(x_3),
+$$
+
+$$
+y_4=f(x_4).
+$$
+
+Thus,
+
+$$
+\boxed{
+y_i=f(x_i)
+\qquad
+\text{for every }i.
+}
+$$
+
+The function $f$ is invariant across the collection. The values $x_i$ vary by position. The resulting values $y_i$ vary because the same function receives different inputs. This distinction identifies two mathematical roles:
+
+$$
+f
+=
+\text{the shared transformation},
+$$
+
+whereas
+
+$$
+x_i
+=
+\text{the position-specific input}.
+$$
+
+The loop does not create four unrelated transformation rules. It applies one rule four times. The source code makes this visible because the loop body remains unchanged:
+
+```python
+transformed = 2 * position + 3
+```
+
+Only the value bound to `position` changes from one iteration to the next. Mathematically, the unchanged loop body corresponds to the shared function $f$, while the successive bindings correspond to $x_1,x_2,x_3,x_4$.
+
+### The Dependency Can Be Tested by Changing One Input
+
+To understand the structure more precisely, change only the second local position:
+
+$$
+\begin{bmatrix}
+1\\
+4\\
+-2\\
+5
+\end{bmatrix}
+\longrightarrow
+\begin{bmatrix}
+1\\
+6\\
+-2\\
+5
+\end{bmatrix}.
+$$
+
+The transformed second value changes from
+
+$$
+2(4)+3=11
+$$
+
+to
+
+$$
+2(6)+3=15.
+$$
+
+The other outputs remain
+
+$$
+5,
+\qquad
+-1,
+\qquad
+13.
+$$
+
+The new output collection is therefore
+
+$$
+\begin{bmatrix}
+5\\
+15\\
+-1\\
+13
+\end{bmatrix}.
+$$
+
+Changing $x_2$ changes $y_2$, but it does not change $y_1$, $y_3$, or $y_4$. This experiment reveals the dependency structure:
+
+$$
+x_1\longrightarrow y_1,
+$$
+
+$$
+x_2\longrightarrow y_2,
+$$
+
+$$
+x_3\longrightarrow y_3,
+$$
+
+$$
+x_4\longrightarrow y_4.
+$$
+
+There are no cross-position dependencies such as
+
+$$
+x_1\longrightarrow y_2
+$$
+
+or
+
+$$
+x_3\longrightarrow y_4.
+$$
+
+For this transformation, each output is local to its corresponding input. This property can be stated generally:
+
+$$
+\boxed{
+y_i\text{ depends on }x_i
+\text{ but not on }x_j\text{ for }j\neq i.
+}
+$$
+
+A transformation with this property is called **elementwise**. The term means that the transformation acts on each element according to the same local rule without requiring values from other positions.
+
+The term should not be confused with the order in which a program performs the operations. A program may calculate elementwise outputs sequentially, simultaneously, in parallel groups, or in another order. As long as every $y_i$ is determined by the corresponding $x_i$ through the same rule, the mathematical relationship remains elementwise.
+
+### A Different Execution Order Preserves the Relationship
+
+Suppose the four outputs were calculated in the order
+
+$$
+4,\ 2,\ 1,\ 3.
+$$
+
+The calculations would be
+
+$$
+y_4=2x_4+3=13,
+$$
+
+$$
+y_2=2x_2+3=11,
+$$
+
+$$
+y_1=2x_1+3=5,
+$$
+
+and
+
+$$
+y_3=2x_3+3=-1.
+$$
+
+The execution order has changed, but the correspondence between each $x_i$ and $y_i$ has not. Once the results are placed at their associated positions, the output remains
+
+$$
+\begin{bmatrix}
+5\\
+11\\
+-1\\
+13
+\end{bmatrix}.
+$$
+
+This shows that the transformation does not mathematically require the original left-to-right order. What must be preserved is not the order of calculation but the association
+
+$$
+x_i\longleftrightarrow y_i.
+$$
+
+The computation can be reorganized because its outputs are independent. However, the collection itself is still ordered. Independence does not mean that positions can be confused. The value calculated from $x_4$ must still become $y_4$, even if it is calculated first. This distinction is essential:
+
+$$
+\boxed{
+\text{the order of execution may change,
+but the index correspondence must not.}
+}
+$$
+
+### Sequential Syntax Can Hide a Simultaneous Relationship
+
+The loop presents the transformation as a process unfolding through time:
+
+```text
+read one value
+transform it
+store the result
+move to the next value
+```
+
+The indexed equation presents the same computation as a completed family of relationships:
+
+$$
+y_i=2x_i+3
+\qquad
+\text{for every }i.
+$$
+
+The phrase “for every $i$” does not claim that a physical computer evaluates all positions at exactly the same instant. It states that the same mathematical relationship is valid throughout the index domain. This is the sense in which the relationship can be understood simultaneously. All four equations belong to one definition:
+
+$$
+\begin{aligned}
+y_1&=2x_1+3,\\
+y_2&=2x_2+3,\\
+y_3&=2x_3+3,\\
+y_4&=2x_4+3.
+\end{aligned}
+$$
+
+The loop is one possible procedure for realizing that definition. It is not the definition itself. For the current computation:
+
+$$
+\text{loop}
+=
+\text{construction procedure},
+$$
+
+while
+
+$$
+y_i=f(x_i)
+=
+\text{completed input-output relationship}.
+$$
+
+### The Collection Is the Domain of a Structured Transformation
+
+The original program appears to act on four separate numbers. Yet these numbers are not unrelated. They belong to one indexed collection:
+
+$$
+x_1,x_2,x_3,x_4.
+$$
+
+The outputs likewise belong to one indexed collection:
+
+$$
+y_1,y_2,y_3,y_4.
+$$
+
+The transformation preserves the correspondence between the two collections:
+
+$$
+\begin{aligned}
+x_1&\longrightarrow y_1,\\
+x_2&\longrightarrow y_2,\\
+x_3&\longrightarrow y_3,\\
+x_4&\longrightarrow y_4.
+\end{aligned}
+$$
+
+This permits a change in the object of thought. Instead of thinking:
+
+> I have four numbers, and I must perform an operation four times,
+
+we can begin to think:
+
+> I have one structured collection, and one relationship determines its corresponding output collection.
+
+The first viewpoint treats repetition as the primary fact. The second treats common structure as the primary fact.
+
+The movement can be summarized as
+
+$$
+\boxed{
+\begin{aligned}
+\text{procedural view}
+&:\quad
+\text{visit }x_1,\text{ then }x_2,\text{ then }x_3,\text{ then }x_4,\\
+\text{indexed view}
+&:\quad
+y_i=f(x_i)\text{ for every }i.
+\end{aligned}
+}
+$$
+
+We have not yet written the complete input collection or output collection as a single vector transformation. That step requires us to determine how a scalar function $f$ can be extended, or **lifted**, from one value to an indexed collection. The important foundation has now been established: the repeated loop body represents one common relationship, and the outputs are linked to their corresponding inputs by index rather than by execution order.
+
+## 9.2 Lifting a Scalar Rule to a Collection
+
+Consider the following scalar function: 
+
+$$
+f:\mathbb{R}\rightarrow\mathbb{R}.
+$$
+
+This notation says that $f$ accepts one real number and produces one real number. For example,
+
+$$
+f(4)=11.
+$$
+
+The input $4$ and output $11$ are scalars. But our input collection has the domain:
+
+$$
+\mathbf{x}\in\mathbb{R}^{4}.
+$$
+
+It contains four real components. Therefore the function $f$ whose declared domain is $\mathbb{R}$ does not automatically accept an element of $\mathbb{R}^{4}$. Therefore, writing
+
+$$
+f(\mathbf{x})
+$$
+
+requires an additional definition. We must specify what it means to apply the scalar rule to a vector. We should start by defining a new transformation $F$ by
+
+$$
+F(\mathbf{x})
+=
+\begin{bmatrix}
+f(x_1)\\
+f(x_2)\\
+f(x_3)\\
+f(x_4)
+\end{bmatrix}.
+$$
+
+The transformation $F$ has the type
+
+$$
+F:\mathbb{R}^{4}\rightarrow\mathbb{R}^{4}.
+$$
+
+It accepts a four-component vector and produces a four-component vector. For a general collection of length $n$, the definition becomes
+
+$$
+\boxed{
+F(\mathbf{x})
+=
+\begin{bmatrix}
+f(x_1)\\
+f(x_2)\\
+\vdots\\
+f(x_n)
+\end{bmatrix}.
+}
+$$
+
+Its domain and codomain are
+
+$$
+F:\mathbb{R}^{n}\rightarrow\mathbb{R}^{n}.
+$$
+
+The transformation $F$ is called the **coordinatewise lifting** or **elementwise lifting** of $f$. The word *lifting* describes the movement from a rule over individual values to a corresponding rule over a structured collection:
+
+$$
+\boxed{
+f:\mathbb{R}\rightarrow\mathbb{R}
+\quad\longrightarrow\quad
+F:\mathbb{R}^{n}\rightarrow\mathbb{R}^{n}.
+}
+$$
+
+The scalar rule has not been replaced. It has been preserved at every coordinate:
+
+$$
+(F(\mathbf{x}))_i=f(x_i).
+$$
+
+The notation $(F(\mathbf{x}))_i$ means the $i$th component of the output produced by $F$. This equation is the defining property of the lifted transformation.
+
+### Constructing the Compact Vector Expression
+
+Consider the following the scalar rule
+
+$$
+f(x)=2x+3,
+$$
+
+and the lifted transformation is
+
+$$
+F(\mathbf{x})
+=
+\begin{bmatrix}
+2x_1+3\\
+2x_2+3\\
+\vdots\\
+2x_n+3
+\end{bmatrix}.
+$$
+
+The scaling part can be written as
+
+$$
+2\mathbf{x}
+=
+\begin{bmatrix}
+2x_1\\
+2x_2\\
+\vdots\\
+2x_n
+\end{bmatrix}.
+$$
+
+To add $3$ to every component, introduce the vector of ones
+
+$$
+\mathbf{1}
+=
+\begin{bmatrix}
+1\\
+1\\
+\vdots\\
+1
+\end{bmatrix}
+\in\mathbb{R}^{n}.
+$$
+
+Then
+
+$$
+3\mathbf{1}
+=
+\begin{bmatrix}
+3\\
+3\\
+\vdots\\
+3
+\end{bmatrix}.
+$$
+
+Adding these vectors componentwise gives
+
+$$
+\begin{aligned}
+2\mathbf{x}+3\mathbf{1}
+&=
+\begin{bmatrix}
+2x_1\\
+2x_2\\
+\vdots\\
+2x_n
+\end{bmatrix}
++
+\begin{bmatrix}
+3\\
+3\\
+\vdots\\
+3
+\end{bmatrix}\\
+&=
+\begin{bmatrix}
+2x_1+3\\
+2x_2+3\\
+\vdots\\
+2x_n+3
+\end{bmatrix}.
+\end{aligned}
+$$
+
+Therefore, the lifted transformation can be written compactly as
+
+$$
+\boxed{
+F(\mathbf{x})=2\mathbf{x}+3\mathbf{1}.
+}
+$$
+
+Since $\mathbf{y}=F(\mathbf{x})$, we obtain
+
+$$
+\boxed{
+\mathbf{y}=2\mathbf{x}+3\mathbf{1}.
+}
+$$
+
+This notation is mathematically explicit. Both terms belong to $\mathbb{R}^{n}$:
+
+$$
+2\mathbf{x}\in\mathbb{R}^{n},
+$$
+
+$$
+3\mathbf{1}\in\mathbb{R}^{n}.
+$$
+
+Programming libraries often permit the shorter expression
+
+```python
+y = 2 * x + 3
+```
+
+where the scalar $3$ is automatically applied to every component. That behavior will later be studied as broadcasting. At the present stage, the vector of ones makes the mathematical operation explicit:
+
+$$
+3
+\quad\longrightarrow\quad
+3\mathbf{1}.
+$$
+
+The scalar is converted into a constant vector compatible with the shape of $\mathbf{x}$.
+
+### Shape Preservation Is Part of the Construction
+
+The scalar function maps one value to one value:
+
+$$
+f:\mathbb{R}\rightarrow\mathbb{R}.
+$$
+
+Its elementwise lifting maps $n$ values to $n$ values:
+
+$$
+F:\mathbb{R}^{n}\rightarrow\mathbb{R}^{n}.
+$$
+
+Thus the transformation preserves the index domain:
+
+$$
+\{1,2,\ldots,n\}
+\longrightarrow
+\{1,2,\ldots,n\}.
+$$
+
+Every input position has exactly one corresponding output position. No position is removed, no new position is introduced, and no two positions are combined.
+
+This can be expressed as
+
+$$
+\boxed{
+\text{one input component}
+\longrightarrow
+\text{one corresponding output component}.
+}
+$$
+
+For a matrix
+
+$$
+\mathbf{X}\in\mathbb{R}^{r\times c},
+$$
+
+an elementwise lifting produces
+
+$$
+\mathbf{Y}\in\mathbb{R}^{r\times c}
+$$
+
+with
+
+$$
+Y_{ij}=f(X_{ij}).
+$$
+
+The number of rows and columns is preserved because the transformation acts on values without changing the coordinate system that organizes them.
+
+For example, if
+
+$$
+\mathbf{X}
+=
+\begin{bmatrix}
+1 & 4\\
+-2 & 5
+\end{bmatrix},
+$$
+
+then the lifted transformation produces
+
+$$
+\begin{aligned}
+F(\mathbf{X})
+&=
+\begin{bmatrix}
+f(1) & f(4)\\
+f(-2) & f(5)
+\end{bmatrix}\\
+&=
+\begin{bmatrix}
+5 & 11\\
+-1 & 13
+\end{bmatrix}.
+\end{aligned}
+$$
+
+The output at row $i$ and column $j$ depends on the input at the same row and column:
+
+$$
+Y_{ij}=f(X_{ij}).
+$$
+
+The lifting preserves structure because it preserves index correspondence.
+
+### From Repetition to a Transformation of One Object
+
+The original loop was
+
+```python
+global_positions = []
+
+for position in local_positions:
+    transformed = 2 * position + 3
+    global_positions.append(transformed)
+```
+
+A procedural reading sees repeated execution:
+
+$$
+\text{apply }f,
+\quad
+\text{apply }f,
+\quad
+\text{apply }f,
+\quad
+\text{apply }f.
+$$
+
+The indexed reading sees one relationship instantiated at every position:
+
+$$
+y_i=f(x_i).
+$$
+
+The lifted reading sees one transformation between structured objects:
+
+$$
+\mathbf{y}=F(\mathbf{x}).
+$$
+
+These descriptions can be organized as
+
+$$
+\boxed{
+\begin{aligned}
+\text{scalar rule}
+&:\quad
+y=f(x),\\
+\text{indexed family}
+&:\quad
+y_i=f(x_i),\\
+\text{lifted transformation}
+&:\quad
+\mathbf{y}=F(\mathbf{x}),\\
+\text{defining correspondence}
+&:\quad
+(F(\mathbf{x}))_i=f(x_i).
+\end{aligned}
+}
+$$
+
+The vector transformation does not deny that individual components exist. It incorporates their repeated relationship into the definition of one higher-level object. This is the central movement from element-by-element thinking to vector thinking.
+
+## 9.3 Independent and Coupled Transformations
+
+The transformations studied so far have had the componentwise form
+
+$$
+y_i=f_i(x_i).
+$$
+
+Each output component depends on the input at the corresponding position. If $x_i$ changes while every other input remains fixed, then only $y_i$ can change. This local dependency makes it possible to understand the complete transformation as a collection of independent scalar relationships.
+
+Not every transformation of a vector has this structure.
+
+A collection may be transformed according to a quantity computed from all of its components. An output at one position may depend on neighboring positions, a shared total, an average, or a weighted combination of the complete input. In such cases, the vector must be treated not merely as a container of separate values but as an interconnected mathematical object.
+
+The central question becomes:
+
+> What information from the input is required to determine one output component?
+
+This question reveals whether the transformation is independent or coupled.
+
+### A Shared Reference Couples the Outputs
+
+Consider the following requirement:
+
+> Express every value relative to the mean of the collection.
+
+For
+
+$$
+\mathbf{x}
+=
+\begin{bmatrix}
+2\\
+4\\
+9
+\end{bmatrix},
+$$
+
+the mean is
+
+$$
+\mu(\mathbf{x})
+=
+\frac{2+4+9}{3}
+=
+5.
+$$
+
+The centered values are
+
+$$
+y_i=x_i-\mu(\mathbf{x}).
+$$
+
+Therefore,
+
+$$
+\mathbf{y}
+=
+\begin{bmatrix}
+2-5\\
+4-5\\
+9-5
+\end{bmatrix}
+=
+\begin{bmatrix}
+-3\\
+-1\\
+4
+\end{bmatrix}.
+$$
+
+The subtraction is performed at every position, but the transformation is not independent. To calculate $y_2$, we need
+
+$$
+x_2
+$$
+
+and
+
+$$
+\mu(\mathbf{x}).
+$$
+
+The mean depends on all input components:
+
+$$
+\mu(\mathbf{x})
+=
+\frac{1}{n}
+\sum_{j=1}^{n}x_j.
+$$
+
+Thus the component equation is
+
+$$
+\boxed{
+y_i
+=
+x_i
+-
+\frac{1}{n}
+\sum_{j=1}^{n}x_j.
+}
+$$
+
+The index $i$ identifies the output position. The index $j$ ranges across the complete input collection. The transformation is therefore **coupled**. A coupled transformation creates dependencies across positions:
+
+$$
+\boxed{
+y_i\text{ may depend on }x_j
+\text{ even when }j\neq i.
+}
+$$
+
+### Centering as a Vector Transformation
+
+Let
+
+$$
+\mathbf{1}
+=
+\begin{bmatrix}
+1\\
+1\\
+\vdots\\
+1
+\end{bmatrix}
+\in\mathbb{R}^{n}.
+$$
+
+The centered vector can be written as
+
+$$
+\boxed{
+\mathbf{y}
+=
+\mathbf{x}
+-
+\mu(\mathbf{x})\mathbf{1}.
+}
+$$
+
+The scalar $\mu(\mathbf{x})$ is converted into a constant vector:
+
+$$
+\mu(\mathbf{x})\mathbf{1}
+=
+\begin{bmatrix}
+\mu(\mathbf{x})\\
+\mu(\mathbf{x})\\
+\vdots\\
+\mu(\mathbf{x})
+\end{bmatrix}.
+$$
+
+The subtraction is then componentwise:
+
+$$
+y_i=x_i-\mu(\mathbf{x}).
+$$
+
+The vector expression contains two structurally different operations:
+
+1. many input components are combined into one scalar mean;
+2. that scalar is applied across all output positions.
+
+The transformation cannot be described merely as “perform subtraction on every element.” The subtracted quantity is itself a function of the entire vector. This distinction prepares a broader pattern:
+
+$$
+\boxed{
+\text{reduce the collection}
+\rightarrow
+\text{use the reduced quantity throughout the collection}.
+}
+$$
+
+Many normalization, standardization, probability, and machine-learning operations have this form.
+
+### Neighboring Dependence Creates Local Coupling
+
+Coupling does not always involve the complete collection. An output may depend on a local neighborhood. Consider a one-dimensional smoothing rule:
+
+$$
+y_i
+=
+\frac{x_{i-1}+x_i+x_{i+1}}{3}.
+$$
+
+The output at position $i$ depends on three input positions:
+
+$$
+x_{i-1},
+\qquad
+x_i,
+\qquad
+x_{i+1}.
+$$
+
+Changing $x_i$ may affect not only $y_i$ but also the neighboring outputs
+
+$$
+y_{i-1}
+$$
+
+and
+
+$$
+y_{i+1},
+$$
+
+because their neighborhoods also contain $x_i$. This transformation is not globally coupled in the same way as mean-centering. A distant input may have no effect on $y_i$. Nevertheless, it is not elementwise because the output requires more than its corresponding input. We can distinguish three dependency patterns:
+
+$$
+\boxed{
+\begin{aligned}
+\text{elementwise}
+&:\quad y_i\text{ depends only on }x_i,\\
+\text{locally coupled}
+&:\quad y_i\text{ depends on a neighborhood of }i,\\
+\text{globally coupled}
+&:\quad y_i\text{ may depend on the complete collection}.
+\end{aligned}
+}
+$$
+
+These categories describe mathematical dependence, not a particular implementation. A locally coupled transformation may be implemented with loops, convolution operations, matrix multiplication, or specialized hardware. The dependency pattern remains the same.
+
+### Matrices Express General Linear Coupling
+
+A broad family of vector transformations can be written as
+
+$$
+\mathbf{y}=\mathbf{A}\mathbf{x},
+$$
+
+where
+
+$$
+\mathbf{A}\in\mathbb{R}^{m\times n},
+\qquad
+\mathbf{x}\in\mathbb{R}^{n},
+\qquad
+\mathbf{y}\in\mathbb{R}^{m}.
+$$
+
+To discover the dependency of one output, take the $i$th component:
+
+$$
+\boxed{
+y_i=\sum_{j=1}^{n}A_{ij}x_j.
+}
+$$
+
+The row index $i$ identifies the output. The column index $j$ ranges across the inputs that may contribute to that output.
+
+If
+
+$$
+\mathbf{A}
+=
+\begin{bmatrix}
+2 & 0 & 0\\
+0 & 2 & 0\\
+0 & 0 & 2
+\end{bmatrix},
+$$
+
+then
+
+$$
+\mathbf{y}=\mathbf{A}\mathbf{x}
+$$
+
+means
+
+$$
+y_1=2x_1,
+$$
+
+$$
+y_2=2x_2,
+$$
+
+and
+
+$$
+y_3=2x_3.
+$$
+
+The diagonal matrix produces an independent transformation because each row contains only one nonzero coefficient at the corresponding position.
+
+If instead
+
+$$
+\mathbf{A}
+=
+\begin{bmatrix}
+1 & 1 & 0\\
+0 & 1 & 1\\
+1 & 0 & 1
+\end{bmatrix},
+$$
+
+then
+
+$$
+y_1=x_1+x_2,
+$$
+
+$$
+y_2=x_2+x_3,
+$$
+
+and
+
+$$
+y_3=x_1+x_3.
+$$
+
+Each output combines multiple inputs. The transformation is coupled. The vector notation
+
+$$
+\mathbf{y}=\mathbf{A}\mathbf{x}
+$$
+
+therefore does not by itself tell us whether the transformation is independent. The structure of $\mathbf{A}$ determines the dependencies. A diagonal matrix preserves coordinate independence. Off-diagonal nonzero entries create cross-position influence.
+
+### Dependency Can Be Represented by Sensitivity
+
+For a differentiable transformation, dependency can also be examined through partial derivatives. If
+
+$$
+\mathbf{y}=F(\mathbf{x}),
+$$
+
+then
+
+$$
+\frac{\partial y_i}{\partial x_j}
+$$
+
+measures how $y_i$ responds to a change in $x_j$. For an elementwise transformation
+
+$$
+y_i=f_i(x_i),
+$$
+
+we have
+
+$$
+\frac{\partial y_i}{\partial x_j}=0
+\qquad
+\text{when }i\neq j.
+$$
+
+Changing an input at another position has no local effect on $y_i$. The matrix of all such sensitivities is the Jacobian:
+
+$$
+J_{ij}
+=
+\frac{\partial y_i}{\partial x_j}.
+$$
+
+For an elementwise transformation, the Jacobian is diagonal:
+
+$$
+\mathbf{J}
+=
+\begin{bmatrix}
+\frac{\partial y_1}{\partial x_1} & 0 & \cdots & 0\\
+0 & \frac{\partial y_2}{\partial x_2} & \cdots & 0\\
+\vdots & \vdots & \ddots & \vdots\\
+0 & 0 & \cdots & \frac{\partial y_n}{\partial x_n}
+\end{bmatrix}.
+$$
+
+For a coupled transformation, off-diagonal entries may be nonzero:
+
+$$
+\frac{\partial y_i}{\partial x_j}\neq0
+\qquad
+\text{for some }i\neq j.
+$$
+
+The Jacobian is not required to recognize ordinary vector transformations, but it provides a precise mathematical representation of dependency. Its structure records which inputs can influence which outputs. This idea later becomes important in optimization, automatic differentiation, neural networks, dynamical systems, and sensitivity analysis.
+
+### Vectorization Does Not Mean Elementwise Independence
+
+The word *vectorized* is often used informally to mean that code operates on arrays without an explicit Python loop. This implementation-level meaning must not be confused with mathematical independence.
+
+Both of the following are vector transformations:
+
+$$
+\mathbf{y}=2\mathbf{x}+3\mathbf{1}
+$$
+
+and
+
+$$
+\mathbf{y}
+=
+\mathbf{x}
+-
+\mu(\mathbf{x})\mathbf{1}.
+$$
+
+The first is elementwise. The second is coupled through the mean. Both may be written compactly in a numerical programming library:
+
+```python
+y = 2 * x + 3
+```
+
+and
+
+```python
+y = x - x.mean()
+```
+
+The absence of an explicit loop does not imply that every output depends only on its corresponding input. Vectorized notation describes how the computation is expressed or executed at the collection level. Dependency analysis describes the mathematical relationship among components. Therefore,
+
+$$
+\boxed{
+\text{vectorized}
+\not\Longrightarrow
+\text{elementwise independent}.
+}
+$$
+
+A reduction, matrix multiplication, convolution, normalization, or attention operation may be vectorized while strongly coupling different positions.
+
+### A Procedure for Analyzing Dependency
+
+Given a vector expression
+
+$$
+\mathbf{y}=F(\mathbf{x}),
+$$
+
+the dependency structure can be determined systematically. First, select an arbitrary output component:
+
+$$
+y_i=(F(\mathbf{x}))_i.
+$$
+
+Second, expand every vector operation and every intermediate quantity until the expression is written in indexed scalar form. Third, inspect which input indices appear. If the final relationship is
+
+$$
+y_i=f_i(x_i),
+$$
+
+then the transformation is elementwise. If it contains inputs such as
+
+$$
+x_{i-1},
+\qquad
+x_{i+1},
+$$
+
+then it is locally coupled. If it contains a sum or function over all inputs,
+
+$$
+\sum_{j=1}^{n}g_j(x_j)
+$$
+
+or
+
+$$
+h(\mathbf{x}),
+$$
+
+then it is globally coupled. For example,
+
+$$
+\mathbf{y}
+=
+\frac{\mathbf{x}}{\sum_{j=1}^{n}x_j}
+$$
+
+has the component form
+
+$$
+y_i
+=
+\frac{x_i}{\sum_{j=1}^{n}x_j}.
+$$
+
+The numerator is local, but the denominator depends on the complete collection. Every normalized output is therefore coupled to every input contributing to the denominator. The visual appearance of componentwise division does not make the complete transformation independent.
+
+Vector thinking therefore means more than replacing a loop with array syntax. It means treating the collection as a mathematical object, defining a transformation over that object, and understanding how the components of the input determine the components of the output. For an independent transformation,
+
+$$
+\boxed{
+y_i=f_i(x_i).
+}
+$$
+
+For a coupled transformation,
+
+$$
+\boxed{
+y_i
+=
+g_i(x_1,x_2,\ldots,x_n)
+}
+$$
+
+or, more selectively,
+
+$$
+\boxed{
+y_i
+=
+g_i\bigl(\{x_j:j\in\mathcal{N}(i)\}\bigr),
+}
+$$
+
+where $\mathcal{N}(i)$ denotes the set of input positions relevant to output position $i$.
+
+The important habit is no longer merely to ask:
+
+> Is this code using a loop?
+
+The mathematically useful questions are:
+
+> What object is being transformed?
+
+> What relationship defines one output component?
+
+> Which input components does that output depend on?
+
+Once these questions can be answered, imperative code, indexed equations, vector notation, and numerical-array programs become different representations of the same underlying computational structure.
