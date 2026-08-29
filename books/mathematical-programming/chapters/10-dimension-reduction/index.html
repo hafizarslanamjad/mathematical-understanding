@@ -1,0 +1,3032 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="A chapter about reductions as mathematical transformations that compress collections, preserve selected information, remove dimensions, and deliberately discard other information.">
+
+<title>Chapter 10 — Dimension Reduction – Mathematical Understanding</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../../">
+<script src="../../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../../site_libs/bootstrap/bootstrap-e3adbaa939bcd423dddc8c8a834270b4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../../../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../../index.html">
+    <span class="navbar-title">Mathematical Understanding</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../index.html"> 
+<span class="menu-text">Articles</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../books/mathematical-programming/index.html"> 
+<span class="menu-text">Mathematical Programming</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/hafizarslanamjad/mathematical-understanding"> <i class="bi bi-github" role="img" aria-label="GitHub repository">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#when-many-values-must-produce-one-result" id="toc-when-many-values-must-produce-one-result" class="nav-link active" data-scroll-target="#when-many-values-must-produce-one-result"><span class="header-section-number">1</span> 10.1 When Many Values Must Produce One Result</a>
+  <ul class="collapse">
+  <li><a href="#the-output-answers-a-question-about-the-whole-collection" id="toc-the-output-answers-a-question-about-the-whole-collection" class="nav-link" data-scroll-target="#the-output-answers-a-question-about-the-whole-collection"><span class="header-section-number">1.1</span> The Output Answers a Question About the Whole Collection</a></li>
+  <li><a href="#one-output-may-depend-on-every-input" id="toc-one-output-may-depend-on-every-input" class="nav-link" data-scroll-target="#one-output-may-depend-on-every-input"><span class="header-section-number">1.2</span> One Output May Depend on Every Input</a></li>
+  <li><a href="#the-loop-constructs-a-global-invariant" id="toc-the-loop-constructs-a-global-invariant" class="nav-link" data-scroll-target="#the-loop-constructs-a-global-invariant"><span class="header-section-number">1.3</span> The Loop Constructs a Global Invariant</a></li>
+  <li><a href="#the-index-domain-disappears-from-the-output" id="toc-the-index-domain-disappears-from-the-output" class="nav-link" data-scroll-target="#the-index-domain-disappears-from-the-output"><span class="header-section-number">1.4</span> The Index Domain Disappears from the Output</a></li>
+  <li><a href="#reducing-shape-without-changing-units" id="toc-reducing-shape-without-changing-units" class="nav-link" data-scroll-target="#reducing-shape-without-changing-units"><span class="header-section-number">1.5</span> Reducing Shape Without Changing Units</a></li>
+  <li><a href="#a-scalar-result-does-not-preserve-the-collection" id="toc-a-scalar-result-does-not-preserve-the-collection" class="nav-link" data-scroll-target="#a-scalar-result-does-not-preserve-the-collection"><span class="header-section-number">1.6</span> A Scalar Result Does Not Preserve the Collection</a></li>
+  <li><a href="#reordering-does-not-change-this-reduction" id="toc-reordering-does-not-change-this-reduction" class="nav-link" data-scroll-target="#reordering-does-not-change-this-reduction"><span class="header-section-number">1.7</span> Reordering Does Not Change This Reduction</a></li>
+  <li><a href="#a-reduction-is-defined-by-the-question-it-answers" id="toc-a-reduction-is-defined-by-the-question-it-answers" class="nav-link" data-scroll-target="#a-reduction-is-defined-by-the-question-it-answers"><span class="header-section-number">1.8</span> A Reduction Is Defined by the Question It Answers</a></li>
+  <li><a href="#the-fundamental-change-of-perspective" id="toc-the-fundamental-change-of-perspective" class="nav-link" data-scroll-target="#the-fundamental-change-of-perspective"><span class="header-section-number">1.9</span> The Fundamental Change of Perspective</a></li>
+  </ul></li>
+  <li><a href="#different-questions-require-different-reductions" id="toc-different-questions-require-different-reductions" class="nav-link" data-scroll-target="#different-questions-require-different-reductions"><span class="header-section-number">2</span> 10.2 Different Questions Require Different Reductions</a>
+  <ul class="collapse">
+  <li><a href="#mean-preserve-average-level" id="toc-mean-preserve-average-level" class="nav-link" data-scroll-target="#mean-preserve-average-level"><span class="header-section-number">2.1</span> Mean: Preserve Average Level</a></li>
+  <li><a href="#total-and-mean-respond-differently-to-repetition" id="toc-total-and-mean-respond-differently-to-repetition" class="nav-link" data-scroll-target="#total-and-mean-respond-differently-to-repetition"><span class="header-section-number">2.2</span> Total and Mean Respond Differently to Repetition</a></li>
+  <li><a href="#maximum-preserve-the-upper-extreme" id="toc-maximum-preserve-the-upper-extreme" class="nav-link" data-scroll-target="#maximum-preserve-the-upper-extreme"><span class="header-section-number">2.3</span> Maximum: Preserve the Upper Extreme</a></li>
+  <li><a href="#minimum-preserve-the-lower-extreme" id="toc-minimum-preserve-the-lower-extreme" class="nav-link" data-scroll-target="#minimum-preserve-the-lower-extreme"><span class="header-section-number">2.4</span> Minimum: Preserve the Lower Extreme</a></li>
+  <li><a href="#the-operators-preserve-different-facts" id="toc-the-operators-preserve-different-facts" class="nav-link" data-scroll-target="#the-operators-preserve-different-facts"><span class="header-section-number">2.5</span> The Operators Preserve Different Facts</a></li>
+  <li><a href="#similar-results-do-not-imply-equivalent-reductions" id="toc-similar-results-do-not-imply-equivalent-reductions" class="nav-link" data-scroll-target="#similar-results-do-not-imply-equivalent-reductions"><span class="header-section-number">2.6</span> Similar Results Do Not Imply Equivalent Reductions</a></li>
+  <li><a href="#units-help-distinguish-the-questions" id="toc-units-help-distinguish-the-questions" class="nav-link" data-scroll-target="#units-help-distinguish-the-questions"><span class="header-section-number">2.7</span> Units Help Distinguish the Questions</a></li>
+  <li><a href="#partial-results-and-the-information-needed-to-combine-them" id="toc-partial-results-and-the-information-needed-to-combine-them" class="nav-link" data-scroll-target="#partial-results-and-the-information-needed-to-combine-them"><span class="header-section-number">2.8</span> Partial Results and the Information Needed to Combine Them</a></li>
+  <li><a href="#the-question-determines-the-algebra" id="toc-the-question-determines-the-algebra" class="nav-link" data-scroll-target="#the-question-determines-the-algebra"><span class="header-section-number">2.9</span> The Question Determines the Algebra</a></li>
+  </ul></li>
+  <li><a href="#the-reduced-value-and-its-location-are-different-objects" id="toc-the-reduced-value-and-its-location-are-different-objects" class="nav-link" data-scroll-target="#the-reduced-value-and-its-location-are-different-objects"><span class="header-section-number">3</span> 10.3 The Reduced Value and Its Location Are Different Objects</a>
+  <ul class="collapse">
+  <li><a href="#value-space-and-index-space" id="toc-value-space-and-index-space" class="nav-link" data-scroll-target="#value-space-and-index-space"><span class="header-section-number">3.1</span> Value Space and Index Space</a></li>
+  <li><a href="#argmax-is-defined-through-maximum" id="toc-argmax-is-defined-through-maximum" class="nav-link" data-scroll-target="#argmax-is-defined-through-maximum"><span class="header-section-number">3.2</span> Argmax Is Defined Through Maximum</a></li>
+  <li><a href="#maximum-does-not-reveal-argmax" id="toc-maximum-does-not-reveal-argmax" class="nav-link" data-scroll-target="#maximum-does-not-reveal-argmax"><span class="header-section-number">3.3</span> Maximum Does Not Reveal Argmax</a></li>
+  <li><a href="#argmax-does-not-reveal-maximum" id="toc-argmax-does-not-reveal-maximum" class="nav-link" data-scroll-target="#argmax-does-not-reveal-maximum"><span class="header-section-number">3.4</span> Argmax Does Not Reveal Maximum</a></li>
+  <li><a href="#units-expose-the-difference" id="toc-units-expose-the-difference" class="nav-link" data-scroll-target="#units-expose-the-difference"><span class="header-section-number">3.5</span> Units Expose the Difference</a></li>
+  <li><a href="#a-search-variable-and-an-objective-value" id="toc-a-search-variable-and-an-objective-value" class="nav-link" data-scroll-target="#a-search-variable-and-an-objective-value"><span class="header-section-number">3.6</span> A Search Variable and an Objective Value</a></li>
+  <li><a href="#ties-make-argmax-set-valued" id="toc-ties-make-argmax-set-valued" class="nav-link" data-scroll-target="#ties-make-argmax-set-valued"><span class="header-section-number">3.7</span> Ties Make Argmax Set-Valued</a></li>
+  <li><a href="#indexing-conventions-change-the-numerical-label" id="toc-indexing-conventions-change-the-numerical-label" class="nav-link" data-scroll-target="#indexing-conventions-change-the-numerical-label"><span class="header-section-number">3.8</span> Indexing Conventions Change the Numerical Label</a></li>
+  <li><a href="#reordering-preserves-maximum-but-changes-argmax" id="toc-reordering-preserves-maximum-but-changes-argmax" class="nav-link" data-scroll-target="#reordering-preserves-maximum-but-changes-argmax"><span class="header-section-number">3.9</span> Reordering Preserves Maximum but Changes Argmax</a></li>
+  <li><a href="#minimum-and-argmin-have-the-same-distinction" id="toc-minimum-and-argmin-have-the-same-distinction" class="nav-link" data-scroll-target="#minimum-and-argmin-have-the-same-distinction"><span class="header-section-number">3.10</span> Minimum and Argmin Have the Same Distinction</a></li>
+  <li><a href="#the-structural-difference" id="toc-the-structural-difference" class="nav-link" data-scroll-target="#the-structural-difference"><span class="header-section-number">3.11</span> The Structural Difference</a></li>
+  </ul></li>
+  <li><a href="#reducing-one-axis-while-preserving-another" id="toc-reducing-one-axis-while-preserving-another" class="nav-link" data-scroll-target="#reducing-one-axis-while-preserving-another"><span class="header-section-number">4</span> 10.4 Reducing One Axis While Preserving Another</a>
+  <ul class="collapse">
+  <li><a href="#a-matrix-with-two-kinds-of-position" id="toc-a-matrix-with-two-kinds-of-position" class="nav-link" data-scroll-target="#a-matrix-with-two-kinds-of-position"><span class="header-section-number">4.1</span> A Matrix with Two Kinds of Position</a></li>
+  <li><a href="#one-maximum-for-each-server" id="toc-one-maximum-for-each-server" class="nav-link" data-scroll-target="#one-maximum-for-each-server"><span class="header-section-number">4.2</span> One Maximum for Each Server</a></li>
+  <li><a href="#fix-one-index-and-reduce-the-other" id="toc-fix-one-index-and-reduce-the-other" class="nav-link" data-scroll-target="#fix-one-index-and-reduce-the-other"><span class="header-section-number">4.3</span> Fix One Index and Reduce the Other</a></li>
+  <li><a href="#one-maximum-for-each-request" id="toc-one-maximum-for-each-request" class="nav-link" data-scroll-target="#one-maximum-for-each-request"><span class="header-section-number">4.4</span> One Maximum for Each Request</a></li>
+  <li><a href="#similar-operators-can-answer-different-questions" id="toc-similar-operators-can-answer-different-questions" class="nav-link" data-scroll-target="#similar-operators-can-answer-different-questions"><span class="header-section-number">4.5</span> Similar Operators Can Answer Different Questions</a></li>
+  <li><a href="#reducing-both-indices" id="toc-reducing-both-indices" class="nav-link" data-scroll-target="#reducing-both-indices"><span class="header-section-number">4.6</span> Reducing Both Indices</a></li>
+  <li><a href="#the-same-axis-logic-applies-to-other-reductions" id="toc-the-same-axis-logic-applies-to-other-reductions" class="nav-link" data-scroll-target="#the-same-axis-logic-applies-to-other-reductions"><span class="header-section-number">4.7</span> The Same Axis Logic Applies to Other Reductions</a></li>
+  <li><a href="#axis-means-an-index-direction" id="toc-axis-means-an-index-direction" class="nav-link" data-scroll-target="#axis-means-an-index-direction"><span class="header-section-number">4.8</span> Axis Means an Index Direction</a></li>
+  <li><a href="#translating-the-axes-into-numpy" id="toc-translating-the-axes-into-numpy" class="nav-link" data-scroll-target="#translating-the-axes-into-numpy"><span class="header-section-number">4.9</span> Translating the Axes into NumPy</a></li>
+  <li><a href="#preserving-a-reduced-dimension-as-size-one" id="toc-preserving-a-reduced-dimension-as-size-one" class="nav-link" data-scroll-target="#preserving-a-reduced-dimension-as-size-one"><span class="header-section-number">4.10</span> Preserving a Reduced Dimension as Size One</a></li>
+  <li><a href="#argmax-along-an-axis" id="toc-argmax-along-an-axis" class="nav-link" data-scroll-target="#argmax-along-an-axis"><span class="header-section-number">4.11</span> Argmax Along an Axis</a></li>
+  <li><a href="#generalizing-to-more-dimensions" id="toc-generalizing-to-more-dimensions" class="nav-link" data-scroll-target="#generalizing-to-more-dimensions"><span class="header-section-number">4.12</span> Generalizing to More Dimensions</a></li>
+  <li><a href="#reduction-as-a-transformation-of-index-structure" id="toc-reduction-as-a-transformation-of-index-structure" class="nav-link" data-scroll-target="#reduction-as-a-transformation-of-index-structure"><span class="header-section-number">4.13</span> Reduction as a Transformation of Index Structure</a></li>
+  </ul></li>
+  <li><a href="#reduction-as-deliberate-information-loss" id="toc-reduction-as-deliberate-information-loss" class="nav-link" data-scroll-target="#reduction-as-deliberate-information-loss"><span class="header-section-number">5</span> 10.5 Reduction as Deliberate Information Loss</a>
+  <ul class="collapse">
+  <li><a href="#reduction-can-remove-meaningful-context" id="toc-reduction-can-remove-meaningful-context" class="nav-link" data-scroll-target="#reduction-can-remove-meaningful-context"><span class="header-section-number">5.1</span> Reduction Can Remove Meaningful Context</a></li>
+  <li><a href="#choosing-a-reduction-is-choosing-an-invariant" id="toc-choosing-a-reduction-is-choosing-an-invariant" class="nav-link" data-scroll-target="#choosing-a-reduction-is-choosing-an-invariant"><span class="header-section-number">5.2</span> Choosing a Reduction Is Choosing an Invariant</a></li>
+  <li><a href="#a-responsible-reduction-workflow" id="toc-a-responsible-reduction-workflow" class="nav-link" data-scroll-target="#a-responsible-reduction-workflow"><span class="header-section-number">5.3</span> A Responsible Reduction Workflow</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Chapter 10 — Dimension Reduction</h1>
+<p class="subtitle lead">From Many Values to Smaller Results</p>
+</div>
+
+<div>
+  <div class="description">
+    A chapter about reductions as mathematical transformations that compress collections, preserve selected information, remove dimensions, and deliberately discard other information.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="when-many-values-must-produce-one-result" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="when-many-values-must-produce-one-result"><span class="header-section-number">1</span> 10.1 When Many Values Must Produce One Result</h2>
+<p>Consider five response times recorded for a computer service:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>response_times <span class="op">=</span> [<span class="dv">18</span>, <span class="dv">25</span>, <span class="dv">13</span>, <span class="dv">31</span>, <span class="dv">22</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Each value is measured in milliseconds. Suppose we want to answer:</p>
+<blockquote class="blockquote">
+<p>What was the largest response time?</p>
+</blockquote>
+<p>An ordinary program can construct the answer by maintaining a current candidate:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>response_times <span class="op">=</span> [<span class="dv">18</span>, <span class="dv">25</span>, <span class="dv">13</span>, <span class="dv">31</span>, <span class="dv">22</span>]</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>largest <span class="op">=</span> response_times[<span class="dv">0</span>]</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> response_time <span class="kw">in</span> response_times[<span class="dv">1</span>:]:</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> response_time <span class="op">&gt;</span> largest:</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        largest <span class="op">=</span> response_time</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The final value is</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dv">31</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The input contains five values:</p>
+<p><span class="math display">\[
+\mathbf{x}
+=
+\begin{bmatrix}
+18\\
+25\\
+13\\
+31\\
+22
+\end{bmatrix}.
+\]</span></p>
+<p>The output contains one value:</p>
+<p><span class="math display">\[
+r=31.
+\]</span></p>
+<p>This computation has a different structure from the vector transformations studied in Chapter 9. An elementwise transformation produces one output for every input position:</p>
+<p><span class="math display">\[
+x_i\longrightarrow y_i.
+\]</span></p>
+<p>If the input contains five components, the output also contains five components:</p>
+<p><span class="math display">\[
+F:\mathbb{R}^{5}\rightarrow\mathbb{R}^{5}.
+\]</span></p>
+<p>Finding the largest value does not preserve this one-to-one positional structure. The five inputs jointly determine one result:</p>
+<p><span class="math display">\[
+R:\mathbb{R}^{5}\rightarrow\mathbb{R}.
+\]</span></p>
+<p>A transformation with this many-to-one structure is called a <strong>reduction</strong>.</p>
+<section id="the-output-answers-a-question-about-the-whole-collection" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="the-output-answers-a-question-about-the-whole-collection"><span class="header-section-number">1.1</span> The Output Answers a Question About the Whole Collection</h3>
+<p>For an elementwise transformation such as</p>
+<p><span class="math display">\[
+y_i=2x_i+3,
+\]</span></p>
+<p>the output <span class="math inline">\(y_i\)</span> answers a local question:</p>
+<blockquote class="blockquote">
+<p>What is the transformed value corresponding to <span class="math inline">\(x_i\)</span>?</p>
+</blockquote>
+<p>For the current computation, the output answers a global question:</p>
+<blockquote class="blockquote">
+<p>Which numerical value is at least as large as every value in the collection?</p>
+</blockquote>
+<p>The result <span class="math inline">\(r\)</span> must satisfy</p>
+<p><span class="math display">\[
+r\geq x_i
+\qquad
+\text{for every }i,
+\]</span></p>
+<p>and it must equal one of the values in the collection:</p>
+<p><span class="math display">\[
+r=x_k
+\qquad
+\text{for at least one index }k.
+\]</span></p>
+<p>For the concrete values,</p>
+<p><span class="math display">\[
+31\geq18,
+\]</span></p>
+<p><span class="math display">\[
+31\geq25,
+\]</span></p>
+<p><span class="math display">\[
+31\geq13,
+\]</span></p>
+<p><span class="math display">\[
+31\geq31,
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+31\geq22.
+\]</span></p>
+<p>The number <span class="math inline">\(31\)</span> satisfies the required relationship with every component. None of the other values does.The mathematical result is therefore</p>
+<p><span class="math display">\[
+\boxed{
+r=\max_{1\leq i\leq5}x_i=31.
+}
+\]</span></p>
+<p>The maximum operator does not transform each component independently. It examines the order relationship among the components and returns the value that satisfies the global requirement.</p>
+</section>
+<section id="one-output-may-depend-on-every-input" class="level3" data-number="1.2">
+<h3 data-number="1.2" class="anchored" data-anchor-id="one-output-may-depend-on-every-input"><span class="header-section-number">1.2</span> One Output May Depend on Every Input</h3>
+<p>The output of a reduction has no corresponding input position in the same sense as an elementwise output. We cannot write</p>
+<p><span class="math display">\[
+r_i=f(x_i),
+\]</span></p>
+<p>because there is no collection of outputs <span class="math inline">\(r_1,r_2,\ldots,r_5\)</span>. There is only one <span class="math inline">\(r\)</span>. The dependency structure is</p>
+<p><span class="math display">\[
+x_1,x_2,x_3,x_4,x_5
+\longrightarrow
+r.
+\]</span></p>
+<p>Every input is relevant because any input could potentially be the largest. Before examining the collection, we do not know which value will determine the result. Not every input change must alter the result. If <span class="math inline">\(13\)</span> changes to <span class="math inline">\(15\)</span>, the maximum remains <span class="math inline">\(31\)</span>. Nevertheless, the value at that position participates in the question because it must be compared with the current candidate. Dependency means that an input is permitted to influence the output, not that every possible change must influence it. Thus a reduction can depend on the complete collection even when the final result is numerically equal to one component.</p>
+</section>
+<section id="the-loop-constructs-a-global-invariant" class="level3" data-number="1.3">
+<h3 data-number="1.3" class="anchored" data-anchor-id="the-loop-constructs-a-global-invariant"><span class="header-section-number">1.3</span> The Loop Constructs a Global Invariant</h3>
+<p>The program begins with</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>largest <span class="op">=</span> response_times[<span class="dv">0</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>so the initial candidate is</p>
+<p><span class="math display">\[
+18.
+\]</span></p>
+<p>After examining <span class="math inline">\(25\)</span>, the candidate becomes</p>
+<p><span class="math display">\[
+25.
+\]</span></p>
+<p>After examining <span class="math inline">\(13\)</span>, it remains</p>
+<p><span class="math display">\[
+25.
+\]</span></p>
+<p>After examining <span class="math inline">\(31\)</span>, it becomes</p>
+<p><span class="math display">\[
+31.
+\]</span></p>
+<p>After examining <span class="math inline">\(22\)</span>, it remains</p>
+<p><span class="math display">\[
+31.
+\]</span></p>
+<p>The candidate evolves as</p>
+<p><span class="math display">\[
+18
+\longrightarrow
+25
+\longrightarrow
+25
+\longrightarrow
+31
+\longrightarrow
+31.
+\]</span></p>
+<p>At each stage, the variable <code>largest</code> has a precise meaning:</p>
+<blockquote class="blockquote">
+<p>It is the largest value among the elements examined so far.</p>
+</blockquote>
+<p>If <span class="math inline">\(L_k\)</span> denotes the largest value among the first <span class="math inline">\(k\)</span> inputs, then</p>
+<p><span class="math display">\[
+L_1=x_1
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+L_k=\max(L_{k-1},x_k).
+\]</span></p>
+<p>For the concrete collection,</p>
+<p><span class="math display">\[
+L_1=18,
+\]</span></p>
+<p><span class="math display">\[
+L_2=\max(18,25)=25,
+\]</span></p>
+<p><span class="math display">\[
+L_3=\max(25,13)=25,
+\]</span></p>
+<p><span class="math display">\[
+L_4=\max(25,31)=31,
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+L_5=\max(31,22)=31.
+\]</span></p>
+<p>The final state satisfies</p>
+<p><span class="math display">\[
+L_5=\max(x_1,x_2,x_3,x_4,x_5).
+\]</span></p>
+<p>The loop describes how the answer is constructed sequentially. The reduction expression</p>
+<p><span class="math display">\[
+\max_{1\leq i\leq5}x_i
+\]</span></p>
+<p>describes the completed relationship between the collection and its largest value. The reduction is therefore not a mysterious operation that instantly ignores the individual elements. It is a compressed representation of a rule that combines information from across the index domain.</p>
+</section>
+<section id="the-index-domain-disappears-from-the-output" class="level3" data-number="1.4">
+<h3 data-number="1.4" class="anchored" data-anchor-id="the-index-domain-disappears-from-the-output"><span class="header-section-number">1.4</span> The Index Domain Disappears from the Output</h3>
+<p>The input vector is indexed by</p>
+<p><span class="math display">\[
+\mathcal{I}=\{1,2,3,4,5\}.
+\]</span></p>
+<p>Each input component is identified by an index:</p>
+<p><span class="math display">\[
+x_i
+\qquad
+\text{for }i\in\mathcal{I}.
+\]</span></p>
+<p>After reduction, the output is the scalar</p>
+<p><span class="math display">\[
+r=31.
+\]</span></p>
+<p>There is no output vector</p>
+<p><span class="math display">\[
+[r_1,r_2,r_3,r_4,r_5].
+\]</span></p>
+<p>The original index <span class="math inline">\(i\)</span> has been eliminated from the shape of the result. It appears inside the reduction notation,</p>
+<p><span class="math display">\[
+\max_i x_i,
+\]</span></p>
+<p>because the operator ranges over the indexed inputs, but it does not remain as a free index on the output. This distinction can be made visible by comparing</p>
+<p><span class="math display">\[
+y_i=2x_i+3
+\]</span></p>
+<p>with</p>
+<p><span class="math display">\[
+r=\max_i x_i.
+\]</span></p>
+<p>In the first equation, <span class="math inline">\(i\)</span> remains in the output <span class="math inline">\(y_i\)</span>. The transformation produces one result for each <span class="math inline">\(i\)</span>. In the second equation, <span class="math inline">\(i\)</span> is consumed by the maximum operation. The result <span class="math inline">\(r\)</span> has no <span class="math inline">\(i\)</span> subscript. The structural difference is</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+\text{elementwise transformation}
+&amp;:\quad
+i\text{ remains in the output},\\
+\text{reduction}
+&amp;:\quad
+i\text{ is eliminated from the output}.
+\end{aligned}
+}
+\]</span></p>
+<p>This provides a mathematical way to recognize reductions in more complicated expressions: determine which input indices are no longer present in the result.</p>
+</section>
+<section id="reducing-shape-without-changing-units" class="level3" data-number="1.5">
+<h3 data-number="1.5" class="anchored" data-anchor-id="reducing-shape-without-changing-units"><span class="header-section-number">1.5</span> Reducing Shape Without Changing Units</h3>
+<p>Every response time is measured in milliseconds:</p>
+<p><span class="math display">\[
+x_i\text{ has units of milliseconds}.
+\]</span></p>
+<p>The maximum response time is also measured in milliseconds:</p>
+<p><span class="math display">\[
+\max_i x_i\text{ has units of milliseconds}.
+\]</span></p>
+<p>The reduction changes the shape of the object but does not necessarily change its physical units:</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+18\\
+25\\
+13\\
+31\\
+22
+\end{bmatrix}
+\text{ milliseconds}
+\longrightarrow
+31\text{ milliseconds}.
+\]</span></p>
+<p>Shape and units describe different aspects of a mathematical quantity. Shape tells us how many indexed components the object contains. Units tell us what each numerical magnitude represents. A reduction can remove an index while preserving units. Other reductions may transform units differently. For example, adding several quantities with the same unit produces a total expressed in that unit, while counting elements produces a dimensionless number. The correct unit depends on the semantic question being answered. The important point is that “many values become one” describes a structural change, not a complete description of the result’s meaning.</p>
+</section>
+<section id="a-scalar-result-does-not-preserve-the-collection" class="level3" data-number="1.6">
+<h3 data-number="1.6" class="anchored" data-anchor-id="a-scalar-result-does-not-preserve-the-collection"><span class="header-section-number">1.6</span> A Scalar Result Does Not Preserve the Collection</h3>
+<p>The reduced result</p>
+<p><span class="math display">\[
+r=31
+\]</span></p>
+<p>does not contain enough information to reconstruct</p>
+<p><span class="math display">\[
+\mathbf{x}
+=
+\begin{bmatrix}
+18\\
+25\\
+13\\
+31\\
+22
+\end{bmatrix}.
+\]</span></p>
+<p>Many different collections have the same maximum:</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+31\\
+1\\
+2
+\end{bmatrix},
+\qquad
+\begin{bmatrix}
+5\\
+31\\
+30
+\end{bmatrix},
+\qquad
+\begin{bmatrix}
+31\\
+31\\
+31
+\end{bmatrix}.
+\]</span></p>
+<p>All reduce to</p>
+<p><span class="math display">\[
+31.
+\]</span></p>
+<p>Therefore the maximum transformation is many-to-one not only because many input components participate in one calculation, but also because many distinct input collections can produce the same output. Symbolically, it is possible for</p>
+<p><span class="math display">\[
+\mathbf{x}\neq\mathbf{z}
+\]</span></p>
+<p>while</p>
+<p><span class="math display">\[
+R(\mathbf{x})=R(\mathbf{z}).
+\]</span></p>
+<p>The reduction preserves the answer to one chosen question—the largest value—while discarding information not required by that question. It does not preserve the number of times the maximum occurs, the ordering of the values, the smaller values, or the location of the maximum. This loss is not a defect. It is the purpose of the reduction. The computation was asked to return the largest response time, not to reproduce the complete dataset.</p>
+</section>
+<section id="reordering-does-not-change-this-reduction" class="level3" data-number="1.7">
+<h3 data-number="1.7" class="anchored" data-anchor-id="reordering-does-not-change-this-reduction"><span class="header-section-number">1.7</span> Reordering Does Not Change This Reduction</h3>
+<p>Consider a rearrangement of the response times:</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+18\\
+25\\
+13\\
+31\\
+22
+\end{bmatrix}
+\longrightarrow
+\begin{bmatrix}
+31\\
+13\\
+22\\
+18\\
+25
+\end{bmatrix}.
+\]</span></p>
+<p>The maximum remains</p>
+<p><span class="math display">\[
+31.
+\]</span></p>
+<p>For this reduction,</p>
+<p><span class="math display">\[
+\max(x_1,x_2,\ldots,x_n)
+\]</span></p>
+<p>depends on the values but not on their order. If <span class="math inline">\(\pi\)</span> represents a rearrangement of the indices, then</p>
+<p><span class="math display">\[
+\max_i x_i
+=
+\max_i x_{\pi(i)}.
+\]</span></p>
+<p>The maximum is therefore invariant under permutation of the collection. This property differs from the behavior of an elementwise transformation. When the input vector is rearranged, an elementwise output is rearranged correspondingly. The result remains a vector whose positions follow the inputs. For the maximum, rearrangement leaves the scalar output unchanged:</p>
+<p><span class="math display">\[
+\boxed{
+\text{elementwise transformation follows the reordering},
+}
+\]</span></p>
+<p>whereas</p>
+<p><span class="math display">\[
+\boxed{
+\text{maximum reduction ignores the reordering}.
+}
+\]</span></p>
+<p>Not every operation that produces a scalar must ignore order. The property belongs to the particular reduction rule, not merely to scalar output. The question “what is the largest value?” contains no positional preference, so its answer is invariant under rearrangement.</p>
+</section>
+<section id="a-reduction-is-defined-by-the-question-it-answers" class="level3" data-number="1.8">
+<h3 data-number="1.8" class="anchored" data-anchor-id="a-reduction-is-defined-by-the-question-it-answers"><span class="header-section-number">1.8</span> A Reduction Is Defined by the Question It Answers</h3>
+<p>The collection</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+18\\
+25\\
+13\\
+31\\
+22
+\end{bmatrix}
+\]</span></p>
+<p>can support many global questions:</p>
+<ul>
+<li>What is the largest response time?</li>
+<li>What is the smallest response time?</li>
+<li>What is the total response time?</li>
+<li>What is the average response time?</li>
+<li>At which position does the largest response time occur?</li>
+</ul>
+<p>These questions use the same input but do not demand the same output. The phrase “reduce the collection” is therefore incomplete. It states that the output will be structurally smaller, but it does not specify what meaning should survive.For the current requirement, the relevant operator is maximum:</p>
+<p><span class="math display">\[
+R(\mathbf{x})=\max_i x_i.
+\]</span></p>
+<p>Another requirement would need another reduction. The general structural pattern is</p>
+<p><span class="math display">\[
+\boxed{
+R:\mathbb{R}^{n}\rightarrow\mathbb{R},
+}
+\]</span></p>
+<p>but the particular function <span class="math inline">\(R\)</span> must be constructed from the property the problem asks us to preserve. Reduction therefore begins before a library function is chosen. It begins by identifying a question whose answer concerns the collection as a whole.</p>
+</section>
+<section id="the-fundamental-change-of-perspective" class="level3" data-number="1.9">
+<h3 data-number="1.9" class="anchored" data-anchor-id="the-fundamental-change-of-perspective"><span class="header-section-number">1.9</span> The Fundamental Change of Perspective</h3>
+<p>An element-by-element question asks:</p>
+<blockquote class="blockquote">
+<p>What output corresponds to this input position?</p>
+</blockquote>
+<p>A reduction question asks:</p>
+<blockquote class="blockquote">
+<p>What single property should be extracted from all input positions together?</p>
+</blockquote>
+<p>This changes the direction of mathematical reasoning:</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+\text{elementwise}
+&amp;:\quad
+x_i\longrightarrow y_i,\\
+\text{reduction}
+&amp;:\quad
+x_1,x_2,\ldots,x_n\longrightarrow r.
+\end{aligned}
+}
+\]</span></p>
+<p>The input remains a structured collection, but the output no longer mirrors that structure. The reduction consumes an index domain and returns a result whose meaning is determined by the chosen global question. We have established the defining structural feature:</p>
+<p><span class="math display">\[
+\boxed{
+\text{a reduction combines information across an index
+and removes that index from the output}.
+}
+\]</span></p>
+<p>The maximum is one such reduction. Other questions require other operators, and each operator preserves a different property of the collection. The next section will examine how the intended meaning—total, average, minimum, or maximum—determines which reduction must be constructed.</p>
+</section>
+</section>
+<section id="different-questions-require-different-reductions" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="different-questions-require-different-reductions"><span class="header-section-number">2</span> 10.2 Different Questions Require Different Reductions</h2>
+<p>Suppose the five response times represent durations from five requests, and we ask:</p>
+<blockquote class="blockquote">
+<p>How much response time was recorded altogether?</p>
+</blockquote>
+<p>Each request contributes its complete duration to the total:</p>
+<p><span class="math display">\[
+18,
+\qquad
+25,
+\qquad
+13,
+\qquad
+31,
+\qquad
+22.
+\]</span></p>
+<p>Because the question asks for accumulated magnitude, the contributions must be joined by addition:</p>
+<p><span class="math display">\[
+18+25+13+31+22=109.
+\]</span></p>
+<p>The reduction is</p>
+<p><span class="math display">\[
+\boxed{
+T=\sum_{i=1}^{5}x_i=109.
+}
+\]</span></p>
+<section id="mean-preserve-average-level" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="mean-preserve-average-level"><span class="header-section-number">2.1</span> Mean: Preserve Average Level</h3>
+<p>Now ask:</p>
+<blockquote class="blockquote">
+<p>What was the average response time per request?</p>
+</blockquote>
+<p>The total <span class="math inline">\(109\)</span> does not answer this question by itself. A total depends both on the magnitude of the values and on how many values were accumulated. To express an amount per observation, divide the total by the number of observations:</p>
+<p><span class="math display">\[
+\bar{x}
+=
+\frac{1}{5}
+\sum_{i=1}^{5}x_i.
+\]</span></p>
+<p>For the response times,</p>
+<p><span class="math display">\[
+\begin{aligned}
+\bar{x}
+&amp;=
+\frac{18+25+13+31+22}{5}\\
+&amp;=
+\frac{109}{5}\\
+&amp;=
+21.8.
+\end{aligned}
+\]</span></p>
+<p>The mean reduction is therefore</p>
+<p><span class="math display">\[
+\boxed{
+\bar{x}
+=
+\frac{1}{n}
+\sum_{i=1}^{n}x_i.
+}
+\]</span></p>
+<p>The mean preserves a different property from the total. It answers:</p>
+<blockquote class="blockquote">
+<p>If the total magnitude were shared equally across all observations, how much would belong to each observation?</p>
+</blockquote>
+<p>For the concrete collection, equal redistribution would produce</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+21.8\\
+21.8\\
+21.8\\
+21.8\\
+21.8
+\end{bmatrix}.
+\]</span></p>
+<p>The total of this equalized collection remains</p>
+<p><span class="math display">\[
+5(21.8)=109.
+\]</span></p>
+<p>Thus the mean is the common value that would preserve the total if every component were made equal. This gives the defining relationship</p>
+<p><span class="math display">\[
+n\bar{x}=\sum_{i=1}^{n}x_i.
+\]</span></p>
+<p>Solving for <span class="math inline">\(\bar{x}\)</span> gives</p>
+<p><span class="math display">\[
+\bar{x}
+=
+\frac{1}{n}
+\sum_{i=1}^{n}x_i.
+\]</span></p>
+<p>The mean is therefore not merely “sum and divide because that is the formula.” It is constructed as the equal-share value corresponding to the collection’s total.</p>
+</section>
+<section id="total-and-mean-respond-differently-to-repetition" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="total-and-mean-respond-differently-to-repetition"><span class="header-section-number">2.2</span> Total and Mean Respond Differently to Repetition</h3>
+<p>Suppose the entire collection is duplicated:</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+18\\
+25\\
+13\\
+31\\
+22
+\end{bmatrix}
+\longrightarrow
+\begin{bmatrix}
+18\\
+25\\
+13\\
+31\\
+22\\
+18\\
+25\\
+13\\
+31\\
+22
+\end{bmatrix}.
+\]</span></p>
+<p>The total doubles:</p>
+<p><span class="math display">\[
+109\longrightarrow218.
+\]</span></p>
+<p>This is correct because the duplicated collection contains twice as much accumulated response time. The mean remains unchanged:</p>
+<p><span class="math display">\[
+\frac{218}{10}=21.8.
+\]</span></p>
+<p>Duplication changes the amount of data but not its average level. Therefore,</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+\text{total}
+&amp;:\quad
+\text{sensitive to how many contributions occur},\\
+\text{mean}
+&amp;:\quad
+\text{normalized by the number of contributions}.
+\end{aligned}
+}
+\]</span></p>
+<p>Two collections can have the same mean while having different totals:</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+10\\
+20
+\end{bmatrix}
+\]</span></p>
+<p>has mean</p>
+<p><span class="math display">\[
+15
+\]</span></p>
+<p>and total</p>
+<p><span class="math display">\[
+30,
+\]</span></p>
+<p>while</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+10\\
+20\\
+10\\
+20
+\end{bmatrix}
+\]</span></p>
+<p>also has mean</p>
+<p><span class="math display">\[
+15
+\]</span></p>
+<p>but total</p>
+<p><span class="math display">\[
+60.
+\]</span></p>
+<p>The mean deliberately removes the effect of collection size from the accumulated magnitude.</p>
+</section>
+<section id="maximum-preserve-the-upper-extreme" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="maximum-preserve-the-upper-extreme"><span class="header-section-number">2.3</span> Maximum: Preserve the Upper Extreme</h3>
+<p>The maximum asks:</p>
+<blockquote class="blockquote">
+<p>Which value is at least as large as every value in the collection?</p>
+</blockquote>
+<p>For the response times,</p>
+<p><span class="math display">\[
+\boxed{
+M=\max_i x_i=31.
+}
+\]</span></p>
+<p>Unlike the total, the maximum does not allow every value to contribute additively. A value affects the result only if it exceeds the current candidate. The maximum can also be composed across groups. For the groups</p>
+<p><span class="math display">\[
+A=
+\begin{bmatrix}
+18\\
+25
+\end{bmatrix}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+B=
+\begin{bmatrix}
+13\\
+31\\
+22
+\end{bmatrix},
+\]</span></p>
+<p>their maxima are</p>
+<p><span class="math display">\[
+\max(A)=25
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\max(B)=31.
+\]</span></p>
+<p>The maximum of the complete collection is</p>
+<p><span class="math display">\[
+\max(25,31)=31.
+\]</span></p>
+<p>Thus,</p>
+<p><span class="math display">\[
+\max(A\cup B)
+=
+\max\bigl(\max(A),\max(B)\bigr).
+\]</span></p>
+<p>This compositional property makes maximum a reduction operator. Partial maxima can be combined to recover the global maximum. The maximum is associative:</p>
+<p><span class="math display">\[
+\max(\max(a,b),c)
+=
+\max(a,\max(b,c)).
+\]</span></p>
+<p>It is also idempotent:</p>
+<p><span class="math display">\[
+\max(x,x)=x.
+\]</span></p>
+<p>Repeating an existing value does not change the maximum. Duplicating the complete collection therefore leaves the result unchanged. This contrasts with total:</p>
+<p><span class="math display">\[
+x+x=2x,
+\]</span></p>
+<p>so duplication changes accumulated magnitude. The maximum preserves</p>
+<p><span class="math display">\[
+\boxed{
+\text{the upper extreme of the collection}.
+}
+\]</span></p>
+<p>It discards how many times that extreme occurs, how far other values lie below it, and how the values are distributed.</p>
+</section>
+<section id="minimum-preserve-the-lower-extreme" class="level3" data-number="2.4">
+<h3 data-number="2.4" class="anchored" data-anchor-id="minimum-preserve-the-lower-extreme"><span class="header-section-number">2.4</span> Minimum: Preserve the Lower Extreme</h3>
+<p>The minimum asks the complementary question:</p>
+<blockquote class="blockquote">
+<p>Which value is no larger than every value in the collection?</p>
+</blockquote>
+<p>For the response times,</p>
+<p><span class="math display">\[
+\boxed{
+m=\min_i x_i=13.
+}
+\]</span></p>
+<p>The required relationship is</p>
+<p><span class="math display">\[
+m\leq x_i
+\qquad
+\text{for every }i,
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+m=x_k
+\qquad
+\text{for at least one }k.
+\]</span></p>
+<p>Like maximum, minimum composes across groups:</p>
+<p><span class="math display">\[
+\min(A\cup B)
+=
+\min\bigl(\min(A),\min(B)\bigr).
+\]</span></p>
+<p>It is associative:</p>
+<p><span class="math display">\[
+\min(\min(a,b),c)
+=
+\min(a,\min(b,c)),
+\]</span></p>
+<p>and idempotent:</p>
+<p><span class="math display">\[
+\min(x,x)=x.
+\]</span></p>
+<p>Minimum preserves the lower extreme while discarding most other information. Maximum and minimum are related through negation:</p>
+<p><span class="math display">\[
+\min_i x_i
+=
+-\max_i(-x_i).
+\]</span></p>
+<p>To find the smallest original value, negate all values, find the largest negated value, and negate the result. For the collection,</p>
+<p><span class="math display">\[
+-\mathbf{x}
+=
+\begin{bmatrix}
+-18\\
+-25\\
+-13\\
+-31\\
+-22
+\end{bmatrix}.
+\]</span></p>
+<p>The maximum of the negated values is</p>
+<p><span class="math display">\[
+-13.
+\]</span></p>
+<p>Negating it gives</p>
+<p><span class="math display">\[
+13,
+\]</span></p>
+<p>which is the original minimum. This equivalence shows that minimum and maximum express the same order structure viewed in opposite directions.</p>
+</section>
+<section id="the-operators-preserve-different-facts" class="level3" data-number="2.5">
+<h3 data-number="2.5" class="anchored" data-anchor-id="the-operators-preserve-different-facts"><span class="header-section-number">2.5</span> The Operators Preserve Different Facts</h3>
+<p>For the same collection,</p>
+<p><span class="math display">\[
+\mathbf{x}
+=
+\begin{bmatrix}
+18\\
+25\\
+13\\
+31\\
+22
+\end{bmatrix},
+\]</span></p>
+<p>the reductions produce:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 23%">
+<col style="width: 30%">
+<col style="width: 23%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Question</th>
+<th>Reduction</th>
+<th style="text-align: right;">Result</th>
+<th>Property preserved</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>How much altogether?</td>
+<td><span class="math inline">\(\sum_i x_i\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(109\)</span></td>
+<td>accumulated magnitude</td>
+</tr>
+<tr class="even">
+<td>What equal-share level?</td>
+<td><span class="math inline">\(\frac{1}{n}\sum_i x_i\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(21.8\)</span></td>
+<td>average level</td>
+</tr>
+<tr class="odd">
+<td>What upper extreme?</td>
+<td><span class="math inline">\(\max_i x_i\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(31\)</span></td>
+<td>largest value</td>
+</tr>
+<tr class="even">
+<td>What lower extreme?</td>
+<td><span class="math inline">\(\min_i x_i\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(13\)</span></td>
+<td>smallest value</td>
+</tr>
+</tbody>
+</table>
+<p>The results cannot be substituted for one another. A maximum of <span class="math inline">\(31\)</span> does not reveal a total of <span class="math inline">\(109\)</span>. A mean of <span class="math inline">\(21.8\)</span> does not reveal a minimum of <span class="math inline">\(13\)</span>. Each scalar is correct only relative to the question it was designed to answer. This is why choosing a reduction is a semantic decision before it is a programming decision.</p>
+</section>
+<section id="similar-results-do-not-imply-equivalent-reductions" class="level3" data-number="2.6">
+<h3 data-number="2.6" class="anchored" data-anchor-id="similar-results-do-not-imply-equivalent-reductions"><span class="header-section-number">2.6</span> Similar Results Do Not Imply Equivalent Reductions</h3>
+<p>For a single-value collection</p>
+<p><span class="math display">\[
+\mathbf{x}
+=
+\begin{bmatrix}
+7
+\end{bmatrix},
+\]</span></p>
+<p>we obtain</p>
+<p><span class="math display">\[
+\sum_i x_i=7,
+\]</span></p>
+<p><span class="math display">\[
+\frac{1}{n}\sum_i x_i=7,
+\]</span></p>
+<p><span class="math display">\[
+\max_i x_i=7,
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\min_i x_i=7.
+\]</span></p>
+<p>All four reductions produce the same number. Nevertheless, they do not have the same meaning. Their differences appear when the input changes. For</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+7\\
+5
+\end{bmatrix},
+\]</span></p>
+<p>the results are</p>
+<p><span class="math display">\[
+\text{total}=12,
+\]</span></p>
+<p><span class="math display">\[
+\text{mean}=6,
+\]</span></p>
+<p><span class="math display">\[
+\text{maximum}=7,
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\text{minimum}=5.
+\]</span></p>
+<p>Agreement on one special input does not establish equivalence between functions. Two reductions are equivalent only if they produce the same result for every admissible input in the domain. This principle prevents a common reasoning error: identifying a mathematical operation only from one numerical example. Meaning comes from the relationship the operator defines across its domain.</p>
+</section>
+<section id="units-help-distinguish-the-questions" class="level3" data-number="2.7">
+<h3 data-number="2.7" class="anchored" data-anchor-id="units-help-distinguish-the-questions"><span class="header-section-number">2.7</span> Units Help Distinguish the Questions</h3>
+<p>Each response time <span class="math inline">\(x_i\)</span> is measured in milliseconds. The maximum and minimum are also measured in milliseconds:</p>
+<p><span class="math display">\[
+\max_i x_i=31\text{ ms},
+\]</span></p>
+<p><span class="math display">\[
+\min_i x_i=13\text{ ms}.
+\]</span></p>
+<p>The mean is measured in milliseconds per observation, which is ordinarily reported as milliseconds because each observation is one request:</p>
+<p><span class="math display">\[
+\bar{x}=21.8\text{ ms per request}.
+\]</span></p>
+<p>The interpretation of the total requires greater care. If the values represent durations of separate requests and the question asks for accumulated duration, then</p>
+<p><span class="math display">\[
+\sum_i x_i=109\text{ ms}
+\]</span></p>
+<p>is meaningful as the sum of those durations. It does not necessarily mean that <span class="math inline">\(109\)</span> milliseconds elapsed on a wall clock. If requests occurred concurrently, their accumulated durations and elapsed time would be different quantities.This illustrates that algebraic compatibility is not sufficient for semantic validity. Quantities may share units and still answer different real-world questions.</p>
+<p>Before reducing, the reader should ask:</p>
+<blockquote class="blockquote">
+<p>What does combining these quantities mean in the model of the problem?</p>
+</blockquote>
+</section>
+<section id="partial-results-and-the-information-needed-to-combine-them" class="level3" data-number="2.8">
+<h3 data-number="2.8" class="anchored" data-anchor-id="partial-results-and-the-information-needed-to-combine-them"><span class="header-section-number">2.8</span> Partial Results and the Information Needed to Combine Them</h3>
+<p>Suppose a large collection is divided into several parts. A useful reduction often allows partial results to be combined. For totals, store one partial sum per group:</p>
+<p><span class="math display">\[
+T_A=\sum_{i\in A}x_i,
+\]</span></p>
+<p><span class="math display">\[
+T_B=\sum_{i\in B}x_i.
+\]</span></p>
+<p>Then</p>
+<p><span class="math display">\[
+T=T_A+T_B.
+\]</span></p>
+<p>For maximum,</p>
+<p><span class="math display">\[
+M=\max(M_A,M_B).
+\]</span></p>
+<p>For minimum,</p>
+<p><span class="math display">\[
+m=\min(m_A,m_B).
+\]</span></p>
+<p>The mean requires more information. The means of two groups cannot generally be averaged directly unless the groups have equal sizes. Suppose group <span class="math inline">\(A\)</span> has mean <span class="math inline">\(\bar{x}_A\)</span> and size <span class="math inline">\(n_A\)</span>, while group <span class="math inline">\(B\)</span> has mean <span class="math inline">\(\bar{x}_B\)</span> and size <span class="math inline">\(n_B\)</span>. Their combined mean is</p>
+<p><span class="math display">\[
+\boxed{
+\bar{x}
+=
+\frac{n_A\bar{x}_A+n_B\bar{x}_B}{n_A+n_B}.
+}
+\]</span></p>
+<p>The group sizes are needed because each mean represents a different number of observations. Equivalently, each group can preserve its total and count:</p>
+<p><span class="math display">\[
+(T_A,n_A),
+\qquad
+(T_B,n_B).
+\]</span></p>
+<p>The combined mean is then</p>
+<p><span class="math display">\[
+\bar{x}
+=
+\frac{T_A+T_B}{n_A+n_B}.
+\]</span></p>
+<p>This reveals that a mean is not compositionally complete as one scalar unless group sizes are also known. Different reductions require different sufficient information for later combination.</p>
+</section>
+<section id="the-question-determines-the-algebra" class="level3" data-number="2.9">
+<h3 data-number="2.9" class="anchored" data-anchor-id="the-question-determines-the-algebra"><span class="header-section-number">2.9</span> The Question Determines the Algebra</h3>
+<p>The words used in a problem suggest different invariants:</p>
+<ul>
+<li>“altogether” asks for accumulated magnitude;</li>
+<li>“per observation” asks for normalized magnitude;</li>
+<li>“largest” asks for an upper bound attained by the data;</li>
+<li>“smallest” asks for a lower bound attained by the data.</li>
+</ul>
+<p>These meanings determine the mathematical operator:</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+\text{total}
+&amp;\longrightarrow
+\sum_i x_i,\\
+\text{mean}
+&amp;\longrightarrow
+\frac{1}{n}\sum_i x_i,\\
+\text{upper extreme}
+&amp;\longrightarrow
+\max_i x_i,\\
+\text{lower extreme}
+&amp;\longrightarrow
+\min_i x_i.
+\end{aligned}
+}
+\]</span></p>
+<p>The correct reasoning order is</p>
+<p><span class="math display">\[
+\boxed{
+\text{global question}
+\rightarrow
+\text{property to preserve}
+\rightarrow
+\text{combination rule}
+\rightarrow
+\text{reduced value}.
+}
+\]</span></p>
+<p>The unsafe order is to select a familiar library function first and then invent a meaning for its result. All four reductions return values. A different kind of question remains unanswered:</p>
+<blockquote class="blockquote">
+<p>At which position does an extreme occur?</p>
+</blockquote>
+<p>The largest value and the location of that value are distinct mathematical objects. The next section will construct this distinction through maximum and argmax.</p>
+</section>
+</section>
+<section id="the-reduced-value-and-its-location-are-different-objects" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="the-reduced-value-and-its-location-are-different-objects"><span class="header-section-number">3</span> 10.3 The Reduced Value and Its Location Are Different Objects</h2>
+<p>Consider again the response times</p>
+<p><span class="math display">\[
+\mathbf{x}
+=
+\begin{bmatrix}
+18\\
+25\\
+13\\
+31\\
+22
+\end{bmatrix}.
+\]</span></p>
+<p>Section 10.2 asked:</p>
+<blockquote class="blockquote">
+<p>What is the largest response time?</p>
+</blockquote>
+<p>The answer is</p>
+<p><span class="math display">\[
+\max_i x_i=31.
+\]</span></p>
+<p>Now consider a different question:</p>
+<blockquote class="blockquote">
+<p>At which position did the largest response time occur?</p>
+</blockquote>
+<p>The answer is</p>
+<p><span class="math display">\[
+4.
+\]</span></p>
+<p>The numbers <span class="math inline">\(31\)</span> and <span class="math inline">\(4\)</span> are related, but they do not represent the same kind of object. The number <span class="math inline">\(31\)</span> is a response-time value. The number <span class="math inline">\(4\)</span> is an index identifying a position in the collection. The relationship between them is</p>
+<p><span class="math display">\[
+x_4=31.
+\]</span></p>
+<p>Maximum returns the value:</p>
+<p><span class="math display">\[
+\boxed{
+\max_i x_i=31.
+}
+\]</span></p>
+<p>Argmax returns the location:</p>
+<p><span class="math display">\[
+\boxed{
+\operatorname*{arg\,max}_i x_i=4.
+}
+\]</span></p>
+<p>The name <strong>argmax</strong> is an abbreviation for “argument of the maximum.” Here, the argument is the index <span class="math inline">\(i\)</span> supplied to the indexed collection <span class="math inline">\(x_i\)</span>. Argmax returns the index at which the largest value is attained.</p>
+<section id="value-space-and-index-space" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="value-space-and-index-space"><span class="header-section-number">3.1</span> Value Space and Index Space</h3>
+<p>The response-time values belong to a numerical measurement space. In this example,</p>
+<p><span class="math display">\[
+x_i\in\mathbb{R},
+\]</span></p>
+<p>with each value interpreted in milliseconds. The indices belong to the index set</p>
+<p><span class="math display">\[
+\mathcal{I}=\{1,2,3,4,5\}.
+\]</span></p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+\max_i x_i\in\mathbb{R},
+\]</span></p>
+<p>while</p>
+<p><span class="math display">\[
+\operatorname*{arg\,max}_i x_i\in\mathcal{I}
+\]</span></p>
+<p>when the maximum occurs at exactly one position. The two reductions have different codomains:</p>
+<p><span class="math display">\[
+\max:\mathbb{R}^{5}\rightarrow\mathbb{R},
+\]</span></p>
+<p>whereas</p>
+<p><span class="math display">\[
+\operatorname*{arg\,max}:\mathbb{R}^{5}\rightarrow\mathcal{I}.
+\]</span></p>
+<p>Maximum returns an element of the value space. Argmax returns an element of the position space. This distinction is semantic, not merely notational. The result</p>
+<p><span class="math display">\[
+31
+\]</span></p>
+<p>means “31 milliseconds.” The result</p>
+<p><span class="math display">\[
+4
+\]</span></p>
+<p>means “the fourth position.” Treating the index <span class="math inline">\(4\)</span> as though it were a response time would confuse a location with the value stored there.</p>
+</section>
+<section id="argmax-is-defined-through-maximum" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="argmax-is-defined-through-maximum"><span class="header-section-number">3.2</span> Argmax Is Defined Through Maximum</h3>
+<p>Let</p>
+<p><span class="math display">\[
+M=\max_{i\in\mathcal{I}}x_i.
+\]</span></p>
+<p>The argmax is the set of indices whose values equal <span class="math inline">\(M\)</span>:</p>
+<p><span class="math display">\[
+\boxed{
+\operatorname*{arg\,max}_{i\in\mathcal{I}}x_i
+=
+\{i\in\mathcal{I}:x_i=M\}.
+}
+\]</span></p>
+<p>For the concrete collection,</p>
+<p><span class="math display">\[
+M=31.
+\]</span></p>
+<p>We inspect the indexed values:</p>
+<p><span class="math display">\[
+x_1=18\neq31,
+\]</span></p>
+<p><span class="math display">\[
+x_2=25\neq31,
+\]</span></p>
+<p><span class="math display">\[
+x_3=13\neq31,
+\]</span></p>
+<p><span class="math display">\[
+x_4=31,
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+x_5=22\neq31.
+\]</span></p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+\operatorname*{arg\,max}_{i\in\mathcal{I}}x_i
+=
+\{4\}.
+\]</span></p>
+<p>When the maximizing index is unique, mathematical writing often simplifies the singleton set and writes</p>
+<p><span class="math display">\[
+\operatorname*{arg\,max}_i x_i=4.
+\]</span></p>
+<p>More precisely, the argmax is the set <span class="math inline">\(\{4\}\)</span>, while <span class="math inline">\(4\)</span> is its unique member.</p>
+<p>The defining relationship is</p>
+<p><span class="math display">\[
+\boxed{
+i^\star\in\operatorname*{arg\,max}_i x_i
+\quad\Longrightarrow\quad
+x_{i^\star}=\max_i x_i.
+}
+\]</span></p>
+<p>The symbol <span class="math inline">\(i^\star\)</span> denotes a maximizing index. Once the location <span class="math inline">\(i^\star\)</span> has been found, indexing the collection at that location recovers the maximum value:</p>
+<p><span class="math display">\[
+x_{i^\star}=M.
+\]</span></p>
+<p>For the response times,</p>
+<p><span class="math display">\[
+i^\star=4
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+x_{i^\star}=x_4=31.
+\]</span></p>
+</section>
+<section id="maximum-does-not-reveal-argmax" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="maximum-does-not-reveal-argmax"><span class="header-section-number">3.3</span> Maximum Does Not Reveal Argmax</h3>
+<p>Knowing only that</p>
+<p><span class="math display">\[
+\max_i x_i=31
+\]</span></p>
+<p>does not determine where <span class="math inline">\(31\)</span> occurs. Consider</p>
+<p><span class="math display">\[
+\mathbf{a}
+=
+\begin{bmatrix}
+31\\
+18\\
+25
+\end{bmatrix}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\mathbf{b}
+=
+\begin{bmatrix}
+18\\
+25\\
+31
+\end{bmatrix}.
+\]</span></p>
+<p>Both collections have the same maximum:</p>
+<p><span class="math display">\[
+\max_i a_i=31,
+\]</span></p>
+<p><span class="math display">\[
+\max_i b_i=31.
+\]</span></p>
+<p>But their maximizing positions differ:</p>
+<p><span class="math display">\[
+\operatorname*{arg\,max}_i a_i=1,
+\]</span></p>
+<p><span class="math display">\[
+\operatorname*{arg\,max}_i b_i=3.
+\]</span></p>
+<p>The maximum preserves the upper extreme while discarding its location. Once the collection has been reduced to the scalar <span class="math inline">\(31\)</span>, the positional information cannot be reconstructed. Thus,</p>
+<p><span class="math display">\[
+\boxed{
+\text{maximum value alone does not determine its location}.
+}
+\]</span></p>
+</section>
+<section id="argmax-does-not-reveal-maximum" class="level3" data-number="3.4">
+<h3 data-number="3.4" class="anchored" data-anchor-id="argmax-does-not-reveal-maximum"><span class="header-section-number">3.4</span> Argmax Does Not Reveal Maximum</h3>
+<p>The reverse is also true. Knowing only that</p>
+<p><span class="math display">\[
+\operatorname*{arg\,max}_i x_i=4
+\]</span></p>
+<p>does not determine the largest value. The collections</p>
+<p><span class="math display">\[
+\mathbf{a}
+=
+\begin{bmatrix}
+1\\
+2\\
+3\\
+10\\
+4
+\end{bmatrix}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\mathbf{b}
+=
+\begin{bmatrix}
+18\\
+25\\
+13\\
+31\\
+22
+\end{bmatrix}
+\]</span></p>
+<p>both satisfy</p>
+<p><span class="math display">\[
+\operatorname*{arg\,max}_i a_i=4
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\operatorname*{arg\,max}_i b_i=4.
+\]</span></p>
+<p>However,</p>
+<p><span class="math display">\[
+\max_i a_i=10,
+\]</span></p>
+<p>while</p>
+<p><span class="math display">\[
+\max_i b_i=31.
+\]</span></p>
+<p>Argmax preserves the location of the upper extreme while discarding its magnitude. Therefore,</p>
+<p><span class="math display">\[
+\boxed{
+\text{location alone does not determine the value located there}.
+}
+\]</span></p>
+<p>To preserve both pieces of information, the computation must retain the pair</p>
+<p><span class="math display">\[
+(i^\star,x_{i^\star}).
+\]</span></p>
+<p>For the response-time example, this pair is</p>
+<p><span class="math display">\[
+(4,31).
+\]</span></p>
+<p>The first component identifies where the event occurred. The second identifies its measured magnitude.</p>
+</section>
+<section id="units-expose-the-difference" class="level3" data-number="3.5">
+<h3 data-number="3.5" class="anchored" data-anchor-id="units-expose-the-difference"><span class="header-section-number">3.5</span> Units Expose the Difference</h3>
+<p>Each response time has units of milliseconds:</p>
+<p><span class="math display">\[
+x_i\text{ is measured in milliseconds}.
+\]</span></p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+\max_i x_i=31\text{ ms}.
+\]</span></p>
+<p>The argmax has no unit of milliseconds:</p>
+<p><span class="math display">\[
+\operatorname*{arg\,max}_i x_i=4.
+\]</span></p>
+<p>The index <span class="math inline">\(4\)</span> is a positional label. Depending on the problem, it might refer to:</p>
+<ul>
+<li>the fourth request;</li>
+<li>the fourth class;</li>
+<li>the fourth time step;</li>
+<li>the fourth pixel;</li>
+<li>the fourth candidate;</li>
+<li>the fourth row of a matrix.</li>
+</ul>
+<p>The index acquires meaning from the index domain, not from the units of the values.</p>
+</section>
+<section id="a-search-variable-and-an-objective-value" class="level3" data-number="3.6">
+<h3 data-number="3.6" class="anchored" data-anchor-id="a-search-variable-and-an-objective-value"><span class="header-section-number">3.6</span> A Search Variable and an Objective Value</h3>
+<p>Argmax notation becomes especially meaningful when written as an optimization problem. Suppose a function</p>
+<p><span class="math display">\[
+f(i)
+\]</span></p>
+<p>assigns a value to every candidate index <span class="math inline">\(i\in\mathcal{I}\)</span>.The maximum objective value is</p>
+<p><span class="math display">\[
+\max_{i\in\mathcal{I}}f(i).
+\]</span></p>
+<p>A maximizing argument is</p>
+<p><span class="math display">\[
+i^\star
+\in
+\operatorname*{arg\,max}_{i\in\mathcal{I}}f(i).
+\]</span></p>
+<p>These answer two different questions:</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+\max_{i\in\mathcal{I}}f(i)
+&amp;:\quad
+\text{How large can the objective become?}\\
+\operatorname*{arg\,max}_{i\in\mathcal{I}}f(i)
+&amp;:\quad
+\text{Which candidate makes it that large?}
+\end{aligned}
+}
+\]</span></p>
+<p>For an indexed vector, the objective function is</p>
+<p><span class="math display">\[
+f(i)=x_i.
+\]</span></p>
+<p>The search variable is <span class="math inline">\(i\)</span>, not <span class="math inline">\(x_i\)</span>. This explains the word <em>argument</em>: argmax returns the input to the function that produces the largest output. The distinction appears throughout mathematical programming. A classification model may produce one score per class:</p>
+<p><span class="math display">\[
+s_1,s_2,\ldots,s_k.
+\]</span></p>
+<p>The maximum score answers</p>
+<p><span class="math display">\[
+\max_j s_j,
+\]</span></p>
+<p>while the predicted class is often</p>
+<p><span class="math display">\[
+\operatorname*{arg\,max}_j s_j.
+\]</span></p>
+<p>The score and class label are different objects even when both are represented numerically.</p>
+</section>
+<section id="ties-make-argmax-set-valued" class="level3" data-number="3.7">
+<h3 data-number="3.7" class="anchored" data-anchor-id="ties-make-argmax-set-valued"><span class="header-section-number">3.7</span> Ties Make Argmax Set-Valued</h3>
+<p>Now consider</p>
+<p><span class="math display">\[
+\mathbf{x}
+=
+\begin{bmatrix}
+18\\
+31\\
+13\\
+31\\
+22
+\end{bmatrix}.
+\]</span></p>
+<p>The maximum remains</p>
+<p><span class="math display">\[
+\max_i x_i=31.
+\]</span></p>
+<p>However, the value <span class="math inline">\(31\)</span> occurs at positions <span class="math inline">\(2\)</span> and <span class="math inline">\(4\)</span>. Therefore,</p>
+<p><span class="math display">\[
+\boxed{
+\operatorname*{arg\,max}_i x_i=\{2,4\}.
+}
+\]</span></p>
+<p>This reveals an important mathematical fact: argmax is naturally set-valued. It returns all arguments at which the maximum is attained. When the maximum is unique, the set contains one element:</p>
+<p><span class="math display">\[
+\operatorname*{arg\,max}_i x_i=\{4\}.
+\]</span></p>
+<p>When the maximum is tied, the set contains several elements:</p>
+<p><span class="math display">\[
+\operatorname*{arg\,max}_i x_i=\{2,4\}.
+\]</span></p>
+<p>A programming library often returns only one index. For example, it may return the first maximizing position:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>response_times <span class="op">=</span> [<span class="dv">18</span>, <span class="dv">31</span>, <span class="dv">13</span>, <span class="dv">31</span>, <span class="dv">22</span>]</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>largest_position <span class="op">=</span> response_times.index(<span class="bu">max</span>(response_times))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Using zero-based Python indexing, this returns</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>because the first occurrence of <span class="math inline">\(31\)</span> is at Python index <code>1</code>.This behavior includes a tie-breaking rule:</p>
+<blockquote class="blockquote">
+<p>If several positions attain the maximum, return the first one under the library’s indexing order.</p>
+</blockquote>
+<p>That is a valid software contract, but it is more specific than the mathematical argmax set. The program has chosen one representative from</p>
+<p><span class="math display">\[
+\{2,4\}
+\]</span></p>
+<p>under one-based mathematical indexing, or from</p>
+<p><span class="math display">\[
+\{1,3\}
+\]</span></p>
+<p>under zero-based Python indexing. The tie-breaking policy should not be mistaken for a mathematical proof that the maximizer is unique.</p>
+</section>
+<section id="indexing-conventions-change-the-numerical-label" class="level3" data-number="3.8">
+<h3 data-number="3.8" class="anchored" data-anchor-id="indexing-conventions-change-the-numerical-label"><span class="header-section-number">3.8</span> Indexing Conventions Change the Numerical Label</h3>
+<p>Mathematical exposition commonly labels positions as</p>
+<p><span class="math display">\[
+1,2,\ldots,n.
+\]</span></p>
+<p>Python labels the same positions as</p>
+<p><span class="math display">\[
+0,1,\ldots,n-1.
+\]</span></p>
+<p>For</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>response_times <span class="op">=</span> [<span class="dv">18</span>, <span class="dv">25</span>, <span class="dv">13</span>, <span class="dv">31</span>, <span class="dv">22</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>the mathematical position of <span class="math inline">\(31\)</span> is</p>
+<p><span class="math display">\[
+4,
+\]</span></p>
+<p>but its Python index is</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="dv">3</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>because Python begins indexing at zero. Thus,</p>
+<p><span class="math display">\[
+\operatorname*{arg\,max}_{i\in\{1,\ldots,5\}}x_i=4
+\]</span></p>
+<p>and a Python <code>argmax</code> operation may return</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="dv">3</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>without disagreement. The two results use different coordinate conventions. An index has meaning only relative to an explicitly understood index system. The safe translation is</p>
+<p><span class="math display">\[
+\boxed{
+\text{mathematical position }i
+=
+\text{Python index }i-1.
+}
+\]</span></p>
+<p>This offset applies only when the mathematical convention begins at <span class="math inline">\(1\)</span> and the programming convention begins at <span class="math inline">\(0\)</span>.</p>
+</section>
+<section id="reordering-preserves-maximum-but-changes-argmax" class="level3" data-number="3.9">
+<h3 data-number="3.9" class="anchored" data-anchor-id="reordering-preserves-maximum-but-changes-argmax"><span class="header-section-number">3.9</span> Reordering Preserves Maximum but Changes Argmax</h3>
+<p>Consider the original collection</p>
+<p><span class="math display">\[
+\mathbf{x}
+=
+\begin{bmatrix}
+18\\
+25\\
+13\\
+31\\
+22
+\end{bmatrix}.
+\]</span></p>
+<p>Its maximum and argmax are</p>
+<p><span class="math display">\[
+\max_i x_i=31
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\operatorname*{arg\,max}_i x_i=4.
+\]</span></p>
+<p>Now rearrange the values:</p>
+<p><span class="math display">\[
+\widetilde{\mathbf{x}}
+=
+\begin{bmatrix}
+31\\
+18\\
+22\\
+25\\
+13
+\end{bmatrix}.
+\]</span></p>
+<p>The maximum remains</p>
+<p><span class="math display">\[
+\max_i\widetilde{x}_i=31.
+\]</span></p>
+<p>The argmax becomes</p>
+<p><span class="math display">\[
+\operatorname*{arg\,max}_i\widetilde{x}_i=1.
+\]</span></p>
+<p>Maximum is invariant under reordering because the upper extreme does not depend on where the values are placed. Argmax is not invariant because it reports a location. Instead, argmax follows the permutation. If the maximizing value moves from position <span class="math inline">\(4\)</span> to position <span class="math inline">\(1\)</span>, its maximizing index moves correspondingly. Thus,</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+\text{maximum}
+&amp;:\quad
+\text{preserves value under reordering},\\
+\text{argmax}
+&amp;:\quad
+\text{tracks the reordered location}.
+\end{aligned}
+}
+\]</span></p>
+</section>
+<section id="minimum-and-argmin-have-the-same-distinction" class="level3" data-number="3.10">
+<h3 data-number="3.10" class="anchored" data-anchor-id="minimum-and-argmin-have-the-same-distinction"><span class="header-section-number">3.10</span> Minimum and Argmin Have the Same Distinction</h3>
+<p>The smallest response time is</p>
+<p><span class="math display">\[
+\min_i x_i=13.
+\]</span></p>
+<p>Its location is</p>
+<p><span class="math display">\[
+\operatorname*{arg\,min}_i x_i=3
+\]</span></p>
+<p>under one-based indexing. Minimum returns a value:</p>
+<p><span class="math display">\[
+\min_i x_i\in\mathbb{R}.
+\]</span></p>
+<p>Argmin returns an index or set of indices:</p>
+<p><span class="math display">\[
+\operatorname*{arg\,min}_i x_i\subseteq\mathcal{I}.
+\]</span></p>
+<p>Formally,</p>
+<p><span class="math display">\[
+\boxed{
+\operatorname*{arg\,min}_{i\in\mathcal{I}}x_i
+=
+\left\{
+i\in\mathcal{I}:
+x_i=\min_{j\in\mathcal{I}}x_j
+\right\}.
+}
+\]</span></p>
+<p>The same questions arise:</p>
+<ul>
+<li>Is the minimizing position unique?</li>
+<li>Which indexing convention is used?</li>
+<li>If several minima occur, which tie-breaking rule does the software apply?</li>
+<li>Does the computation need the value, the position, or both?</li>
+</ul>
+</section>
+<section id="the-structural-difference" class="level3" data-number="3.11">
+<h3 data-number="3.11" class="anchored" data-anchor-id="the-structural-difference"><span class="header-section-number">3.11</span> The Structural Difference</h3>
+<p>Maximum and argmax both inspect the entire indexed collection, but they preserve different aspects of it:</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+\max_i x_i
+&amp;:\quad
+\text{preserves the extreme value and discards its position},\\
+\operatorname*{arg\,max}_i x_i
+&amp;:\quad
+\text{preserves the extreme position and discards its value}.
+\end{aligned}
+}
+\]</span></p>
+<p>Retaining both requires</p>
+<p><span class="math display">\[
+\boxed{
+\left(
+i^\star,
+x_{i^\star}
+\right),
+\qquad
+i^\star\in\operatorname*{arg\,max}_i x_i.
+}
+\]</span></p>
+<p>This distinction becomes even more important for matrices and tensors, where a reduction may eliminate one index while preserving others. The next section will examine how reducing along a chosen axis determines which indices disappear and which remain in the output.</p>
+</section>
+</section>
+<section id="reducing-one-axis-while-preserving-another" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="reducing-one-axis-while-preserving-another"><span class="header-section-number">4</span> 10.4 Reducing One Axis While Preserving Another</h2>
+<p>A vector has one index:</p>
+<p><span class="math display">\[
+x_i.
+\]</span></p>
+<p>Reducing that index produces a scalar:</p>
+<p><span class="math display">\[
+r=\max_i x_i.
+\]</span></p>
+<p>The index <span class="math inline">\(i\)</span> appears inside the reduction operator but does not appear on the result. We described this by saying that the reduction consumes or eliminates the index. A matrix has two indices:</p>
+<p><span class="math display">\[
+X_{ij}.
+\]</span></p>
+<p>The first index <span class="math inline">\(i\)</span> identifies a row, and the second index <span class="math inline">\(j\)</span> identifies a column. A reduction may eliminate both indices, producing one scalar, or eliminate only one index, producing a vector indexed by the dimension that remains. This leads to a general principle:</p>
+<p><span class="math display">\[
+\boxed{
+\text{a reduced index disappears from the output;
+an unreduced index remains}.
+}
+\]</span></p>
+<section id="a-matrix-with-two-kinds-of-position" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="a-matrix-with-two-kinds-of-position"><span class="header-section-number">4.1</span> A Matrix with Two Kinds of Position</h3>
+<p>Suppose three computer servers handle four requests. Their response times, measured in milliseconds, are</p>
+<p><span class="math display">\[
+\mathbf{X}
+=
+\begin{bmatrix}
+18 &amp; 25 &amp; 13 &amp; 31\\
+22 &amp; 20 &amp; 24 &amp; 19\\
+35 &amp; 28 &amp; 30 &amp; 26
+\end{bmatrix}.
+\]</span></p>
+<p>Let the row index</p>
+<p><span class="math display">\[
+i\in\{1,2,3\}
+\]</span></p>
+<p>identify the server, and let the column index</p>
+<p><span class="math display">\[
+j\in\{1,2,3,4\}
+\]</span></p>
+<p>identify the request. Thus,</p>
+<p><span class="math display">\[
+X_{ij}
+=
+\text{response time of server }i
+\text{ for request }j.
+\]</span></p>
+<p>For example,</p>
+<p><span class="math display">\[
+X_{2,3}=24
+\]</span></p>
+<p>means that server <span class="math inline">\(2\)</span> took <span class="math inline">\(24\)</span> milliseconds to handle request <span class="math inline">\(3\)</span>. The matrix belongs to</p>
+<p><span class="math display">\[
+\mathbf{X}\in\mathbb{R}^{3\times4}.
+\]</span></p>
+<p>The shape <span class="math inline">\((3,4)\)</span> records that the matrix contains three server positions and four request positions. The semantic interpretation of those dimensions is</p>
+<p><span class="math display">\[
+(\text{servers},\text{requests}).
+\]</span></p>
+<p>The shape alone does not contain these names. They come from the model of the problem.</p>
+</section>
+<section id="one-maximum-for-each-server" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="one-maximum-for-each-server"><span class="header-section-number">4.2</span> One Maximum for Each Server</h3>
+<p>Suppose we ask:</p>
+<blockquote class="blockquote">
+<p>What was the largest response time produced by each server?</p>
+</blockquote>
+<p>For server <span class="math inline">\(1\)</span>, the relevant values are</p>
+<p><span class="math display">\[
+18,\quad25,\quad13,\quad31,
+\]</span></p>
+<p>so the maximum is</p>
+<p><span class="math display">\[
+31.
+\]</span></p>
+<p>For server <span class="math inline">\(2\)</span>,</p>
+<p><span class="math display">\[
+22,\quad20,\quad24,\quad19,
+\]</span></p>
+<p>so the maximum is</p>
+<p><span class="math display">\[
+24.
+\]</span></p>
+<p>For server <span class="math inline">\(3\)</span>,</p>
+<p><span class="math display">\[
+35,\quad28,\quad30,\quad26,
+\]</span></p>
+<p>so the maximum is</p>
+<p><span class="math display">\[
+35.
+\]</span></p>
+<p>The result is the vector</p>
+<p><span class="math display">\[
+\mathbf{y}
+=
+\begin{bmatrix}
+31\\
+24\\
+35
+\end{bmatrix}.
+\]</span></p>
+<p>There is one output for every server. Therefore the server index <span class="math inline">\(i\)</span> remains:</p>
+<p><span class="math display">\[
+y_i.
+\]</span></p>
+<p>The request index <span class="math inline">\(j\)</span> is reduced because all request values associated with one server are combined into one maximum:</p>
+<p><span class="math display">\[
+\boxed{
+y_i=\max_{1\leq j\leq4}X_{ij}.
+}
+\]</span></p>
+<p>The index structure makes the operation explicit:</p>
+<ul>
+<li><span class="math inline">\(i\)</span> remains free and identifies the output component;</li>
+<li><span class="math inline">\(j\)</span> is bound by the maximum and disappears from the output.</li>
+</ul>
+<p>For each fixed <span class="math inline">\(i\)</span>, the maximum ranges over every admissible <span class="math inline">\(j\)</span>.</p>
+<p>The shape transformation is</p>
+<p><span class="math display">\[
+\boxed{
+\mathbb{R}^{3\times4}
+\longrightarrow
+\mathbb{R}^{3}.
+}
+\]</span></p>
+<p>The request dimension has been removed, while the server dimension has been preserved.</p>
+</section>
+<section id="fix-one-index-and-reduce-the-other" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="fix-one-index-and-reduce-the-other"><span class="header-section-number">4.3</span> Fix One Index and Reduce the Other</h3>
+<p>The expression</p>
+<p><span class="math display">\[
+y_i=\max_j X_{ij}
+\]</span></p>
+<p>can be read as a two-stage instruction. First, fix a server index <span class="math inline">\(i\)</span>. For example, choose <span class="math inline">\(i=2\)</span>. This selects the row</p>
+<p><span class="math display">\[
+X_{2,1},X_{2,2},X_{2,3},X_{2,4}.
+\]</span></p>
+<p>Second, reduce across the request index <span class="math inline">\(j\)</span>:</p>
+<p><span class="math display">\[
+y_2
+=
+\max
+\left(
+X_{2,1},
+X_{2,2},
+X_{2,3},
+X_{2,4}
+\right).
+\]</span></p>
+<p>Substituting the values gives</p>
+<p><span class="math display">\[
+y_2=\max(22,20,24,19)=24.
+\]</span></p>
+<p>Repeating this relationship for every fixed <span class="math inline">\(i\)</span> constructs the output vector. This is not one global maximum over the whole matrix. It is a family of reductions: one reduction for every value of the preserved index. The distinction is</p>
+<p><span class="math display">\[
+\boxed{
+\text{fix the index that remains;
+range over the index being reduced}.
+}
+\]</span></p>
+</section>
+<section id="one-maximum-for-each-request" class="level3" data-number="4.4">
+<h3 data-number="4.4" class="anchored" data-anchor-id="one-maximum-for-each-request"><span class="header-section-number">4.4</span> One Maximum for Each Request</h3>
+<p>Now ask a different question:</p>
+<blockquote class="blockquote">
+<p>What was the largest response time observed for each request across all servers?</p>
+</blockquote>
+<p>For request <span class="math inline">\(1\)</span>, the server values are</p>
+<p><span class="math display">\[
+18,\quad22,\quad35,
+\]</span></p>
+<p>so the maximum is</p>
+<p><span class="math display">\[
+35.
+\]</span></p>
+<p>For request <span class="math inline">\(2\)</span>,</p>
+<p><span class="math display">\[
+25,\quad20,\quad28,
+\]</span></p>
+<p>so the maximum is</p>
+<p><span class="math display">\[
+28.
+\]</span></p>
+<p>For request <span class="math inline">\(3\)</span>,</p>
+<p><span class="math display">\[
+13,\quad24,\quad30,
+\]</span></p>
+<p>so the maximum is</p>
+<p><span class="math display">\[
+30.
+\]</span></p>
+<p>For request <span class="math inline">\(4\)</span>,</p>
+<p><span class="math display">\[
+31,\quad19,\quad26,
+\]</span></p>
+<p>so the maximum is</p>
+<p><span class="math display">\[
+31.
+\]</span></p>
+<p>The output is</p>
+<p><span class="math display">\[
+\mathbf{z}
+=
+\begin{bmatrix}
+35\\
+28\\
+30\\
+31
+\end{bmatrix}.
+\]</span></p>
+<p>There is one result for each request. Therefore the request index <span class="math inline">\(j\)</span> remains:</p>
+<p><span class="math display">\[
+z_j.
+\]</span></p>
+<p>The server index <span class="math inline">\(i\)</span> is reduced:</p>
+<p><span class="math display">\[
+\boxed{
+z_j=\max_{1\leq i\leq3}X_{ij}.
+}
+\]</span></p>
+<p>The shape transformation is</p>
+<p><span class="math display">\[
+\boxed{
+\mathbb{R}^{3\times4}
+\longrightarrow
+\mathbb{R}^{4}.
+}
+\]</span></p>
+<p>This time the server dimension disappears and the request dimension remains.</p>
+</section>
+<section id="similar-operators-can-answer-different-questions" class="level3" data-number="4.5">
+<h3 data-number="4.5" class="anchored" data-anchor-id="similar-operators-can-answer-different-questions"><span class="header-section-number">4.5</span> Similar Operators Can Answer Different Questions</h3>
+<p>The expressions</p>
+<p><span class="math display">\[
+y_i=\max_jX_{ij}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+z_j=\max_iX_{ij}
+\]</span></p>
+<p>use the same maximum operator. They do not perform the same reduction. The first means:</p>
+<blockquote class="blockquote">
+<p>For each server <span class="math inline">\(i\)</span>, find the maximum over requests <span class="math inline">\(j\)</span>.</p>
+</blockquote>
+<p>The second means:</p>
+<blockquote class="blockquote">
+<p>For each request <span class="math inline">\(j\)</span>, find the maximum over servers <span class="math inline">\(i\)</span>.</p>
+</blockquote>
+<p>Their outputs have different lengths:</p>
+<p><span class="math display">\[
+\mathbf{y}\in\mathbb{R}^{3},
+\]</span></p>
+<p><span class="math display">\[
+\mathbf{z}\in\mathbb{R}^{4}.
+\]</span></p>
+<p>They also have different semantic meanings. The components of <span class="math inline">\(\mathbf{y}\)</span> describe servers. The components of <span class="math inline">\(\mathbf{z}\)</span> describe requests. The choice of reduced axis is therefore part of the mathematical question, not merely a parameter supplied to a library function.</p>
+</section>
+<section id="reducing-both-indices" class="level3" data-number="4.6">
+<h3 data-number="4.6" class="anchored" data-anchor-id="reducing-both-indices"><span class="header-section-number">4.6</span> Reducing Both Indices</h3>
+<p>Suppose we ask:</p>
+<blockquote class="blockquote">
+<p>What was the largest response time anywhere in the matrix?</p>
+</blockquote>
+<p>Now neither a server-specific nor a request-specific index should remain. The complete reduction is</p>
+<p><span class="math display">\[
+r=\max_{i,j}X_{ij}.
+\]</span></p>
+<p>For the concrete matrix,</p>
+<p><span class="math display">\[
+r=35.
+\]</span></p>
+<p>Both indices are consumed by the reduction, so the output is a scalar:</p>
+<p><span class="math display">\[
+\boxed{
+\mathbb{R}^{3\times4}
+\longrightarrow
+\mathbb{R}.
+}
+\]</span></p>
+<p>The three possibilities can be compared:</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+y_i=\max_jX_{ij}
+&amp;:\quad
+\text{preserve }i,\text{ reduce }j,\\
+z_j=\max_iX_{ij}
+&amp;:\quad
+\text{reduce }i,\text{ preserve }j,\\
+r=\max_{i,j}X_{ij}
+&amp;:\quad
+\text{reduce both }i\text{ and }j.
+\end{aligned}
+}
+\]</span></p>
+<p>The indices present on the left side reveal the shape of the output.</p>
+</section>
+<section id="the-same-axis-logic-applies-to-other-reductions" class="level3" data-number="4.7">
+<h3 data-number="4.7" class="anchored" data-anchor-id="the-same-axis-logic-applies-to-other-reductions"><span class="header-section-number">4.7</span> The Same Axis Logic Applies to Other Reductions</h3>
+<p>The distinction is not specific to maximum. The total response time for each server is</p>
+<p><span class="math display">\[
+T_i=\sum_{j=1}^{4}X_{ij}.
+\]</span></p>
+<p>For the concrete matrix,</p>
+<p><span class="math display">\[
+\begin{aligned}
+T_1&amp;=18+25+13+31=87,\\
+T_2&amp;=22+20+24+19=85,\\
+T_3&amp;=35+28+30+26=119.
+\end{aligned}
+\]</span></p>
+<p>Thus,</p>
+<p><span class="math display">\[
+\mathbf{T}
+=
+\begin{bmatrix}
+87\\
+85\\
+119
+\end{bmatrix}.
+\]</span></p>
+<p>The request index <span class="math inline">\(j\)</span> has been reduced, while the server index <span class="math inline">\(i\)</span> remains. The average response time for each server is</p>
+<p><span class="math display">\[
+\bar{X}_i
+=
+\frac{1}{4}
+\sum_{j=1}^{4}X_{ij}.
+\]</span></p>
+<p>The results are</p>
+<p><span class="math display">\[
+\bar{X}_1=21.75,
+\]</span></p>
+<p><span class="math display">\[
+\bar{X}_2=21.25,
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\bar{X}_3=29.75.
+\]</span></p>
+<p>Again, there is one result per server. The minimum response time for each request is</p>
+<p><span class="math display">\[
+m_j=\min_iX_{ij}.
+\]</span></p>
+<p>This reduces the server index <span class="math inline">\(i\)</span> and preserves the request index <span class="math inline">\(j\)</span>. The reduction operator determines what property is preserved. The chosen axis determines which kind of position remains represented in the output.</p>
+</section>
+<section id="axis-means-an-index-direction" class="level3" data-number="4.8">
+<h3 data-number="4.8" class="anchored" data-anchor-id="axis-means-an-index-direction"><span class="header-section-number">4.8</span> Axis Means an Index Direction</h3>
+<p>In array programming, the word <strong>axis</strong> refers to one dimension of an array’s index structure.</p>
+<p>For</p>
+<p><span class="math display">\[
+X_{ij},
+\]</span></p>
+<p>the first axis corresponds to <span class="math inline">\(i\)</span>, and the second axis corresponds to <span class="math inline">\(j\)</span>. Under the current interpretation,</p>
+<p><span class="math display">\[
+i=\text{server index},
+\]</span></p>
+<p><span class="math display">\[
+j=\text{request index}.
+\]</span></p>
+<p>To reduce along an axis means to range over that axis’s index and eliminate it from the output. This language can be confusing because people sometimes say “calculate the row maximum” when they mean either:</p>
+<ul>
+<li>find a maximum within every row;</li>
+<li>reduce the row dimension.</li>
+</ul>
+<p>These are not the same instruction. Finding a maximum within every row means ranging across columns:</p>
+<p><span class="math display">\[
+y_i=\max_jX_{ij}.
+\]</span></p>
+<p>The row index remains. Reducing the row axis means ranging across rows:</p>
+<p><span class="math display">\[
+z_j=\max_iX_{ij}.
+\]</span></p>
+<p>The row index disappears. The safest wording is:</p>
+<p><span class="math display">\[
+\boxed{
+\text{reduce over the index that should disappear}.
+}
+\]</span></p>
+</section>
+<section id="translating-the-axes-into-numpy" class="level3" data-number="4.9">
+<h3 data-number="4.9" class="anchored" data-anchor-id="translating-the-axes-into-numpy"><span class="header-section-number">4.9</span> Translating the Axes into NumPy</h3>
+<p>Represent the matrix in Python:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>response_times <span class="op">=</span> np.array([</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">18</span>, <span class="dv">25</span>, <span class="dv">13</span>, <span class="dv">31</span>],</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">22</span>, <span class="dv">20</span>, <span class="dv">24</span>, <span class="dv">19</span>],</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">35</span>, <span class="dv">28</span>, <span class="dv">30</span>, <span class="dv">26</span>],</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Its shape is</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(<span class="dv">3</span>, <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>NumPy calls the first dimension <code>axis=0</code> and the second dimension <code>axis=1</code>. Reducing with</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>response_times.<span class="bu">max</span>(axis<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>eliminates the second dimension. The operation ranges across columns within each row and returns one value per row:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>[<span class="dv">31</span>, <span class="dv">24</span>, <span class="dv">35</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Mathematically,</p>
+<p><span class="math display">\[
+y_i=\max_jX_{ij}.
+\]</span></p>
+<p>Reducing with</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>response_times.<span class="bu">max</span>(axis<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>eliminates the first dimension. The operation ranges across rows and returns one value per column:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>[<span class="dv">35</span>, <span class="dv">28</span>, <span class="dv">30</span>, <span class="dv">31</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Mathematically,</p>
+<p><span class="math display">\[
+z_j=\max_iX_{ij}.
+\]</span></p>
+<p>Reducing without specifying an axis,</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>response_times.<span class="bu">max</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>reduces the entire array and returns</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="dv">35</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Mathematically,</p>
+<p><span class="math display">\[
+r=\max_{i,j}X_{ij}.
+\]</span></p>
+<p>The numerical axis parameter identifies the dimension to remove:</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+\texttt{axis=0}
+&amp;:\quad
+\text{remove the first index},\\
+\texttt{axis=1}
+&amp;:\quad
+\text{remove the second index}.
+\end{aligned}
+}
+\]</span></p>
+<p>The parameter does not describe the meaning of the dimension. NumPy does not know that axis <span class="math inline">\(0\)</span> represents servers or that axis <span class="math inline">\(1\)</span> represents requests. The programmer must preserve that semantic interpretation.</p>
+<p>Suppose the same numerical matrix is stored with the opposite orientation:</p>
+<p><span class="math display">\[
+\widetilde{X}_{ji}
+=
+\text{response time for request }j
+\text{ on server }i.
+\]</span></p>
+<p>Its shape would be</p>
+<p><span class="math display">\[
+(4,3)
+\]</span></p>
+<p>rather than</p>
+<p><span class="math display">\[
+(3,4).
+\]</span></p>
+<p>Now the request index is first and the server index is second. A per-server reduction would use a different numerical axis than before. This demonstrates that <code>axis=0</code> does not inherently mean “server” or “sample,” and <code>axis=1</code> does not inherently mean “request” or “feature.” Axis numbers refer to storage positions in the shape tuple. Their semantic meanings depend on how the data was organized. The correct reasoning order is</p>
+<p><span class="math display">\[
+\boxed{
+\text{question}
+\rightarrow
+\text{index to preserve}
+\rightarrow
+\text{index to reduce}
+\rightarrow
+\text{numerical axis}.
+}
+\]</span></p>
+<p>Choosing an axis merely because a familiar example used the same number can produce a mechanically valid result with the wrong meaning.</p>
+</section>
+<section id="preserving-a-reduced-dimension-as-size-one" class="level3" data-number="4.10">
+<h3 data-number="4.10" class="anchored" data-anchor-id="preserving-a-reduced-dimension-as-size-one"><span class="header-section-number">4.10</span> Preserving a Reduced Dimension as Size One</h3>
+<p>Some numerical libraries allow a reduced dimension to remain in the output with length <span class="math inline">\(1\)</span>.</p>
+<p>For example,</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>response_times.<span class="bu">max</span>(axis<span class="op">=</span><span class="dv">1</span>, keepdims<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>produces an array with shape</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(<span class="dv">3</span>, <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>rather than</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>(<span class="dv">3</span>,)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>and values</p>
+<pre class="text"><code>[[31],
+ [24],
+ [35]]</code></pre>
+<p>The reduction still ranges over the request index <span class="math inline">\(j\)</span>. There is still only one maximum per server. The singleton dimension is retained as a structural placeholder. Without preservation,</p>
+<p><span class="math display">\[
+\mathbb{R}^{3\times4}
+\longrightarrow
+\mathbb{R}^{3}.
+\]</span></p>
+<p>With a singleton dimension retained,</p>
+<p><span class="math display">\[
+\mathbb{R}^{3\times4}
+\longrightarrow
+\mathbb{R}^{3\times1}.
+\]</span></p>
+<p>The reduced index no longer varies over four request positions. It has been collapsed to one summary position. Retaining a size-one dimension can help later operations align shapes, but it does not restore the information removed by the reduction. The four original request values cannot be recovered from one maximum. Thus,</p>
+<p><span class="math display">\[
+\boxed{
+\text{keeping the dimension is not the same as keeping the data}.
+}
+\]</span></p>
+</section>
+<section id="argmax-along-an-axis" class="level3" data-number="4.11">
+<h3 data-number="4.11" class="anchored" data-anchor-id="argmax-along-an-axis"><span class="header-section-number">4.11</span> Argmax Along an Axis</h3>
+<p>The distinction between value and location also applies to axis reductions. For each server, the largest response time is</p>
+<p><span class="math display">\[
+y_i=\max_jX_{ij}.
+\]</span></p>
+<p>The request position at which that maximum occurs is</p>
+<p><span class="math display">\[
+q_i\in\operatorname*{arg\,max}_jX_{ij}.
+\]</span></p>
+<p>For the concrete matrix,</p>
+<p><span class="math display">\[
+\mathbf{q}
+=
+\begin{bmatrix}
+4\\
+3\\
+1
+\end{bmatrix}
+\]</span></p>
+<p>under one-based indexing:</p>
+<ul>
+<li>server <span class="math inline">\(1\)</span> has its maximum at request <span class="math inline">\(4\)</span>;</li>
+<li>server <span class="math inline">\(2\)</span> has its maximum at request <span class="math inline">\(3\)</span>;</li>
+<li>server <span class="math inline">\(3\)</span> has its maximum at request <span class="math inline">\(1\)</span>.</li>
+</ul>
+<p>The output retains the server index <span class="math inline">\(i\)</span> because there is one maximizing request position for each server:</p>
+<p><span class="math display">\[
+q_i.
+\]</span></p>
+<p>The reduced request index <span class="math inline">\(j\)</span> reappears as the value stored in <span class="math inline">\(q_i\)</span>. This does not mean that <span class="math inline">\(j\)</span> remains as an output dimension. Instead, a selected value from the request index set becomes the content of each output component. The value and location outputs are</p>
+<p><span class="math display">\[
+y_i=\max_jX_{ij}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+q_i\in\operatorname*{arg\,max}_jX_{ij}.
+\]</span></p>
+<p>Their relationship is</p>
+<p><span class="math display">\[
+X_{i,q_i}=y_i.
+\]</span></p>
+</section>
+<section id="generalizing-to-more-dimensions" class="level3" data-number="4.12">
+<h3 data-number="4.12" class="anchored" data-anchor-id="generalizing-to-more-dimensions"><span class="header-section-number">4.12</span> Generalizing to More Dimensions</h3>
+<p>Suppose a tensor has components</p>
+<p><span class="math display">\[
+X_{ijk}.
+\]</span></p>
+<p>A reduction over <span class="math inline">\(k\)</span> produces</p>
+<p><span class="math display">\[
+Y_{ij}=\sum_kX_{ijk}.
+\]</span></p>
+<p>The index <span class="math inline">\(k\)</span> disappears, while <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> remain. A reduction over <span class="math inline">\(j\)</span> and <span class="math inline">\(k\)</span> produces</p>
+<p><span class="math display">\[
+Z_i=\max_{j,k}X_{ijk}.
+\]</span></p>
+<p>Only <span class="math inline">\(i\)</span> remains. A complete reduction produces</p>
+<p><span class="math display">\[
+r=\min_{i,j,k}X_{ijk}.
+\]</span></p>
+<p>No index remains. The general rule is visible directly from the notation:</p>
+<p><span class="math display">\[
+\boxed{
+\text{indices on the right but not the left are reduced}.
+}
+\]</span></p>
+<p>This provides a mathematical method for predicting output shape before writing code. If</p>
+<p><span class="math display">\[
+X_{i_1i_2\ldots i_d}
+\]</span></p>
+<p>has <span class="math inline">\(d\)</span> indices and a reduction eliminates a subset of them, the output retains exactly the complementary subset of indices.</p>
+</section>
+<section id="reduction-as-a-transformation-of-index-structure" class="level3" data-number="4.13">
+<h3 data-number="4.13" class="anchored" data-anchor-id="reduction-as-a-transformation-of-index-structure"><span class="header-section-number">4.13</span> Reduction as a Transformation of Index Structure</h3>
+<p>An axis reduction does two things simultaneously:</p>
+<ol type="1">
+<li>it combines numerical values according to an operator;</li>
+<li>it transforms the index structure of the object.</li>
+</ol>
+<p>For</p>
+<p><span class="math display">\[
+y_i=\max_jX_{ij},
+\]</span></p>
+<p>the maximum operator preserves the upper extreme across <span class="math inline">\(j\)</span>, while the index transformation removes the request dimension and preserves the server dimension. The numerical and structural questions are distinct:</p>
+<blockquote class="blockquote">
+<p>Which property should be preserved across the reduced positions?</p>
+</blockquote>
+<p>and</p>
+<blockquote class="blockquote">
+<p>Which positions should remain represented in the output?</p>
+</blockquote>
+<p>The first determines whether we use sum, mean, maximum, minimum, or another reduction. The second determines the axis. The complete design process is</p>
+<p><span class="math display">\[
+\boxed{
+\text{global question}
+\rightarrow
+\text{reduction operator}
+\rightarrow
+\text{index to eliminate}
+\rightarrow
+\text{output index structure}.
+}
+\]</span></p>
+<p>For the server matrix:</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+\text{largest time per server}
+&amp;\rightarrow
+\max
+\rightarrow
+\text{eliminate request index }j
+\rightarrow
+y_i,\\
+\text{largest time per request}
+&amp;\rightarrow
+\max
+\rightarrow
+\text{eliminate server index }i
+\rightarrow
+z_j,\\
+\text{largest time overall}
+&amp;\rightarrow
+\max
+\rightarrow
+\text{eliminate }i\text{ and }j
+\rightarrow
+r.
+\end{aligned}
+}
+\]</span></p>
+<p>A reduction is therefore not adequately described by saying that “many values become one.” In multidimensional data, many values may become one value for every remaining index. The more precise principle is:</p>
+<p><span class="math display">\[
+\boxed{
+\text{many values along the reduced indices
+become one value for each configuration of the preserved indices}.
+}
+\]</span></p>
+<p>The chapter has now established how reductions choose a property, return a value or location, and transform index structure. The final section will examine reduction as deliberate information loss: what the reduced result preserves, what it destroys, and why that loss is necessary for the summary to perform its intended role.</p>
+</section>
+</section>
+<section id="reduction-as-deliberate-information-loss" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="reduction-as-deliberate-information-loss"><span class="header-section-number">5</span> 10.5 Reduction as Deliberate Information Loss</h2>
+<p>A computation need not retain only one reduced value. It can preserve several summaries:</p>
+<p><span class="math display">\[
+S(\mathbf{x})
+=
+\left(
+\min_i x_i,
+\max_i x_i,
+\frac{1}{n}\sum_i x_i
+\right).
+\]</span></p>
+<p>For the response times,</p>
+<p><span class="math display">\[
+S(\mathbf{x})
+=
+(13,31,21.8).
+\]</span></p>
+<p>This summary distinguishes more collections than any one of its components alone. Two vectors with the same mean but different maxima no longer produce the same combined summary. However, even the triple</p>
+<p><span class="math display">\[
+(\text{minimum},\text{maximum},\text{mean})
+\]</span></p>
+<p>does not generally reconstruct the original data. For example,</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+0\\
+2\\
+4
+\end{bmatrix}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+0\\
+1\\
+5
+\end{bmatrix}
+\]</span></p>
+<p>do not have the same maximum, so they are distinguished. But other distinct collections can share the same minimum, maximum, and mean. For instance,</p>
+<p><span class="math display">\[
+\mathbf{a}
+=
+\begin{bmatrix}
+0\\
+2\\
+4\\
+6
+\end{bmatrix}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\mathbf{b}
+=
+\begin{bmatrix}
+0\\
+3\\
+3\\
+6
+\end{bmatrix}
+\]</span></p>
+<p>both have</p>
+<p><span class="math display">\[
+\min=0,
+\]</span></p>
+<p><span class="math display">\[
+\max=6,
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\text{mean}=3.
+\]</span></p>
+<p>Yet</p>
+<p><span class="math display">\[
+\mathbf{a}\neq\mathbf{b}.
+\]</span></p>
+<p>Adding summaries can preserve more properties without preserving the complete input. This creates a spectrum:</p>
+<p><span class="math display">\[
+\boxed{
+\text{less summary information}
+\longrightarrow
+\text{more indistinguishable inputs}
+}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\boxed{
+\text{more summary information}
+\longrightarrow
+\text{fewer indistinguishable inputs}.
+}
+\]</span></p>
+<p>The appropriate point on this spectrum depends on the task, storage constraints, computational needs, and future questions.</p>
+<p>Suppose we preserve both the total</p>
+<p><span class="math display">\[
+T=\sum_i x_i
+\]</span></p>
+<p>and the count</p>
+<p><span class="math display">\[
+n.
+\]</span></p>
+<p>The mean can be reconstructed:</p>
+<p><span class="math display">\[
+\bar{x}=\frac{T}{n}.
+\]</span></p>
+<p>Therefore, the pair</p>
+<p><span class="math display">\[
+(T,n)
+\]</span></p>
+<p>contains enough information to compute the mean. The mean alone does not generally contain enough information to recover the total because the count may be unknown. A mean of <span class="math inline">\(10\)</span> could come from</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+10
+\end{bmatrix},
+\]</span></p>
+<p>with total <span class="math inline">\(10\)</span>, or</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+10\\
+10\\
+10
+\end{bmatrix},
+\]</span></p>
+<p>with total <span class="math inline">\(30\)</span>. This establishes an ordering of information content. If one summary can be computed from another, the second summary preserves at least enough information for the first. Symbolically, if</p>
+<p><span class="math display">\[
+R_2(\mathbf{x})=h(R_1(\mathbf{x}))
+\]</span></p>
+<p>for some function <span class="math inline">\(h\)</span>, then <span class="math inline">\(R_1\)</span> contains sufficient information to derive <span class="math inline">\(R_2\)</span>. For example,</p>
+<p><span class="math display">\[
+\text{mean}
+=
+h(\text{total},\text{count})
+\]</span></p>
+<p>with</p>
+<p><span class="math display">\[
+h(T,n)=\frac{T}{n}.
+\]</span></p>
+<p>But total and count cannot generally be reconstructed from mean alone. The direction of derivability reveals which summary is more informative for a specified family of questions.</p>
+<section id="reduction-can-remove-meaningful-context" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="reduction-can-remove-meaningful-context"><span class="header-section-number">5.1</span> Reduction Can Remove Meaningful Context</h3>
+<p>Suppose response times are ordered chronologically:</p>
+<p><span class="math display">\[
+x_1,x_2,\ldots,x_n.
+\]</span></p>
+<p>The maximum preserves the worst observed duration but removes when it occurred. The mean preserves average level but removes temporal patterns. Two systems could have the same mean while one steadily degrades and the other remains stable. Similarly, reducing an image to its average brightness removes spatial arrangement. Two images with the same average may depict entirely different scenes. The lost context may be irrelevant to the immediate decision and essential to later analysis. A reduction should therefore be treated as a commitment:</p>
+<p><span class="math display">\[
+\boxed{
+\text{after reduction, only properties encoded in the result remain available}.
+}
+\]</span></p>
+</section>
+<section id="choosing-a-reduction-is-choosing-an-invariant" class="level3" data-number="5.2">
+<h3 data-number="5.2" class="anchored" data-anchor-id="choosing-a-reduction-is-choosing-an-invariant"><span class="header-section-number">5.2</span> Choosing a Reduction Is Choosing an Invariant</h3>
+<p>A mathematical invariant is a property that remains unchanged under some transformations or variations. The sum is invariant under any rearrangement or redistribution that preserves total magnitude. The mean is invariant under changes that preserve both total relative to count. The maximum is invariant under changes to nonmaximal values that remain below the maximum. Argmax is invariant under changes that do not alter which index attains the maximum. Each reduction declares certain distinctions irrelevant. For maximum,</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+31\\
+1\\
+1
+\end{bmatrix}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+31\\
+30\\
+29
+\end{bmatrix}
+\]</span></p>
+<p>are equivalent because both preserve the upper extreme <span class="math inline">\(31\)</span>. For sum, they are different because their totals differ. The reduction operator therefore encodes a philosophy of relevance:</p>
+<blockquote class="blockquote">
+<p>Preserve this property; ignore distinctions that do not affect it.</p>
+</blockquote>
+<p>This is why reduction belongs to problem formulation rather than merely implementation.</p>
+</section>
+<section id="a-responsible-reduction-workflow" class="level3" data-number="5.3">
+<h3 data-number="5.3" class="anchored" data-anchor-id="a-responsible-reduction-workflow"><span class="header-section-number">5.3</span> A Responsible Reduction Workflow</h3>
+<p>Before reducing a collection, determine the global question:</p>
+<blockquote class="blockquote">
+<p>What must the output tell us?</p>
+</blockquote>
+<p>Then identify the property that answers that question:</p>
+<p><span class="math display">\[
+\text{total},
+\quad
+\text{average},
+\quad
+\text{extreme value},
+\quad
+\text{extreme location},
+\quad
+\text{or another summary}.
+\]</span></p>
+<p>Next, determine which indices may be eliminated and which must remain. If the output must retain one result per server, preserve the server index. If it must retain one result per class, preserve the class index. Then ask what future questions will be impossible after the reduction. This does not require preserving every possible detail, but it makes the loss explicit.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/hafizarslanamjad\.github\.io\/mathematical-understanding\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Articles and books by Hafiz Arslan Amjad</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="https://github.com/hafizarslanamjad/mathematical-understanding">
+<p>Source</p>
+</a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

@@ -1,0 +1,2839 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="A chapter about extending selection from two alternatives to many through one-hot vectors, graded weights, weighted sums, weighted averages, convex combinations, mixtures, ensembles, and attention.">
+
+<title>Chapter 12 — Weighted Combinations – Mathematical Understanding</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../../">
+<script src="../../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../../site_libs/bootstrap/bootstrap-e3adbaa939bcd423dddc8c8a834270b4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../../../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../../index.html">
+    <span class="navbar-title">Mathematical Understanding</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../index.html"> 
+<span class="menu-text">Articles</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../books/mathematical-programming/index.html"> 
+<span class="menu-text">Mathematical Programming</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/hafizarslanamjad/mathematical-understanding"> <i class="bi bi-github" role="img" aria-label="GitHub repository">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#from-two-alternatives-to-many-alternatives" id="toc-from-two-alternatives-to-many-alternatives" class="nav-link active" data-scroll-target="#from-two-alternatives-to-many-alternatives">12.1 From Two Alternatives to Many Alternatives</a>
+  <ul class="collapse">
+  <li><a href="#exhaustiveness" id="toc-exhaustiveness" class="nav-link" data-scroll-target="#exhaustiveness">Exhaustiveness</a></li>
+  <li><a href="#the-selector-is-one-structured-object" id="toc-the-selector-is-one-structured-object" class="nav-link" data-scroll-target="#the-selector-is-one-structured-object">The Selector Is One Structured Object</a></li>
+  <li><a href="#the-alternatives-form-a-corresponding-vector" id="toc-the-alternatives-form-a-corresponding-vector" class="nav-link" data-scroll-target="#the-alternatives-form-a-corresponding-vector">The Alternatives Form a Corresponding Vector</a></li>
+  <li><a href="#the-sum-to-one-constraint-is-not-sufficient-by-itself" id="toc-the-sum-to-one-constraint-is-not-sufficient-by-itself" class="nav-link" data-scroll-target="#the-sum-to-one-constraint-is-not-sufficient-by-itself">The Sum-to-One Constraint Is Not Sufficient by Itself</a></li>
+  <li><a href="#hard-selection-as-an-extreme-allocation" id="toc-hard-selection-as-an-extreme-allocation" class="nav-link" data-scroll-target="#hard-selection-as-an-extreme-allocation">Hard Selection as an Extreme Allocation</a></li>
+  </ul></li>
+  <li><a href="#relaxing-one-hot-choice-into-graded-shares" id="toc-relaxing-one-hot-choice-into-graded-shares" class="nav-link" data-scroll-target="#relaxing-one-hot-choice-into-graded-shares">12.2 Relaxing One-Hot Choice into Graded Shares</a>
+  <ul class="collapse">
+  <li><a href="#preserving-the-complete-allocation" id="toc-preserving-the-complete-allocation" class="nav-link" data-scroll-target="#preserving-the-complete-allocation">Preserving the Complete Allocation</a></li>
+  <li><a href="#why-the-weights-must-be-nonnegative" id="toc-why-the-weights-must-be-nonnegative" class="nav-link" data-scroll-target="#why-the-weights-must-be-nonnegative">Why the Weights Must Be Nonnegative</a></li>
+  <li><a href="#turning-shares-into-contributions" id="toc-turning-shares-into-contributions" class="nav-link" data-scroll-target="#turning-shares-into-contributions">Turning Shares into Contributions</a></li>
+  <li><a href="#generalizing-the-construction" id="toc-generalizing-the-construction" class="nav-link" data-scroll-target="#generalizing-the-construction">Generalizing the Construction</a></li>
+  <li><a href="#vector-form" id="toc-vector-form" class="nav-link" data-scroll-target="#vector-form">Vector Form</a></li>
+  <li><a href="#one-hot-selection-remains-a-special-case" id="toc-one-hot-selection-remains-a-special-case" class="nav-link" data-scroll-target="#one-hot-selection-remains-a-special-case">One-Hot Selection Remains a Special Case</a></li>
+  <li><a href="#the-weight-space" id="toc-the-weight-space" class="nav-link" data-scroll-target="#the-weight-space">The Weight Space</a></li>
+  <li><a href="#redistributing-influence" id="toc-redistributing-influence" class="nav-link" data-scroll-target="#redistributing-influence">Redistributing Influence</a></li>
+  <li><a href="#vector-valued-alternatives" id="toc-vector-valued-alternatives" class="nav-link" data-scroll-target="#vector-valued-alternatives">Vector-Valued Alternatives</a></li>
+  <li><a href="#the-weight-constraints-do-not-explain-their-origin" id="toc-the-weight-constraints-do-not-explain-their-origin" class="nav-link" data-scroll-target="#the-weight-constraints-do-not-explain-their-origin">The Weight Constraints Do Not Explain Their Origin</a></li>
+  </ul></li>
+  <li><a href="#weighted-sum-weighted-average-and-convex-combination" id="toc-weighted-sum-weighted-average-and-convex-combination" class="nav-link" data-scroll-target="#weighted-sum-weighted-average-and-convex-combination">12.3 Weighted Sum, Weighted Average, and Convex Combination</a>
+  <ul class="collapse">
+  <li><a href="#an-arbitrary-weighted-sum" id="toc-an-arbitrary-weighted-sum" class="nav-link" data-scroll-target="#an-arbitrary-weighted-sum">An Arbitrary Weighted Sum</a></li>
+  <li><a href="#a-weighted-average-removes-overall-weight-scale" id="toc-a-weighted-average-removes-overall-weight-scale" class="nav-link" data-scroll-target="#a-weighted-average-removes-overall-weight-scale">A Weighted Average Removes Overall Weight Scale</a></li>
+  <li><a href="#constructing-normalized-weights" id="toc-constructing-normalized-weights" class="nav-link" data-scroll-target="#constructing-normalized-weights">Constructing Normalized Weights</a></li>
+  <li><a href="#why-the-denominator-must-be-nonzero" id="toc-why-the-denominator-must-be-nonzero" class="nav-link" data-scroll-target="#why-the-denominator-must-be-nonzero">Why the Denominator Must Be Nonzero</a></li>
+  <li><a href="#constant-preservation" id="toc-constant-preservation" class="nav-link" data-scroll-target="#constant-preservation">Constant Preservation</a></li>
+  <li><a href="#scalar-boundedness" id="toc-scalar-boundedness" class="nav-link" data-scroll-target="#scalar-boundedness">Scalar Boundedness</a></li>
+  <li><a href="#why-both-constraints-are-necessary" id="toc-why-both-constraints-are-necessary" class="nav-link" data-scroll-target="#why-both-constraints-are-necessary">Why Both Constraints Are Necessary</a></li>
+  <li><a href="#translation-consistency" id="toc-translation-consistency" class="nav-link" data-scroll-target="#translation-consistency">Translation Consistency</a></li>
+  <li><a href="#scaling-consistency" id="toc-scaling-consistency" class="nav-link" data-scroll-target="#scaling-consistency">Scaling Consistency</a></li>
+  <li><a href="#weighted-average-as-an-equalized-value" id="toc-weighted-average-as-an-equalized-value" class="nav-link" data-scroll-target="#weighted-average-as-an-equalized-value">Weighted Average as an Equalized Value</a></li>
+  <li><a href="#replication-interpretation" id="toc-replication-interpretation" class="nav-link" data-scroll-target="#replication-interpretation">Replication Interpretation</a></li>
+  <li><a href="#vector-alternatives-and-the-convex-hull" id="toc-vector-alternatives-and-the-convex-hull" class="nav-link" data-scroll-target="#vector-alternatives-and-the-convex-hull">Vector Alternatives and the Convex Hull</a></li>
+  <li><a href="#geometry-and-weight-geometry-are-related" id="toc-geometry-and-weight-geometry-are-related" class="nav-link" data-scroll-target="#geometry-and-weight-geometry-are-related">Geometry and Weight Geometry Are Related</a></li>
+  <li><a href="#terminology-depends-on-the-constraints" id="toc-terminology-depends-on-the-constraints" class="nav-link" data-scroll-target="#terminology-depends-on-the-constraints">Terminology Depends on the Constraints</a></li>
+  <li><a href="#raw-importance-is-not-yet-a-share" id="toc-raw-importance-is-not-yet-a-share" class="nav-link" data-scroll-target="#raw-importance-is-not-yet-a-share">Raw Importance Is Not Yet a Share</a></li>
+  </ul></li>
+  <li><a href="#one-algebraic-skeleton-several-computational-meanings" id="toc-one-algebraic-skeleton-several-computational-meanings" class="nav-link" data-scroll-target="#one-algebraic-skeleton-several-computational-meanings">12.4 One Algebraic Skeleton, Several Computational Meanings</a>
+  <ul class="collapse">
+  <li><a href="#the-three-semantic-roles-inside-a-weighted-combination" id="toc-the-three-semantic-roles-inside-a-weighted-combination" class="nav-link" data-scroll-target="#the-three-semantic-roles-inside-a-weighted-combination">The three semantic roles inside a weighted combination</a></li>
+  <li><a href="#weighted-measurements-unequal-contribution-to-an-average" id="toc-weighted-measurements-unequal-contribution-to-an-average" class="nav-link" data-scroll-target="#weighted-measurements-unequal-contribution-to-an-average">Weighted measurements: unequal contribution to an average</a></li>
+  <li><a href="#expected-value-distributing-probability-across-possible-outcomes" id="toc-expected-value-distributing-probability-across-possible-outcomes" class="nav-link" data-scroll-target="#expected-value-distributing-probability-across-possible-outcomes">Expected value: distributing probability across possible outcomes</a></li>
+  <li><a href="#mixtures-distributing-composition-across-components" id="toc-mixtures-distributing-composition-across-components" class="nav-link" data-scroll-target="#mixtures-distributing-composition-across-components">Mixtures: distributing composition across components</a></li>
+  <li><a href="#model-ensembles-distributing-predictive-influence" id="toc-model-ensembles-distributing-predictive-influence" class="nav-link" data-scroll-target="#model-ensembles-distributing-predictive-influence">Model ensembles: distributing predictive influence</a></li>
+  <li><a href="#attention-distributing-relevance-across-representations" id="toc-attention-distributing-relevance-across-representations" class="nav-link" data-scroll-target="#attention-distributing-relevance-across-representations">Attention: distributing relevance across representations</a></li>
+  <li><a href="#the-same-formula-does-not-imply-the-same-ontology" id="toc-the-same-formula-does-not-imply-the-same-ontology" class="nav-link" data-scroll-target="#the-same-formula-does-not-imply-the-same-ontology">The same formula does not imply the same ontology</a></li>
+  <li><a href="#what-remains-invariant-across-the-interpretations" id="toc-what-remains-invariant-across-the-interpretations" class="nav-link" data-scroll-target="#what-remains-invariant-across-the-interpretations">What remains invariant across the interpretations?</a></li>
+  <li><a href="#from-mathematical-skeleton-to-program" id="toc-from-mathematical-skeleton-to-program" class="nav-link" data-scroll-target="#from-mathematical-skeleton-to-program">From mathematical skeleton to program</a></li>
+  <li><a href="#chapter-conclusion" id="toc-chapter-conclusion" class="nav-link" data-scroll-target="#chapter-conclusion">Chapter conclusion</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Chapter 12 — Weighted Combinations</h1>
+<p class="subtitle lead">From One-Hot Choice to Convex Mixtures</p>
+</div>
+
+<div>
+  <div class="description">
+    A chapter about extending selection from two alternatives to many through one-hot vectors, graded weights, weighted sums, weighted averages, convex combinations, mixtures, ensembles, and attention.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="from-two-alternatives-to-many-alternatives" class="level2">
+<h2 class="anchored" data-anchor-id="from-two-alternatives-to-many-alternatives">12.1 From Two Alternatives to Many Alternatives</h2>
+<p>Suppose a machine can operate in three modes:</p>
+<ul>
+<li>economy mode uses <span class="math inline">\(30\)</span> watts;</li>
+<li>standard mode uses <span class="math inline">\(60\)</span> watts;</li>
+<li>performance mode uses <span class="math inline">\(90\)</span> watts.</li>
+</ul>
+<p>An ordinary program can select the power level through a conditional chain:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> mode <span class="op">==</span> <span class="st">"economy"</span>:</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    power <span class="op">=</span> <span class="dv">30</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="cf">elif</span> mode <span class="op">==</span> <span class="st">"standard"</span>:</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    power <span class="op">=</span> <span class="dv">60</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    power <span class="op">=</span> <span class="dv">90</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The possible numerical outputs are</p>
+<p><span class="math display">\[
+A_1=30,
+\qquad
+A_2=60,
+\qquad
+A_3=90.
+\]</span></p>
+<p>The program must return exactly one of them. If the mode is economy, the output must be <span class="math inline">\(30\)</span>. If the mode is standard, the output must be <span class="math inline">\(60\)</span>. If the mode is performance, the output must be <span class="math inline">\(90\)</span>. The complete input-output relationship is</p>
+<p><span class="math display">\[
+\text{power}
+=
+\begin{cases}
+30, &amp; \text{economy mode},\\
+60, &amp; \text{standard mode},\\
+90, &amp; \text{performance mode}.
+\end{cases}
+\]</span></p>
+<p>This is a hard choice among three alternatives. The output cannot be <span class="math inline">\(45\)</span>, <span class="math inline">\(70\)</span>, or a simultaneous combination of several modes. One alternative must survive completely while the others contribute nothing.</p>
+<p>In this case, introduce one binary indicator for every alternative:</p>
+<p><span class="math display">\[
+I_1=
+\begin{cases}
+1, &amp; \text{economy mode is selected},\\
+0, &amp; \text{otherwise},
+\end{cases}
+\]</span></p>
+<p><span class="math display">\[
+I_2=
+\begin{cases}
+1, &amp; \text{standard mode is selected},\\
+0, &amp; \text{otherwise},
+\end{cases}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+I_3=
+\begin{cases}
+1, &amp; \text{performance mode is selected},\\
+0, &amp; \text{otherwise}.
+\end{cases}
+\]</span></p>
+<p>Each indicator answers a separate membership question:</p>
+<p><span class="math display">\[
+I_1=\mathbf{1}[\text{mode}=\text{economy}],
+\]</span></p>
+<p><span class="math display">\[
+I_2=\mathbf{1}[\text{mode}=\text{standard}],
+\]</span></p>
+<p><span class="math display">\[
+I_3=\mathbf{1}[\text{mode}=\text{performance}].
+\]</span></p>
+<p>For economy mode,</p>
+<p><span class="math display">\[
+(I_1,I_2,I_3)=(1,0,0).
+\]</span></p>
+<p>For standard mode,</p>
+<p><span class="math display">\[
+(I_1,I_2,I_3)=(0,1,0).
+\]</span></p>
+<p>For performance mode,</p>
+<p><span class="math display">\[
+(I_1,I_2,I_3)=(0,0,1).
+\]</span></p>
+<p>The three binary values are not independent decisions. They jointly describe one choice. The machine cannot be in two of these modes simultaneously under the stated model. If economy mode is selected, standard and performance modes are not selected. If standard mode is selected, the other two are not selected. This gives pairwise mutual exclusion:</p>
+<p><span class="math display">\[
+I_1I_2=0,
+\]</span></p>
+<p><span class="math display">\[
+I_1I_3=0,
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+I_2I_3=0.
+\]</span></p>
+<p>More generally,</p>
+<p><span class="math display">\[
+\boxed{
+I_iI_j=0
+\qquad
+\text{whenever }i\neq j.
+}
+\]</span></p>
+<section id="exhaustiveness" class="level3">
+<h3 class="anchored" data-anchor-id="exhaustiveness">Exhaustiveness</h3>
+<p>The program must also select some valid mode. Economy, standard, and performance modes are assumed to cover all allowed cases. Therefore,</p>
+<p><span class="math display">\[
+I_1+I_2+I_3=1.
+\]</span></p>
+<p>For economy mode,</p>
+<p><span class="math display">\[
+1+0+0=1.
+\]</span></p>
+<p>For standard mode,</p>
+<p><span class="math display">\[
+0+1+0=1.
+\]</span></p>
+<p>For performance mode,</p>
+<p><span class="math display">\[
+0+0+1=1.
+\]</span></p>
+<p>The sum-to-one requirement ensures that at least one indicator is active. Combined with binary values, it also ensures that no more than one is active. Thus,</p>
+<p><span class="math display">\[
+\boxed{
+I_i\in\{0,1\},
+\qquad
+\sum_{i=1}^{3}I_i=1
+}
+\]</span></p>
+<p>means that exactly one indicator equals <span class="math inline">\(1`\)</span>. The two requirements perform different logical roles:</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+\text{mutual exclusivity}
+&amp;:\quad
+\text{no two alternatives are selected together},\\
+\text{exhaustiveness}
+&amp;:\quad
+\text{some alternative is selected}.
+\end{aligned}
+}
+\]</span></p>
+<p>Together they create exactly-one selection. The indicator <span class="math inline">\(I_1\)</span> controls the contribution of <span class="math inline">\(A_1=30\)</span>:</p>
+<p><span class="math display">\[
+I_1A_1.
+\]</span></p>
+<p>The indicator <span class="math inline">\(I_2\)</span> controls the contribution of <span class="math inline">\(A_2=60\)</span>:</p>
+<p><span class="math display">\[
+I_2A_2.
+\]</span></p>
+<p>The indicator <span class="math inline">\(I_3\)</span> controls the contribution of <span class="math inline">\(A_3=90\)</span>:</p>
+<p><span class="math display">\[
+I_3A_3.
+\]</span></p>
+<p>When an indicator equals <span class="math inline">\(1\)</span>, its alternative survives:</p>
+<p><span class="math display">\[
+1A_i=A_i.
+\]</span></p>
+<p>When it equals <span class="math inline">\(0\)</span>, its alternative is suppressed:</p>
+<p><span class="math display">\[
+0A_i=0.
+\]</span></p>
+<p>The three possible contributions are therefore</p>
+<p><span class="math display">\[
+I_1(30),
+\qquad
+I_2(60),
+\qquad
+I_3(90).
+\]</span></p>
+<p>Because exactly one indicator is active, exactly one contribution can be nonzero. The final power can be constructed by adding the mutually exclusive contributions:</p>
+<p><span class="math display">\[
+\boxed{
+\text{power}
+=
+I_1(30)+I_2(60)+I_3(90).
+}
+\]</span></p>
+<p>Addition returns the surviving value because all other contributions equal zero.</p>
+</section>
+<section id="the-selector-is-one-structured-object" class="level3">
+<h3 class="anchored" data-anchor-id="the-selector-is-one-structured-object">The Selector Is One Structured Object</h3>
+<p>The indicators can be organized into a vector:</p>
+<p><span class="math display">\[
+\mathbf{I}
+=
+\begin{bmatrix}
+I_1\\
+I_2\\
+I_3
+\end{bmatrix}.
+\]</span></p>
+<p>The three possible selector vectors are</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+1\\
+0\\
+0
+\end{bmatrix},
+\qquad
+\begin{bmatrix}
+0\\
+1\\
+0
+\end{bmatrix},
+\qquad
+\begin{bmatrix}
+0\\
+0\\
+1
+\end{bmatrix}.
+\]</span></p>
+<p>Each vector contains one component equal to <span class="math inline">\(1\)</span> and all other components equal to <span class="math inline">\(0\)</span>. Such a vector is called a <strong>one-hot vector</strong>. The word <em>one</em> refers to exactly one active component. The word <em>hot</em> refers informally to the active value <span class="math inline">\(1\)</span>. A one-hot selector is not merely a list of three Boolean facts. Its components jointly encode one categorical choice. The position of the <span class="math inline">\(1\)</span> identifies the selected alternative:</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+1\\
+0\\
+0
+\end{bmatrix}
+\longleftrightarrow
+A_1,
+\]</span></p>
+<p><span class="math display">\[
+\begin{bmatrix}
+0\\
+1\\
+0
+\end{bmatrix}
+\longleftrightarrow
+A_2,
+\]</span></p>
+<p><span class="math display">\[
+\begin{bmatrix}
+0\\
+0\\
+1
+\end{bmatrix}
+\longleftrightarrow
+A_3.
+\]</span></p>
+<p>The numerical value <span class="math inline">\(1\)</span> means complete activation. Its index identifies what is activated.</p>
+</section>
+<section id="the-alternatives-form-a-corresponding-vector" class="level3">
+<h3 class="anchored" data-anchor-id="the-alternatives-form-a-corresponding-vector">The Alternatives Form a Corresponding Vector</h3>
+<p>Organize the possible power levels as</p>
+<p><span class="math display">\[
+\mathbf{A}
+=
+\begin{bmatrix}
+A_1\\
+A_2\\
+A_3
+\end{bmatrix}
+=
+\begin{bmatrix}
+30\\
+60\\
+90
+\end{bmatrix}.
+\]</span></p>
+<p>The selector and alternative vectors have matching positions:</p>
+<p><span class="math display">\[
+I_i\longleftrightarrow A_i.
+\]</span></p>
+<p>The selected value is</p>
+<p><span class="math display">\[
+I_1A_1+I_2A_2+I_3A_3.
+\]</span></p>
+<p>This is the dot product</p>
+<p><span class="math display">\[
+\boxed{
+C=\mathbf{I}^{\mathsf T}\mathbf{A}.
+}
+\]</span></p>
+<p>For standard mode,</p>
+<p><span class="math display">\[
+\mathbf{I}
+=
+\begin{bmatrix}
+0\\
+1\\
+0
+\end{bmatrix},
+\]</span></p>
+<p>so</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mathbf{I}^{\mathsf T}\mathbf{A}
+&amp;=
+\begin{bmatrix}
+0 &amp; 1 &amp; 0
+\end{bmatrix}
+\begin{bmatrix}
+30\\
+60\\
+90
+\end{bmatrix}\\
+&amp;=
+0(30)+1(60)+0(90)\\
+&amp;=
+60.
+\end{aligned}
+\]</span></p>
+<p>The dot product combines corresponding positions and reduces them to one scalar. The one-hot structure ensures that this reduction behaves as selection rather than blending.</p>
+<p>In order to have a generalized form, Let <span class="math inline">\(A_1,A_2,\ldots,A_n\)</span> be <span class="math inline">\(n\)</span> numerical alternatives. Introduce binary selectors <span class="math inline">\(I_i\in\{0,1\}\)</span> satisfying</p>
+<p><span class="math display">\[
+\sum_{i=1}^{n}I_i=1.
+\]</span></p>
+<p>Exactly one indicator equals <span class="math inline">\(1\)</span>, so the selected output is</p>
+<p><span class="math display">\[
+\boxed{
+C=\sum_{i=1}^{n}I_iA_i.
+}
+\]</span></p>
+<p>If alternative <span class="math inline">\(A_k\)</span> is selected, then <span class="math inline">\(I_k=1\)</span> and</p>
+<p><span class="math display">\[
+I_i=0
+\qquad
+\text{for }i\neq k.
+\]</span></p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+\begin{aligned}
+C
+&amp;=\sum_{i=1}^{n}I_iA_i\\
+&amp;=0A_1+\cdots+1A_k+\cdots+0A_n\\
+&amp;=A_k.
+\end{aligned}
+\]</span></p>
+<p>The summation is a compact description of a family of gated contributions. Its meaning is</p>
+<p><span class="math display">\[
+\boxed{
+\text{gate every alternative}
++
+\text{sum the mutually exclusive contributions}
+=
+\text{selected value}.
+}
+\]</span></p>
+</section>
+<section id="the-sum-to-one-constraint-is-not-sufficient-by-itself" class="level3">
+<h3 class="anchored" data-anchor-id="the-sum-to-one-constraint-is-not-sufficient-by-itself">The Sum-to-One Constraint Is Not Sufficient by Itself</h3>
+<p>Suppose the selector components were allowed to be arbitrary real numbers satisfying only</p>
+<p><span class="math display">\[
+I_1+I_2+I_3=1.
+\]</span></p>
+<p>The vector</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+\frac12\\
+\frac12\\
+0
+\end{bmatrix}
+\]</span></p>
+<p>satisfies the sum-to-one condition, but it does not represent a hard choice. It produces</p>
+<p><span class="math display">\[
+\frac12(30)+\frac12(60)=45.
+\]</span></p>
+<p>The result <span class="math inline">\(45\)</span> is a combination of economy and standard power, not one of the original alternatives. Likewise,</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+2\\
+-1\\
+0
+\end{bmatrix}
+\]</span></p>
+<p>sums to one but produces <span class="math inline">\(2(30)-1(60)=0.\)</span> This is neither a hard choice nor a convex intermediate value. Hard selection therefore requires both <span class="math inline">\(I_i\in\{0,1\}\)</span> and <span class="math inline">\(\sum_{i=1}^{n}I_i=1.\)</span> The binary constraint supplies exclusivity. The sum-to-one constraint supplies completeness.</p>
+<p>For hard one-hot selection, only one numerical alternative survives. Nevertheless, the algebraic expression adds gated versions of all alternatives <span class="math inline">\(\sum_iI_iA_i.\)</span> The alternatives must therefore belong to a common mathematical space in which addition and scalar multiplication are defined. For scalar power levels, <span class="math inline">\(A_i\in\mathbb{R}\)</span> with units of watts. For vector alternatives, <span class="math inline">\(\mathbf{A}_i\in\mathbb{R}^{d},\)</span> the selected output can be</p>
+<p><span class="math display">\[
+\mathbf{C}
+=
+\sum_{i=1}^{n}I_i\mathbf{A}_i.
+\]</span></p>
+<p>Each alternative must have a compatible shape and interpretation. If the alternatives are arbitrary category names such as <code>"economy"</code> and <code>"performance"</code>, arithmetic combination is not directly defined. A one-hot vector can still identify the chosen category, but the category labels themselves cannot be meaningfully multiplied and added without a numerical representation.</p>
+<p>This distinction will matter when hard selection is relaxed into weighted combination. Intermediate weights require the alternatives to support meaningful partial contributions.</p>
+</section>
+<section id="hard-selection-as-an-extreme-allocation" class="level3">
+<h3 class="anchored" data-anchor-id="hard-selection-as-an-extreme-allocation">Hard Selection as an Extreme Allocation</h3>
+<p>The one-hot vector assigns one complete unit of influence as <span class="math inline">\(\sum_iI_i=1.\)</span> All of that influence is concentrated at one position. For standard mode,</p>
+<p><span class="math display">\[
+\mathbf{I}
+=
+\begin{bmatrix}
+0\\
+1\\
+0
+\end{bmatrix}.
+\]</span></p>
+<p>The allocation is:</p>
+<p><span class="math display">\[
+0\%
+\text{ to economy},
+\]</span></p>
+<p><span class="math display">\[
+100\%
+\text{ to standard},
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+0\%
+\text{ to performance}.
+\]</span></p>
+<p>One-hot selection can therefore be understood as an extreme form of weighted allocation. The total influence is one, but it is not distributed across several alternatives. The next conceptual step is to retain <span class="math inline">\(\sum_iw_i=1\)</span> while relaxing <span class="math inline">\(I_i\in\{0,1\}\)</span> to <span class="math inline">\(w_i\geq0.\)</span> This will allow one complete unit of influence to be distributed among several alternatives rather than concentrated at one position. The resulting expression will no longer perform only hard selection as <span class="math inline">\(\sum_{i=1}^{n}w_iA_i\)</span> but it will also construct a graded weighted combination.</p>
+</section>
+</section>
+<section id="relaxing-one-hot-choice-into-graded-shares" class="level2">
+<h2 class="anchored" data-anchor-id="relaxing-one-hot-choice-into-graded-shares">12.2 Relaxing One-Hot Choice into Graded Shares</h2>
+<p>Section 12.1 represented a hard choice among three power levels:</p>
+<p><span class="math display">\[
+A_1=30,
+\qquad
+A_2=60,
+\qquad
+A_3=90.
+\]</span></p>
+<p>A one-hot selector could be</p>
+<p><span class="math display">\[
+\mathbf{I}
+=
+\begin{bmatrix}
+1\\
+0\\
+0
+\end{bmatrix},
+\qquad
+\begin{bmatrix}
+0\\
+1\\
+0
+\end{bmatrix},
+\qquad
+\text{or}
+\qquad
+\begin{bmatrix}
+0\\
+0\\
+1
+\end{bmatrix}.
+\]</span></p>
+<p>Its components satisfy <span class="math inline">\(I_i\in\{0,1\}\)</span> and <span class="math inline">\(\sum_{i=1}^{3}I_i=1.\)</span> Now suppose the machine is allowed to combine the three operating profiles. The controller may assign:</p>
+<ul>
+<li><span class="math inline">\(20\%\)</span> of the influence to economy mode;</li>
+<li><span class="math inline">\(50\%\)</span> to standard mode;</li>
+<li><span class="math inline">\(30\%\)</span> to performance mode.</li>
+</ul>
+<p>The allocation is</p>
+<p><span class="math display">\[
+\mathbf{w}
+=
+\begin{bmatrix}
+0.2\\
+0.5\\
+0.3
+\end{bmatrix}.
+\]</span></p>
+<p>No component is binary, yet the components still form one complete allocation <span class="math inline">\(0.2+0.5+0.3=1.\)</span> The selection is no longer one-hot. Influence has been distributed across several alternatives.</p>
+<section id="preserving-the-complete-allocation" class="level3">
+<h3 class="anchored" data-anchor-id="preserving-the-complete-allocation">Preserving the Complete Allocation</h3>
+<p>Let <span class="math inline">\(w_1,\)</span> <span class="math inline">\(w_2,\)</span> and <span class="math inline">\(w_3\)</span> represent the shares assigned to the three power levels. If the weights represent parts of one complete allocation, they must satisfy <span class="math inline">\(w_1+w_2+w_3=1.\)</span> The total <span class="math inline">\(1\)</span> represents the whole amount of influence available for distribution. For the concrete weights, <span class="math inline">\(w_1=0.2,\)</span> <span class="math inline">\(w_2=0.5,\)</span> and <span class="math inline">\(w_3=0.3.\)</span> Therefore,</p>
+<p><span class="math display">\[
+w_1+w_2+w_3
+=
+0.2+0.5+0.3
+=
+1.
+\]</span></p>
+<p>Unlike the two-alternative case, specifying one weight does not determine every remaining weight. If <span class="math inline">\(w_1=0.2,\)</span> the remaining amount is <span class="math inline">\(1-w_1=0.8,\)</span> but that remaining share can be distributed between <span class="math inline">\(w_2\)</span> and <span class="math inline">\(w_3\)</span> in many ways:</p>
+<p><span class="math display">\[
+(w_2,w_3)=(0.5,0.3),
+\]</span></p>
+<p><span class="math display">\[
+(w_2,w_3)=(0.6,0.2),
+\]</span></p>
+<p>or</p>
+<p><span class="math display">\[
+(w_2,w_3)=(0.1,0.7).
+\]</span></p>
+<p>For <span class="math inline">\(n\)</span> alternatives, the completeness requirement is <span class="math inline">\(\sum_{i=1}^{n}w_i=1.\)</span> The summation says that all individual shares together account for one whole allocation.</p>
+</section>
+<section id="why-the-weights-must-be-nonnegative" class="level3">
+<h3 class="anchored" data-anchor-id="why-the-weights-must-be-nonnegative">Why the Weights Must Be Nonnegative</h3>
+<p>If <span class="math inline">\(w_i\)</span> represents a share of influence, then <span class="math inline">\(w_i\geq0.\)</span> A negative share would not represent an ordinary allocation.</p>
+<p>Consider</p>
+<p><span class="math display">\[
+\mathbf{w}
+=
+\begin{bmatrix}
+0.5\\
+0.8\\
+-0.3
+\end{bmatrix}.
+\]</span></p>
+<p>The components sum to <span class="math inline">\(0.5+0.8-0.3=1.\)</span> Nevertheless, the third alternative has been assigned negative influence. The resulting expression would subtract part of <span class="math inline">\(A_3\)</span> <span class="math inline">\(0.5A_1+0.8A_2-0.3A_3.\)</span> Such an affine combination may be mathematically meaningful in another model, just as extrapolation was meaningful in Chapter 11. It does not represent a division of one whole into nonnegative shares.Therefore a graded allocation requires both <span class="math inline">\(w_i\geq0\)</span> and <span class="math inline">\(\sum_{i=1}^{n}w_i=1.\)</span> Nonnegativity prevents subtractive influence. Sum-to-one prevents missing or excess total influence.</p>
+</section>
+<section id="turning-shares-into-contributions" class="level3">
+<h3 class="anchored" data-anchor-id="turning-shares-into-contributions">Turning Shares into Contributions</h3>
+<p>The first power level is</p>
+<p><span class="math display">\[
+A_1=30\text{ watts}.
+\]</span></p>
+<p>Its share is</p>
+<p><span class="math display">\[
+w_1=0.2.
+\]</span></p>
+<p>Its contribution is therefore</p>
+<p><span class="math display">\[
+w_1A_1
+=
+0.2(30)
+=
+6\text{ watts}.
+\]</span></p>
+<p>The second contribution is</p>
+<p><span class="math display">\[
+w_2A_2
+=
+0.5(60)
+=
+30\text{ watts}.
+\]</span></p>
+<p>The third contribution is</p>
+<p><span class="math display">\[
+w_3A_3
+=
+0.3(90)
+=
+27\text{ watts}.
+\]</span></p>
+<p>The combined power is the sum of the three contributions:</p>
+<p><span class="math display">\[
+\begin{aligned}
+C
+&amp;=w_1A_1+w_2A_2+w_3A_3\\
+&amp;=0.2(30)+0.5(60)+0.3(90)\\
+&amp;=6+30+27\\
+&amp;=63.
+\end{aligned}
+\]</span></p>
+<p>Thus,</p>
+<p><span class="math display">\[
+\boxed{
+C=63\text{ watts}.
+}
+\]</span></p>
+<p>The result is not one of the original power levels. It is produced by allowing all three alternatives to contribute partially. The calculation has two conceptual stages:</p>
+<p><span class="math display">\[
+\boxed{
+\text{share}\times\text{alternative}
+=
+\text{weighted contribution},
+}
+\]</span></p>
+<p>followed by</p>
+<p><span class="math display">\[
+\boxed{
+\text{sum of weighted contributions}
+=
+\text{combined output}.
+}
+\]</span></p>
+</section>
+<section id="generalizing-the-construction" class="level3">
+<h3 class="anchored" data-anchor-id="generalizing-the-construction">Generalizing the Construction</h3>
+<p>Let <span class="math inline">\(A_1,A_2,\ldots,A_n\)</span> be <span class="math inline">\(n\)</span> alternatives, and let <span class="math inline">\(w_1,w_2,\ldots,w_n\)</span> be their assigned shares. The contribution of alternative <span class="math inline">\(A_i\)</span> is <span class="math inline">\(w_iA_i.\)</span> Adding all contributions gives</p>
+<p><span class="math display">\[
+\boxed{
+C=\sum_{i=1}^{n}w_iA_i.
+}
+\]</span></p>
+<p>For a graded allocation, the weights satisfy</p>
+<p><span class="math display">\[
+\boxed{
+w_i\geq0,
+\qquad
+\sum_{i=1}^{n}w_i=1.
+}
+\]</span></p>
+<p>The expression should be read as</p>
+<p><span class="math display">\[
+\sum_{i=1}^{n}
+\underbrace{w_i}_{\text{share of influence}}
+\underbrace{A_i}_{\text{alternative value}}.
+\]</span></p>
+<p>Every term retains the correspondence</p>
+<p><span class="math display">\[
+w_i\longleftrightarrow A_i.
+\]</span></p>
+<p>Rearranging the alternatives without rearranging their weights changes the meaning of the combination. The index <span class="math inline">\(i\)</span> preserves which share belongs to which alternative.</p>
+</section>
+<section id="vector-form" class="level3">
+<h3 class="anchored" data-anchor-id="vector-form">Vector Form</h3>
+<p>Organize the weights as</p>
+<p><span class="math display">\[
+\mathbf{w}
+=
+\begin{bmatrix}
+w_1\\
+w_2\\
+\vdots\\
+w_n
+\end{bmatrix}
+\]</span></p>
+<p>and the scalar alternatives as</p>
+<p><span class="math display">\[
+\mathbf{A}
+=
+\begin{bmatrix}
+A_1\\
+A_2\\
+\vdots\\
+A_n
+\end{bmatrix}.
+\]</span></p>
+<p>The weighted combination is their dot product:</p>
+<p><span class="math display">\[
+\boxed{
+C=\mathbf{w}^{\mathsf T}\mathbf{A}.
+}
+\]</span></p>
+<p>Expanding the dot product recovers</p>
+<p><span class="math display">\[
+\mathbf{w}^{\mathsf T}\mathbf{A}
+=
+\sum_{i=1}^{n}w_iA_i.
+\]</span></p>
+<p>For the concrete example,</p>
+<p><span class="math display">\[
+\mathbf{w}
+=
+\begin{bmatrix}
+0.2\\
+0.5\\
+0.3
+\end{bmatrix},
+\qquad
+\mathbf{A}
+=
+\begin{bmatrix}
+30\\
+60\\
+90
+\end{bmatrix}.
+\]</span></p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mathbf{w}^{\mathsf T}\mathbf{A}
+&amp;=
+\begin{bmatrix}
+0.2 &amp; 0.5 &amp; 0.3
+\end{bmatrix}
+\begin{bmatrix}
+30\\
+60\\
+90
+\end{bmatrix}\\
+&amp;=
+63.
+\end{aligned}
+\]</span></p>
+<p>The dot product reduces the indexed contributions to one scalar output.</p>
+</section>
+<section id="one-hot-selection-remains-a-special-case" class="level3">
+<h3 class="anchored" data-anchor-id="one-hot-selection-remains-a-special-case">One-Hot Selection Remains a Special Case</h3>
+<p>Suppose</p>
+<p><span class="math display">\[
+\mathbf{w}
+=
+\begin{bmatrix}
+0\\
+1\\
+0
+\end{bmatrix}.
+\]</span></p>
+<p>The constraints are satisfied <span class="math inline">\(w_i\geq0\)</span> and <span class="math inline">\(w_1+w_2+w_3=1\)</span> The weighted combination is</p>
+<p><span class="math display">\[
+\begin{aligned}
+C
+&amp;=0(30)+1(60)+0(90)\\
+&amp;=60.
+\end{aligned}
+\]</span></p>
+<p>Thus one-hot selection is contained inside the graded-weight formulation. The distinction lies in how the unit allocation is distributed:</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+\text{one-hot weights}
+&amp;:\quad
+\text{all influence at one position},\\
+\text{graded weights}
+&amp;:\quad
+\text{influence distributed across positions}.
+\end{aligned}
+}
+\]</span></p>
+<p>The general constraint set includes both:</p>
+<p><span class="math display">\[
+\left\{
+\mathbf{w}\in\mathbb{R}^{n}:
+w_i\geq0,\
+\sum_iw_i=1
+\right\}.
+\]</span></p>
+<p>One-hot vectors occupy extreme cases of this set.</p>
+</section>
+<section id="the-weight-space" class="level3">
+<h3 class="anchored" data-anchor-id="the-weight-space">The Weight Space</h3>
+<p>For three alternatives, the valid weights satisfy <span class="math inline">\(w_1+w_2+w_3=1\)</span> with <span class="math inline">\(w_1,w_2,w_3\geq0.\)</span> Because$ w_3=1-w_1-w_2,$ only two weights can vary independently. Once <span class="math inline">\(w_1\)</span> and <span class="math inline">\(w_2\)</span> are chosen, <span class="math inline">\(w_3\)</span> is determined. The valid allocations include <span class="math inline">\((1,0,0),\)</span> <span class="math inline">\((0,1,0),\)</span> <span class="math inline">\((0,0,1),\)</span></p>
+<p><span class="math display">\[
+\left(\frac13,\frac13,\frac13\right),
+\]</span></p>
+<p>and infinitely many intermediate triples. Geometrically, these weights form a triangle in three-dimensional coordinate space. The three one-hot vectors are the triangle’s vertices:</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+1\\
+0\\
+0
+\end{bmatrix},
+\qquad
+\begin{bmatrix}
+0\\
+1\\
+0
+\end{bmatrix},
+\qquad
+\begin{bmatrix}
+0\\
+0\\
+1
+\end{bmatrix}.
+\]</span></p>
+<p>Points inside the triangle distribute influence among several alternatives. For <span class="math inline">\(n\)</span> alternatives, the valid weight set is called the <strong>probability simplex</strong> or simply the <strong>simplex</strong>:</p>
+<p><span class="math display">\[
+\boxed{
+\Delta^{n-1}
+=
+\left\{
+\mathbf{w}\in\mathbb{R}^{n}:
+w_i\geq0,\
+\sum_{i=1}^{n}w_i=1
+\right\}.
+}
+\]</span></p>
+<p>The term <em>probability simplex</em> describes the mathematical shape of normalized nonnegative vectors. A weight vector can lie on this simplex without necessarily representing probability. Its application-specific meaning must still be established separately.</p>
+</section>
+<section id="redistributing-influence" class="level3">
+<h3 class="anchored" data-anchor-id="redistributing-influence">Redistributing Influence</h3>
+<p>Suppose a small amount <span class="math inline">\(\delta\)</span> of influence is transferred from alternative <span class="math inline">\(A_j\)</span> to alternative <span class="math inline">\(A_k\)</span>. The original weights are <span class="math inline">\(w_j\)</span> and <span class="math inline">\(w_k.\)</span></p>
+<p>After the transfer,</p>
+<p><span class="math display">\[
+w_j'=w_j-\delta,
+\]</span></p>
+<p><span class="math display">\[
+w_k'=w_k+\delta.
+\]</span></p>
+<p>The total weight remains unchanged:</p>
+<p><span class="math display">\[
+w_j'+w_k'
+=
+w_j-\delta+w_k+\delta
+=
+w_j+w_k.
+\]</span></p>
+<p>The change in the combined output is</p>
+<p><span class="math display">\[
+\begin{aligned}
+C'-C
+&amp;=
+(w_j-\delta)A_j
++
+(w_k+\delta)A_k
+-
+w_jA_j
+-
+w_kA_k\\
+&amp;=
+-\delta A_j+\delta A_k\\
+&amp;=
+\delta(A_k-A_j).
+\end{aligned}
+\]</span></p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+\boxed{
+C'-C=\delta(A_k-A_j).
+}
+\]</span></p>
+<p>The effect of moving weight depends on the difference between the alternatives. If <span class="math inline">\(A_k&gt;A_j,\)</span> transferring positive weight from <span class="math inline">\(A_j\)</span> to <span class="math inline">\(A_k\)</span> increases the output. If <span class="math inline">\(A_k&lt;A_j,\)</span> the same transfer decreases it. If <span class="math inline">\(A_k=A_j,\)</span> redistributing weight between them does not change the output. This relationship reveals that weights matter through both their magnitude and the alternatives to which they are attached.</p>
+</section>
+<section id="vector-valued-alternatives" class="level3">
+<h3 class="anchored" data-anchor-id="vector-valued-alternatives">Vector-Valued Alternatives</h3>
+<p>The alternatives may themselves be vectors:</p>
+<p><span class="math display">\[
+\mathbf{A}_i\in\mathbb{R}^{d}.
+\]</span></p>
+<p>The weighted combination becomes</p>
+<p><span class="math display">\[
+\boxed{
+\mathbf{C}
+=
+\sum_{i=1}^{n}w_i\mathbf{A}_i.
+}
+\]</span></p>
+<p>For example, let</p>
+<p><span class="math display">\[
+\mathbf{A}_1=
+\begin{bmatrix}
+1\\
+0
+\end{bmatrix},
+\qquad
+\mathbf{A}_2=
+\begin{bmatrix}
+0\\
+1
+\end{bmatrix},
+\qquad
+\mathbf{A}_3=
+\begin{bmatrix}
+1\\
+1
+\end{bmatrix},
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\mathbf{w}
+=
+\begin{bmatrix}
+0.2\\
+0.5\\
+0.3
+\end{bmatrix}.
+\]</span></p>
+<p>Then</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mathbf{C}
+&amp;=
+0.2
+\begin{bmatrix}
+1\\
+0
+\end{bmatrix}
++
+0.5
+\begin{bmatrix}
+0\\
+1
+\end{bmatrix}
++
+0.3
+\begin{bmatrix}
+1\\
+1
+\end{bmatrix}\\
+&amp;=
+\begin{bmatrix}
+0.2\\
+0
+\end{bmatrix}
++
+\begin{bmatrix}
+0\\
+0.5
+\end{bmatrix}
++
+\begin{bmatrix}
+0.3\\
+0.3
+\end{bmatrix}\\
+&amp;=
+\begin{bmatrix}
+0.5\\
+0.8
+\end{bmatrix}.
+\end{aligned}
+\]</span></p>
+<p>The same scalar weight <span class="math inline">\(w_i\)</span> scales every component of alternative <span class="math inline">\(\mathbf{A}_i\)</span>. All vector alternatives must belong to a common space so that their scaled contributions can be added.</p>
+</section>
+<section id="the-weight-constraints-do-not-explain-their-origin" class="level3">
+<h3 class="anchored" data-anchor-id="the-weight-constraints-do-not-explain-their-origin">The Weight Constraints Do Not Explain Their Origin</h3>
+<p>The conditions <span class="math inline">\(w_i\geq0\)</span> and <span class="math inline">\(\sum_iw_i=1\)</span></p>
+<p>tell us that the weights form a complete nonnegative allocation. They do not tell us how the weights were obtained. The weights may be:</p>
+<ul>
+<li>chosen manually;</li>
+<li>measured as proportions;</li>
+<li>estimated from data;</li>
+<li>derived from probabilities;</li>
+<li>assigned according to reliability;</li>
+<li>produced dynamically by another computation;</li>
+<li>learned by a model.</li>
+</ul>
+<p>The same vector</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+0.2\\
+0.5\\
+0.3
+\end{bmatrix}
+\]</span></p>
+<p>can participate in several semantic models. The current section has constructed the contribution structure:</p>
+<p><span class="math display">\[
+\boxed{
+C=\sum_iw_iA_i.
+}
+\]</span></p>
+<p>It has not yet determined whether this expression should be called a weighted sum, weighted average, expectation, mixture, ensemble, or attention output. That distinction depends on both the constraints on the weights and their meaning. The next section will separate arbitrary weighted sums from normalized weighted averages and show how nonnegative sum-to-one weights constrain the output relative to the alternatives.</p>
+</section>
+</section>
+<section id="weighted-sum-weighted-average-and-convex-combination" class="level2">
+<h2 class="anchored" data-anchor-id="weighted-sum-weighted-average-and-convex-combination">12.3 Weighted Sum, Weighted Average, and Convex Combination</h2>
+<p>Section 12.2 constructed the combination <span class="math inline">\(C=\sum_{i=1}^{n}w_iA_i\)</span> under the constraints <span class="math inline">\(w_i\geq0\)</span> and <span class="math inline">\(\sum_{i=1}^{n}w_i=1.\)</span> For the power levels <span class="math inline">\(A_1=30,\)</span> <span class="math inline">\(A_2=60,\)</span> <span class="math inline">\(A_3=90,\)</span> the weights</p>
+<p><span class="math display">\[
+\mathbf{w}
+=
+\begin{bmatrix}
+0.2\\
+0.5\\
+0.3
+\end{bmatrix}
+\]</span></p>
+<p>produce <span class="math inline">\(C=0.2(30)+0.5(60)+0.3(90)=63.\)</span> Now consider the expression <span class="math inline">\(S=2(30)+5(60)+3(90).\)</span> Its coefficients are <span class="math inline">\(2,\)</span> <span class="math inline">\(5,\)</span> <span class="math inline">\(3.\)</span> The calculation gives <span class="math inline">\(S=60+300+270=630.\)</span> Both expressions multiply alternatives by coefficients and add the results. Yet <span class="math inline">\(63\)</span> and <span class="math inline">\(630\)</span> represent different constructions. The first coefficients form shares:</p>
+<p><span class="math display">\[
+0.2+0.5+0.3=1.
+\]</span></p>
+<p>The second coefficients have total weight</p>
+<p><span class="math display">\[
+2+5+3=10.
+\]</span></p>
+<p>The distinction is between a <strong>weighted sum</strong> and a <strong>weighted average</strong>.</p>
+<section id="an-arbitrary-weighted-sum" class="level3">
+<h3 class="anchored" data-anchor-id="an-arbitrary-weighted-sum">An Arbitrary Weighted Sum</h3>
+<p>Let <span class="math inline">\(a_1,a_2,\ldots,a_n\)</span> be arbitrary coefficients. The expression <span class="math inline">\(S=\sum_{i=1}^{n}a_iA_i\)</span> is a weighted sum. The coefficients may represent counts, strengths, multiplicities, signed contributions, or other scaling factors. They are not necessarily shares of one whole. For the concrete coefficients, <span class="math inline">\(a_1=2,\)</span> <span class="math inline">\(a_2=5,\)</span> <span class="math inline">\(a_3=3,\)</span> the weighted sum is <span class="math inline">\(S=630.\)</span> Because the coefficient total is <span class="math inline">\(10\)</span>, the expression contains ten total units of weight rather than one. If every coefficient is multiplied by <span class="math inline">\(2\)</span>,</p>
+<p><span class="math display">\[
+(2,5,3)
+\longrightarrow
+(4,10,6),
+\]</span></p>
+<p>then the weighted sum doubles:</p>
+<p><span class="math display">\[
+\begin{aligned}
+S'
+&amp;=4(30)+10(60)+6(90)\\
+&amp;=1260\\
+&amp;=2S.
+\end{aligned}
+\]</span></p>
+<p>Thus an arbitrary weighted sum is sensitive to the overall scale of its coefficients.</p>
+</section>
+<section id="a-weighted-average-removes-overall-weight-scale" class="level3">
+<h3 class="anchored" data-anchor-id="a-weighted-average-removes-overall-weight-scale">A Weighted Average Removes Overall Weight Scale</h3>
+<p>Suppose the coefficients <span class="math inline">\(2\)</span>, <span class="math inline">\(5\)</span>, and <span class="math inline">\(3\)</span> describe relative importance. Their ratio is <span class="math inline">\(2:5:3.\)</span> The same relative importance is represented by <span class="math inline">\(4:10:6\)</span> or <span class="math inline">\(20:50:30.\)</span> If only the ratios matter, changing every coefficient by the same positive factor should not change the combined result. The raw weighted sum does not possess this invariance. To remove the effect of total coefficient scale, divide by the total weight $ W=_{i=1}^{n}a_i$ The weighted average is</p>
+<p><span class="math display">\[
+\boxed{
+\bar{A}_w
+=
+\frac{\sum_{i=1}^{n}a_iA_i}
+{\sum_{i=1}^{n}a_i}.
+}
+\]</span></p>
+<p>For the concrete coefficients, <span class="math inline">\(W=2+5+3=10.\)</span> Therefore,</p>
+<p><span class="math display">\[
+\begin{aligned}
+\bar{A}_w
+&amp;=
+\frac{2(30)+5(60)+3(90)}{2+5+3}\\
+&amp;=
+\frac{630}{10}\\
+&amp;=
+63.
+\end{aligned}
+\]</span></p>
+<p>If all coefficients are doubled,</p>
+<p><span class="math display">\[
+\begin{aligned}
+\bar{A}_w'
+&amp;=
+\frac{4(30)+10(60)+6(90)}{4+10+6}\\
+&amp;=
+\frac{1260}{20}\\
+&amp;=
+63.
+\end{aligned}
+\]</span></p>
+<p>The weighted average preserves relative proportions while ignoring common positive rescaling:</p>
+<p><span class="math display">\[
+\boxed{
+\frac{\sum_i(ca_i)A_i}{\sum_i ca_i}
+=
+\frac{\sum_i a_iA_i}{\sum_i a_i}
+\qquad
+\text{for }c&gt;0.
+}
+\]</span></p>
+</section>
+<section id="constructing-normalized-weights" class="level3">
+<h3 class="anchored" data-anchor-id="constructing-normalized-weights">Constructing Normalized Weights</h3>
+<p>Define</p>
+<p><span class="math display">\[
+w_i
+=
+\frac{a_i}{\sum_{j=1}^{n}a_j}.
+\]</span></p>
+<p>The denominator uses a different index <span class="math inline">\(j\)</span> because it ranges over all raw coefficients, while the numerator refers to the particular coefficient being normalized. For the concrete values,</p>
+<p><span class="math display">\[
+w_1=\frac{2}{10}=0.2,
+\]</span></p>
+<p><span class="math display">\[
+w_2=\frac{5}{10}=0.5,
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+w_3=\frac{3}{10}=0.3.
+\]</span></p>
+<p>The normalized weights sum to one:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\sum_{i=1}^{n}w_i
+&amp;=
+\sum_{i=1}^{n}
+\frac{a_i}{\sum_{j=1}^{n}a_j}\\
+&amp;=
+\frac{\sum_{i=1}^{n}a_i}
+{\sum_{j=1}^{n}a_j}\\
+&amp;=1.
+\end{aligned}
+\]</span></p>
+<p>The weighted average can now be written as</p>
+<p><span class="math display">\[
+\bar{A}_w
+=
+\sum_{i=1}^{n}w_iA_i.
+\]</span></p>
+<p>Thus,</p>
+<p><span class="math display">\[
+\boxed{
+\frac{\sum_i a_iA_i}{\sum_i a_i}
+=
+\sum_iw_iA_i,
+\qquad
+w_i=\frac{a_i}{\sum_j a_j}.
+}
+\]</span></p>
+<p>The raw coefficients <span class="math inline">\(a_i\)</span> describe relative amounts. The normalized weights <span class="math inline">\(w_i\)</span> describe shares of the total amount.</p>
+</section>
+<section id="why-the-denominator-must-be-nonzero" class="level3">
+<h3 class="anchored" data-anchor-id="why-the-denominator-must-be-nonzero">Why the Denominator Must Be Nonzero</h3>
+<p>The normalization</p>
+<p><span class="math display">\[
+w_i=\frac{a_i}{\sum_j a_j}
+\]</span></p>
+<p>is defined only when</p>
+<p><span class="math display">\[
+\sum_j a_j\neq0.
+\]</span></p>
+<p>If all nonnegative coefficients are zero,</p>
+<p><span class="math display">\[
+a_1=a_2=\cdots=a_n=0,
+\]</span></p>
+<p>then</p>
+<p><span class="math display">\[
+\sum_j a_j=0.
+\]</span></p>
+<p>No relative allocation has been specified. The expression</p>
+<p><span class="math display">\[
+\frac{0}{0}
+\]</span></p>
+<p>is undefined. This is not merely a technical division error. If every alternative has zero raw weight, the model has provided no basis for deciding how the unit allocation should be distributed. A normalization procedure must therefore either require positive total weight or define an explicit fallback rule.</p>
+</section>
+<section id="constant-preservation" class="level3">
+<h3 class="anchored" data-anchor-id="constant-preservation">Constant Preservation</h3>
+<p>Suppose every alternative has the same value <span class="math inline">\(A_1=A_2=\cdots=A_n=K.\)</span> A sensible average should return <span class="math inline">\(K\)</span> regardless of the distribution of normalized weights. Indeed,</p>
+<p><span class="math display">\[
+\begin{aligned}
+\sum_{i=1}^{n}w_iA_i
+&amp;=
+\sum_{i=1}^{n}w_iK\\
+&amp;=
+K\sum_{i=1}^{n}w_i\\
+&amp;=
+K.
+\end{aligned}
+\]</span></p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+\boxed{
+A_i=K\text{ for every }i
+\quad\Longrightarrow\quad
+\sum_iw_iA_i=K.
+}
+\]</span></p>
+<p>This property depends on <span class="math inline">\(\sum_iw_i=1.\)</span> For arbitrary coefficients,</p>
+<p><span class="math display">\[
+\sum_i a_iK
+=
+K\sum_i a_i.
+\]</span></p>
+<p>The common value is scaled by the total coefficient weight. It is preserved only when that total equals one. Constant preservation distinguishes averaging from accumulation.</p>
+</section>
+<section id="scalar-boundedness" class="level3">
+<h3 class="anchored" data-anchor-id="scalar-boundedness">Scalar Boundedness</h3>
+<p>Let</p>
+<p><span class="math display">\[
+m=\min_i A_i
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+M=\max_i A_i.
+\]</span></p>
+<p>Then every alternative satisfies</p>
+<p><span class="math display">\[
+m\leq A_i\leq M.
+\]</span></p>
+<p>Assume</p>
+<p><span class="math display">\[
+w_i\geq0.
+\]</span></p>
+<p>Multiplying by <span class="math inline">\(w_i\)</span> preserves the inequalities:</p>
+<p><span class="math display">\[
+w_im\leq w_iA_i\leq w_iM.
+\]</span></p>
+<p>Summing over <span class="math inline">\(i\)</span> gives</p>
+<p><span class="math display">\[
+\sum_iw_im
+\leq
+\sum_iw_iA_i
+\leq
+\sum_iw_iM.
+\]</span></p>
+<p>Because <span class="math inline">\(m\)</span> and <span class="math inline">\(M\)</span> do not depend on <span class="math inline">\(i\)</span>,</p>
+<p><span class="math display">\[
+m\sum_iw_i
+\leq
+\sum_iw_iA_i
+\leq
+M\sum_iw_i.
+\]</span></p>
+<p>Using</p>
+<p><span class="math display">\[
+\sum_iw_i=1,
+\]</span></p>
+<p>we obtain</p>
+<p><span class="math display">\[
+\boxed{
+m
+\leq
+\sum_{i=1}^{n}w_iA_i
+\leq
+M.
+}
+\]</span></p>
+<p>A normalized nonnegative weighted combination cannot exceed the largest input or fall below the smallest input.</p>
+<p>For the power levels,</p>
+<p><span class="math display">\[
+30\leq63\leq90.
+\]</span></p>
+<p>The output remains inside the interval determined by the alternatives.</p>
+</section>
+<section id="why-both-constraints-are-necessary" class="level3">
+<h3 class="anchored" data-anchor-id="why-both-constraints-are-necessary">Why Both Constraints Are Necessary</h3>
+<p>The sum-to-one condition alone does not guarantee boundedness.</p>
+<p>Consider</p>
+<p><span class="math display">\[
+\mathbf{w}
+=
+\begin{bmatrix}
+2\\
+-1\\
+0
+\end{bmatrix}.
+\]</span></p>
+<p>The weights sum to one:</p>
+<p><span class="math display">\[
+2-1+0=1.
+\]</span></p>
+<p>But the weighted combination is</p>
+<p><span class="math display">\[
+2(30)-1(60)+0(90)=0,
+\]</span></p>
+<p>which lies below the minimum input <span class="math inline">\(30\)</span>.</p>
+<p>The negative weight creates extrapolation.</p>
+<p>Nonnegativity alone also does not guarantee boundedness relative to the original alternatives.</p>
+<p>Consider</p>
+<p><span class="math display">\[
+\mathbf{a}
+=
+\begin{bmatrix}
+1\\
+1\\
+1
+\end{bmatrix}.
+\]</span></p>
+<p>All coefficients are nonnegative, but their sum is <span class="math inline">\(3\)</span>. The weighted sum is</p>
+<p><span class="math display">\[
+30+60+90=180,
+\]</span></p>
+<p>which exceeds the maximum <span class="math inline">\(90\)</span>.</p>
+<p>Boundedness requires both:</p>
+<p><span class="math display">\[
+\boxed{
+w_i\geq0
+\quad\text{and}\quad
+\sum_iw_i=1.
+}
+\]</span></p>
+<p>The first prevents subtractive extrapolation. The second prevents global expansion or contraction caused by excess or missing total weight.</p>
+</section>
+<section id="translation-consistency" class="level3">
+<h3 class="anchored" data-anchor-id="translation-consistency">Translation Consistency</h3>
+<p>Suppose every alternative is shifted by the same amount <span class="math inline">\(c\)</span>:</p>
+<p><span class="math display">\[
+A_i'=A_i+c.
+\]</span></p>
+<p>The weighted combination becomes</p>
+<p><span class="math display">\[
+\begin{aligned}
+\sum_iw_iA_i'
+&amp;=
+\sum_iw_i(A_i+c)\\
+&amp;=
+\sum_iw_iA_i
++
+c\sum_iw_i\\
+&amp;=
+\sum_iw_iA_i+c.
+\end{aligned}
+\]</span></p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+\boxed{
+\sum_iw_i(A_i+c)
+=
+\sum_iw_iA_i+c.
+}
+\]</span></p>
+<p>Shifting every input by <span class="math inline">\(c\)</span> shifts the weighted average by exactly <span class="math inline">\(c\)</span>.</p>
+<p>For arbitrary coefficients <span class="math inline">\(a_i\)</span>,</p>
+<p><span class="math display">\[
+\sum_i a_i(A_i+c)
+=
+\sum_i a_iA_i
++
+c\sum_i a_i.
+\]</span></p>
+<p>The shift is multiplied by the total coefficient weight. Translation behaves naturally only when the weights sum to one.</p>
+</section>
+<section id="scaling-consistency" class="level3">
+<h3 class="anchored" data-anchor-id="scaling-consistency">Scaling Consistency</h3>
+<p>If every alternative is multiplied by a scalar <span class="math inline">\(c\)</span>, then</p>
+<p><span class="math display">\[
+\begin{aligned}
+\sum_iw_i(cA_i)
+&amp;=
+c\sum_iw_iA_i.
+\end{aligned}
+\]</span></p>
+<p>Thus,</p>
+<p><span class="math display">\[
+\boxed{
+\text{scaling all alternatives scales the combination equally}.
+}
+\]</span></p>
+<p>Together, translation and scaling consistency show that normalized weighted combinations respect changes of numerical reference and unit scale.</p>
+</section>
+<section id="weighted-average-as-an-equalized-value" class="level3">
+<h3 class="anchored" data-anchor-id="weighted-average-as-an-equalized-value">Weighted Average as an Equalized Value</h3>
+<p>An ordinary mean is the common value that preserves a total when every observation is made equal.</p>
+<p>The same interpretation extends to weighted averages.</p>
+<p>Suppose alternative <span class="math inline">\(A_i\)</span> carries an amount of weight <span class="math inline">\(a_i\)</span>. Its weighted contribution is</p>
+<p><span class="math display">\[
+a_iA_i.
+\]</span></p>
+<p>The total weighted contribution is</p>
+<p><span class="math display">\[
+\sum_i a_iA_i.
+\]</span></p>
+<p>The total weight is</p>
+<p><span class="math display">\[
+\sum_i a_i.
+\]</span></p>
+<p>The weighted average <span class="math inline">\(\bar{A}_w\)</span> is the common value that would preserve the weighted total if every unit of weight received the same value:</p>
+<p><span class="math display">\[
+\bar{A}_w\sum_i a_i
+=
+\sum_i a_iA_i.
+\]</span></p>
+<p>Solving gives</p>
+<p><span class="math display">\[
+\boxed{
+\bar{A}_w
+=
+\frac{\sum_i a_iA_i}{\sum_i a_i}.
+}
+\]</span></p>
+<p>This derivation explains the denominator. It converts accumulated weighted contribution into contribution per unit of weight.</p>
+</section>
+<section id="replication-interpretation" class="level3">
+<h3 class="anchored" data-anchor-id="replication-interpretation">Replication Interpretation</h3>
+<p>When the raw weights are nonnegative integers, a weighted average can be interpreted as an ordinary average over repeated values.</p>
+<p>For</p>
+<p><span class="math display">\[
+a_1=2,
+\qquad
+a_2=5,
+\qquad
+a_3=3,
+\]</span></p>
+<p>the weighted average of</p>
+<p><span class="math display">\[
+30,\quad60,\quad90
+\]</span></p>
+<p>is equivalent to the ordinary average of</p>
+<p><span class="math display">\[
+30,30,
+\]</span></p>
+<p><span class="math display">\[
+60,60,60,60,60,
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+90,90,90.
+\]</span></p>
+<p>There are ten values in total. Their sum is</p>
+<p><span class="math display">\[
+630,
+\]</span></p>
+<p>and their average is</p>
+<p><span class="math display">\[
+\frac{630}{10}=63.
+\]</span></p>
+<p>The weights act as multiplicities. Larger weights cause an alternative to appear more often in the conceptual expanded collection.</p>
+<p>This interpretation is not required for fractional weights, but it provides intuition for why the denominator is the sum of weights rather than the number of distinct alternatives.</p>
+</section>
+<section id="vector-alternatives-and-the-convex-hull" class="level3">
+<h3 class="anchored" data-anchor-id="vector-alternatives-and-the-convex-hull">Vector Alternatives and the Convex Hull</h3>
+<p>Let</p>
+<p><span class="math display">\[
+\mathbf{A}_1,\mathbf{A}_2,\ldots,\mathbf{A}_n
+\in\mathbb{R}^{d}.
+\]</span></p>
+<p>Their normalized weighted combination is</p>
+<p><span class="math display">\[
+\boxed{
+\mathbf{C}
+=
+\sum_{i=1}^{n}w_i\mathbf{A}_i,
+\qquad
+w_i\geq0,
+\qquad
+\sum_iw_i=1.
+}
+\]</span></p>
+<p>For two vector endpoints, the valid combinations form the line segment between them.</p>
+<p>For three points in a two-dimensional plane, the valid combinations form the filled triangle determined by those points.</p>
+<p>For more points or higher-dimensional spaces, the set of all valid combinations is called their <strong>convex hull</strong>:</p>
+<p><span class="math display">\[
+\boxed{
+\operatorname{conv}
+\{\mathbf{A}_1,\ldots,\mathbf{A}_n\}
+=
+\left\{
+\sum_{i=1}^{n}w_i\mathbf{A}_i:
+w_i\geq0,\
+\sum_iw_i=1
+\right\}.
+}
+\]</span></p>
+<p>The convex hull is the set of all points obtainable by distributing one complete nonnegative unit of influence among the alternatives.</p>
+<p>The one-hot weight vectors recover the original points:</p>
+<p><span class="math display">\[
+(1,0,\ldots,0)
+\longrightarrow
+\mathbf{A}_1,
+\]</span></p>
+<p><span class="math display">\[
+(0,1,\ldots,0)
+\longrightarrow
+\mathbf{A}_2,
+\]</span></p>
+<p>and so forth.</p>
+<p>Weights distributed among several alternatives produce points inside or on the boundary of the convex hull.</p>
+</section>
+<section id="geometry-and-weight-geometry-are-related" class="level3">
+<h3 class="anchored" data-anchor-id="geometry-and-weight-geometry-are-related">Geometry and Weight Geometry Are Related</h3>
+<p>The valid weight vectors form a simplex:</p>
+<p><span class="math display">\[
+\Delta^{n-1}
+=
+\left\{
+\mathbf{w}:
+w_i\geq0,\
+\sum_iw_i=1
+\right\}.
+\]</span></p>
+<p>The weighted-combination map</p>
+<p><span class="math display">\[
+\mathbf{w}
+\longmapsto
+\sum_iw_i\mathbf{A}_i
+\]</span></p>
+<p>maps points in the weight simplex into points in the convex hull of the alternatives.</p>
+<p>Thus there are two related geometric objects:</p>
+<ul>
+<li>the simplex describes how influence is allocated;</li>
+<li>the convex hull describes which combined outputs those allocations can produce.</li>
+</ul>
+<p>Different weight vectors can sometimes produce the same output. This occurs when the alternatives contain geometric redundancy. For example, if one alternative already lies between two others, it may be represented directly or reconstructed as their combination.</p>
+<p>Therefore, the weights need not always be uniquely determined by the output.</p>
+</section>
+<section id="terminology-depends-on-the-constraints" class="level3">
+<h3 class="anchored" data-anchor-id="terminology-depends-on-the-constraints">Terminology Depends on the Constraints</h3>
+<p>The expression</p>
+<p><span class="math display">\[
+\sum_i a_iA_i
+\]</span></p>
+<p>can receive different mathematical names depending on the coefficient constraints:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Coefficient condition</th>
+<th>Common description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>arbitrary <span class="math inline">\(a_i\)</span></td>
+<td>weighted sum or linear combination</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\sum_i a_i=1\)</span></td>
+<td>affine combination</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(a_i\geq0\)</span> and <span class="math inline">\(\sum_i a_i=1\)</span></td>
+<td>convex combination</td>
+</tr>
+<tr class="even">
+<td>nonnegative raw weights divided by their total</td>
+<td>weighted average</td>
+</tr>
+</tbody>
+</table>
+<p>These categories are related but not interchangeable. Every convex combination is an affine combination. Every affine combination is a linear combination. The reverse implications do not generally hold.</p>
+</section>
+<section id="raw-importance-is-not-yet-a-share" class="level3">
+<h3 class="anchored" data-anchor-id="raw-importance-is-not-yet-a-share">Raw Importance Is Not Yet a Share</h3>
+<p>Suppose a system assigns the raw importance scores</p>
+<p><span class="math display">\[
+2,\quad5,\quad3.
+\]</span></p>
+<p>These numbers express relative strength:</p>
+<p><span class="math display">\[
+2:5:3.
+\]</span></p>
+<p>They do not yet express shares of one complete allocation because</p>
+<p><span class="math display">\[
+2+5+3=10.
+\]</span></p>
+<p>Converting them into shares requires normalization:</p>
+<p><span class="math display">\[
+\frac{2}{10},
+\qquad
+\frac{5}{10},
+\qquad
+\frac{3}{10}.
+\]</span></p>
+<p>The current section has shown what normalization must accomplish:</p>
+<p><span class="math display">\[
+\boxed{
+\text{preserve relative importance while making total weight equal one}.
+}
+\]</span></p>
+<p>The next chapter will examine this transformation directly. It will distinguish raw scores from usable weights, derive normalization, and then address the harder case in which raw scores may be negative or unconstrained. That path will lead to softmax.</p>
+</section>
+</section>
+<section id="one-algebraic-skeleton-several-computational-meanings" class="level2">
+<h2 class="anchored" data-anchor-id="one-algebraic-skeleton-several-computational-meanings">12.4 One Algebraic Skeleton, Several Computational Meanings</h2>
+<p>The previous sections developed the expression</p>
+<p><span class="math display">\[
+C=\sum_{i=1}^{n} w_iA_i,
+\]</span></p>
+<p>together with the conditions</p>
+<p><span class="math display">\[
+w_i\geq 0
+\qquad\text{and}\qquad
+\sum_{i=1}^{n}w_i=1.
+\]</span></p>
+<p>Under these conditions, <span class="math inline">\(C\)</span> is a weighted average or, more geometrically, a convex combination of the alternatives</p>
+<p><span class="math display">\[
+A_1,A_2,\ldots,A_n.
+\]</span></p>
+<p>This equation appears in many areas of mathematics and programming. It appears when calculating an expected value, mixing several substances, combining predictions from several models, and constructing an attention-weighted representation.</p>
+<p>The algebraic skeleton is the same:</p>
+<p><span class="math display">\[
+\boxed{
+\text{result}
+=
+\sum_i
+\text{weight}_i
+\cdot
+\text{alternative}_i
+}
+\]</span></p>
+<p>But the meanings carried by its symbols are not always the same.</p>
+<p>This distinction is important. Recognizing a familiar algebraic form can help us understand a computation, but algebraic resemblance alone does not prove that two computations represent the same concept.</p>
+<p>Two formulas may have the same visible structure while answering different questions.</p>
+<hr>
+<section id="the-three-semantic-roles-inside-a-weighted-combination" class="level3">
+<h3 class="anchored" data-anchor-id="the-three-semantic-roles-inside-a-weighted-combination">The three semantic roles inside a weighted combination</h3>
+<p>Before examining particular applications, it is useful to separate the three roles present in</p>
+<p><span class="math display">\[
+C=\sum_{i=1}^{n}w_iA_i.
+\]</span></p>
+<p>The symbols <span class="math inline">\(A_i\)</span> represent the objects being combined. The symbols <span class="math inline">\(w_i\)</span> determine how strongly those objects contribute. The result <span class="math inline">\(C\)</span> is the object produced by the combination.</p>
+<p>Therefore, interpreting the formula requires three questions:</p>
+<ol type="1">
+<li>What kind of object is each <span class="math inline">\(A_i\)</span>?</li>
+<li>What does each weight <span class="math inline">\(w_i\)</span> measure?</li>
+<li>What does the resulting combination <span class="math inline">\(C\)</span> mean?</li>
+</ol>
+<p>The same arithmetic operation can acquire a different interpretation when any of these answers changes.</p>
+<p>For example, suppose</p>
+<p><span class="math display">\[
+A_1=20,\qquad A_2=50,\qquad A_3=80
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+w_1=0.2,\qquad w_2=0.5,\qquad w_3=0.3.
+\]</span></p>
+<p>Then</p>
+<p><span class="math display">\[
+C
+=
+0.2(20)+0.5(50)+0.3(80)
+=
+4+25+24
+=
+53.
+\]</span></p>
+<p>The number <span class="math inline">\(53\)</span> is mathematically determined. Its meaning, however, is not determined by the arithmetic alone.</p>
+<p>It might be:</p>
+<ul>
+<li>an expected monetary return,</li>
+<li>the average temperature of a mixture,</li>
+<li>an ensemble prediction,</li>
+<li>an attention-weighted feature,</li>
+<li>or an ordinary weighted average of observations.</li>
+</ul>
+<p>The equation tells us how the number was constructed. The surrounding model tells us what the number represents.</p>
+<p>This gives us an important interpretive principle:</p>
+<p><span class="math display">\[
+\boxed{
+\text{An equation determines relationships among quantities, but context determines the roles of those quantities.}
+}
+\]</span></p>
+<hr>
+</section>
+<section id="weighted-measurements-unequal-contribution-to-an-average" class="level3">
+<h3 class="anchored" data-anchor-id="weighted-measurements-unequal-contribution-to-an-average">Weighted measurements: unequal contribution to an average</h3>
+<p>Consider three measurements of the same quantity:</p>
+<p><span class="math display">\[
+A_1=20,\qquad A_2=50,\qquad A_3=80.
+\]</span></p>
+<p>Suppose the measurements do not have equal reliability. We assign the normalized reliability weights</p>
+<p><span class="math display">\[
+w_1=0.2,\qquad w_2=0.5,\qquad w_3=0.3.
+\]</span></p>
+<p>The combined estimate is</p>
+<p><span class="math display">\[
+C=\sum_{i=1}^{3}w_iA_i=53.
+\]</span></p>
+<p>Here, each <span class="math inline">\(A_i\)</span> is a measurement of the same underlying quantity. The weight <span class="math inline">\(w_i\)</span> expresses the relative influence assigned to that measurement.</p>
+<p>The result <span class="math inline">\(C\)</span> is another estimate of the same kind of quantity.</p>
+<p>If the <span class="math inline">\(A_i\)</span> are temperatures measured in degrees Celsius, then <span class="math inline">\(C\)</span> is also measured in degrees Celsius. The weights are dimensionless shares, so multiplication does not change the physical unit:</p>
+<p><span class="math display">\[
+(\text{dimensionless weight})(\text{temperature})
+=
+\text{temperature}.
+\]</span></p>
+<p>This interpretation depends on the alternatives being comparable. Averaging a temperature, a distance, and a monetary amount would not ordinarily produce a meaningful quantity merely because the computer can perform the arithmetic.</p>
+<p>Thus, mechanical validity is not sufficient. The addition</p>
+<p><span class="math display">\[
+w_1A_1+w_2A_2+w_3A_3
+\]</span></p>
+<p>also requires semantic compatibility among the terms.</p>
+<hr>
+</section>
+<section id="expected-value-distributing-probability-across-possible-outcomes" class="level3">
+<h3 class="anchored" data-anchor-id="expected-value-distributing-probability-across-possible-outcomes">Expected value: distributing probability across possible outcomes</h3>
+<p>Now suppose <span class="math inline">\(A_i\)</span> is not a measurement. Instead, it is a possible outcome of an uncertain process.</p>
+<p>Let a random quantity <span class="math inline">\(X\)</span> take the values</p>
+<p><span class="math display">\[
+x_1,x_2,\ldots,x_n
+\]</span></p>
+<p>with probabilities</p>
+<p><span class="math display">\[
+p_1,p_2,\ldots,p_n.
+\]</span></p>
+<p>The probabilities satisfy</p>
+<p><span class="math display">\[
+p_i\geq 0
+\qquad\text{and}\qquad
+\sum_{i=1}^{n}p_i=1.
+\]</span></p>
+<p>The expected value of <span class="math inline">\(X\)</span> is</p>
+<p><span class="math display">\[
+\mathbb{E}[X]
+=
+\sum_{i=1}^{n}p_ix_i.
+\]</span></p>
+<p>This has exactly the form of a convex combination:</p>
+<p><span class="math display">\[
+\mathbb{E}[X]
+=
+\sum_{i=1}^{n}w_iA_i,
+\]</span></p>
+<p>where</p>
+<p><span class="math display">\[
+w_i=p_i
+\qquad\text{and}\qquad
+A_i=x_i.
+\]</span></p>
+<p>Suppose a game produces one of three monetary outcomes:</p>
+<p><span class="math display">\[
+x_1=20,\qquad x_2=50,\qquad x_3=80,
+\]</span></p>
+<p>with probabilities</p>
+<p><span class="math display">\[
+p_1=0.2,\qquad p_2=0.5,\qquad p_3=0.3.
+\]</span></p>
+<p>Then</p>
+<p><span class="math display">\[
+\mathbb{E}[X]
+=
+0.2(20)+0.5(50)+0.3(80)
+=
+53.
+\]</span></p>
+<p>But the expected value is not necessarily an outcome that will actually occur.</p>
+<p>The game can produce only</p>
+<p><span class="math display">\[
+20,\qquad 50,\qquad\text{or}\qquad 80.
+\]</span></p>
+<p>It never produces <span class="math inline">\(53\)</span> in a single play.</p>
+<p>Therefore, <span class="math inline">\(\mathbb{E}[X]=53\)</span> should not be interpreted as a fourth possible outcome. It is the probability-weighted center of the possible outcomes.</p>
+<p>Over many repetitions, if the empirical frequencies approach the probabilities, the average outcome approaches the expected value. For <span class="math inline">\(N\)</span> trials, suppose outcome <span class="math inline">\(x_i\)</span> occurs <span class="math inline">\(n_i\)</span> times. The sample average is</p>
+<p><span class="math display">\[
+\overline{x}_N
+=
+\frac{n_1x_1+n_2x_2+\cdots+n_nx_n}{N}.
+\]</span></p>
+<p>Since</p>
+<p><span class="math display">\[
+\frac{n_1}{N}+\frac{n_2}{N}+\cdots+\frac{n_n}{N}=1,
+\]</span></p>
+<p>we may write</p>
+<p><span class="math display">\[
+\overline{x}_N
+=
+\sum_{i=1}^{n}
+\frac{n_i}{N}x_i.
+\]</span></p>
+<p>If</p>
+<p><span class="math display">\[
+\frac{n_i}{N}\longrightarrow p_i,
+\]</span></p>
+<p>then</p>
+<p><span class="math display">\[
+\overline{x}_N
+\longrightarrow
+\sum_{i=1}^{n}p_ix_i
+=
+\mathbb{E}[X].
+\]</span></p>
+<p>The weights are probabilities, the alternatives are possible outcomes, and the result is a probabilistic center.</p>
+<hr>
+</section>
+<section id="mixtures-distributing-composition-across-components" class="level3">
+<h3 class="anchored" data-anchor-id="mixtures-distributing-composition-across-components">Mixtures: distributing composition across components</h3>
+<p>The same equation can describe the composition of a physical or abstract mixture.</p>
+<p>Suppose three solutions have salt concentrations</p>
+<p><span class="math display">\[
+A_1=20\%,\qquad A_2=50\%,\qquad A_3=80\%.
+\]</span></p>
+<p>A new solution is formed using the proportions</p>
+<p><span class="math display">\[
+w_1=0.2,\qquad w_2=0.5,\qquad w_3=0.3.
+\]</span></p>
+<p>Assuming the concentration combines linearly, the resulting concentration is</p>
+<p><span class="math display">\[
+C
+=
+0.2(20)+0.5(50)+0.3(80)
+=
+53\%.
+\]</span></p>
+<p>The formula is numerically identical to the earlier examples, but the interpretation is different.</p>
+<p>Here:</p>
+<ul>
+<li><span class="math inline">\(A_i\)</span> is a property of component <span class="math inline">\(i\)</span>;</li>
+<li><span class="math inline">\(w_i\)</span> is the proportion of the total mixture contributed by component <span class="math inline">\(i\)</span>;</li>
+<li><span class="math inline">\(C\)</span> is the corresponding property of the completed mixture.</li>
+</ul>
+<p>The weights describe composition rather than probability or reliability.</p>
+<p>Nevertheless, there is a structural relationship between mixture proportions and probabilities. Both distribute a total amount of one across several alternatives:</p>
+<p><span class="math display">\[
+\sum_iw_i=1.
+\]</span></p>
+<p>In probability, the total unit represents all probability mass. In a physical mixture, it represents the whole amount of material. In both cases, the weights divide a whole into nonnegative shares.</p>
+<p>This is why the same geometry appears. The vector</p>
+<p><span class="math display">\[
+\mathbf{w}
+=
+(w_1,w_2,\ldots,w_n)
+\]</span></p>
+<p>lies in the simplex</p>
+<p><span class="math display">\[
+\Delta^{n-1}
+=
+\left\{
+\mathbf{w}\in\mathbb{R}^n
+:
+w_i\geq 0,\;
+\sum_{i=1}^{n}w_i=1
+\right\}.
+\]</span></p>
+<p>The simplex does not by itself tell us whether its coordinates are probabilities, mixture proportions, or model weights. It tells us only that a unit total has been distributed among several positions.</p>
+<p>The meaning of the distributed unit comes from the model.</p>
+<hr>
+</section>
+<section id="model-ensembles-distributing-predictive-influence" class="level3">
+<h3 class="anchored" data-anchor-id="model-ensembles-distributing-predictive-influence">Model ensembles: distributing predictive influence</h3>
+<p>Suppose several machine-learning models make predictions for the same input.</p>
+<p>Let their predictions be</p>
+<p><span class="math display">\[
+A_1=20,\qquad A_2=50,\qquad A_3=80.
+\]</span></p>
+<p>An ensemble may combine them using</p>
+<p><span class="math display">\[
+w_1=0.2,\qquad w_2=0.5,\qquad w_3=0.3.
+\]</span></p>
+<p>The ensemble prediction is</p>
+<p><span class="math display">\[
+C
+=
+\sum_{i=1}^{3}w_iA_i
+=
+53.
+\]</span></p>
+<p>Here:</p>
+<ul>
+<li><span class="math inline">\(A_i\)</span> is the prediction made by model <span class="math inline">\(i\)</span>;</li>
+<li><span class="math inline">\(w_i\)</span> is the influence assigned to model <span class="math inline">\(i\)</span>;</li>
+<li><span class="math inline">\(C\)</span> is the prediction made by the ensemble.</li>
+</ul>
+<p>The weights might be selected manually, estimated from validation performance, or learned by another model.</p>
+<p>The weighted combination expresses a division of predictive responsibility. A model with a larger weight has a stronger effect on the final prediction.</p>
+<p>To see this effect algebraically, consider changing one model prediction while leaving the others fixed. If <span class="math inline">\(A_k\)</span> changes by <span class="math inline">\(\Delta A_k\)</span>, then</p>
+<p><span class="math display">\[
+\Delta C=w_k\Delta A_k.
+\]</span></p>
+<p>Thus, the weight <span class="math inline">\(w_k\)</span> measures the sensitivity of the ensemble output to the prediction of model <span class="math inline">\(k\)</span>:</p>
+<p><span class="math display">\[
+\frac{\partial C}{\partial A_k}=w_k.
+\]</span></p>
+<p>This gives the weight an operational interpretation. It does not merely accompany <span class="math inline">\(A_k\)</span>; it controls how strongly a change in <span class="math inline">\(A_k\)</span> moves the result.</p>
+<p>However, an ensemble average is meaningful only when its predictions inhabit a space in which averaging makes sense.</p>
+<p>Averaging three temperature predictions is natural. Averaging three probability vectors can also be meaningful because their coordinates have corresponding interpretations.</p>
+<p>But averaging arbitrary class labels represented by integers may be meaningless. If the labels</p>
+<p><span class="math display">\[
+\text{cat}=0,\qquad
+\text{dog}=1,\qquad
+\text{horse}=2
+\]</span></p>
+<p>are merely codes, then a weighted average such as</p>
+<p><span class="math display">\[
+0.2(0)+0.5(1)+0.3(2)=1.1
+\]</span></p>
+<p>does not represent a meaningful intermediate animal.</p>
+<p>The arithmetic succeeds, but the representation does not support the intended combination.</p>
+<p>This reveals another general principle:</p>
+<p><span class="math display">\[
+\boxed{
+\text{A weighted combination requires not only valid weights but also a meaningful space of alternatives.}
+}
+\]</span></p>
+<hr>
+</section>
+<section id="attention-distributing-relevance-across-representations" class="level3">
+<h3 class="anchored" data-anchor-id="attention-distributing-relevance-across-representations">Attention: distributing relevance across representations</h3>
+<p>In an attention mechanism, the alternatives are commonly vectors rather than scalar values.</p>
+<p>Suppose</p>
+<p><span class="math display">\[
+\mathbf{v}_1,\mathbf{v}_2,\ldots,\mathbf{v}_n
+\]</span></p>
+<p>are value vectors. An attention mechanism produces weights</p>
+<p><span class="math display">\[
+\alpha_1,\alpha_2,\ldots,\alpha_n
+\]</span></p>
+<p>satisfying</p>
+<p><span class="math display">\[
+\alpha_i\geq 0
+\qquad\text{and}\qquad
+\sum_{i=1}^{n}\alpha_i=1.
+\]</span></p>
+<p>The resulting context vector is</p>
+<p><span class="math display">\[
+\mathbf{c}
+=
+\sum_{i=1}^{n}\alpha_i\mathbf{v}_i.
+\]</span></p>
+<p>For example, let</p>
+<p><span class="math display">\[
+\mathbf{v}_1=
+\begin{bmatrix}
+1\\
+0
+\end{bmatrix},
+\qquad
+\mathbf{v}_2=
+\begin{bmatrix}
+0\\
+2
+\end{bmatrix},
+\qquad
+\mathbf{v}_3=
+\begin{bmatrix}
+3\\
+1
+\end{bmatrix},
+\]</span></p>
+<p>and let</p>
+<p><span class="math display">\[
+\alpha_1=0.2,\qquad
+\alpha_2=0.5,\qquad
+\alpha_3=0.3.
+\]</span></p>
+<p>Then</p>
+<p><span class="math display">\[
+\mathbf{c}
+=
+0.2
+\begin{bmatrix}
+1\\
+0
+\end{bmatrix}
++
+0.5
+\begin{bmatrix}
+0\\
+2
+\end{bmatrix}
++
+0.3
+\begin{bmatrix}
+3\\
+1
+\end{bmatrix}.
+\]</span></p>
+<p>Combining the coordinates gives</p>
+<p><span class="math display">\[
+\mathbf{c}
+=
+\begin{bmatrix}
+0.2\\
+0
+\end{bmatrix}
++
+\begin{bmatrix}
+0\\
+1
+\end{bmatrix}
++
+\begin{bmatrix}
+0.9\\
+0.3
+\end{bmatrix}
+=
+\begin{bmatrix}
+1.1\\
+1.3
+\end{bmatrix}.
+\]</span></p>
+<p>The context vector is therefore a convex combination of the value vectors.</p>
+<p>But attention weights do not necessarily have the same meaning as probabilities of mutually exclusive events. Their numerical constraints resemble probability constraints, but their semantic role is different.</p>
+<p>An attention weight generally determines how strongly a value vector contributes to the constructed representation. It expresses an allocation of influence within that computation.</p>
+<p>The weights are also usually input-dependent. For one input, the mechanism might produce</p>
+<p><span class="math display">\[
+(\alpha_1,\alpha_2,\alpha_3)
+=
+(0.2,0.5,0.3),
+\]</span></p>
+<p>while for another input it might produce</p>
+<p><span class="math display">\[
+(\alpha_1,\alpha_2,\alpha_3)
+=
+(0.7,0.1,0.2).
+\]</span></p>
+<p>Consequently, attention is not merely a fixed weighted average. It is a system that constructs the weights from the current computational context and then uses those weights to construct a new representation.</p>
+<p>At a high level, its structure is</p>
+<p><span class="math display">\[
+\text{input-dependent scores}
+\longrightarrow
+\text{normalized weights}
+\longrightarrow
+\text{weighted combination}.
+\]</span></p>
+<p>The final stage is already familiar:</p>
+<p><span class="math display">\[
+\mathbf{c}
+=
+\sum_i\alpha_i\mathbf{v}_i.
+\]</span></p>
+<p>The new problem is how the valid weights <span class="math inline">\(\alpha_i\)</span> are obtained from unrestricted scores. That question will lead directly to normalization and softmax.</p>
+<hr>
+</section>
+<section id="the-same-formula-does-not-imply-the-same-ontology" class="level3">
+<h3 class="anchored" data-anchor-id="the-same-formula-does-not-imply-the-same-ontology">The same formula does not imply the same ontology</h3>
+<p>The applications can now be compared directly.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Application</th>
+<th>Meaning of <span class="math inline">\(A_i\)</span></th>
+<th>Meaning of <span class="math inline">\(w_i\)</span></th>
+<th>Meaning of <span class="math inline">\(\sum_iw_iA_i\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Weighted measurement</td>
+<td>A measurement or estimate</td>
+<td>Relative reliability or influence</td>
+<td>Combined estimate</td>
+</tr>
+<tr class="even">
+<td>Expected value</td>
+<td>A possible outcome</td>
+<td>Probability of that outcome</td>
+<td>Probability-weighted center</td>
+</tr>
+<tr class="odd">
+<td>Mixture</td>
+<td>A component or component property</td>
+<td>Proportion of the mixture</td>
+<td>Property or representation of the mixture</td>
+</tr>
+<tr class="even">
+<td>Model ensemble</td>
+<td>A model prediction</td>
+<td>Predictive influence</td>
+<td>Combined prediction</td>
+</tr>
+<tr class="odd">
+<td>Attention</td>
+<td>A value representation</td>
+<td>Input-dependent contribution strength</td>
+<td>Constructed context representation</td>
+</tr>
+</tbody>
+</table>
+<p>The same mathematical skeleton appears in every row:</p>
+<p><span class="math display">\[
+C=\sum_iw_iA_i.
+\]</span></p>
+<p>But the objects named by its symbols differ. This distinction may be described as a difference in ontology: a difference in what kinds of things the mathematical objects are understood to represent. In one case, <span class="math inline">\(w_i\)</span> is a probability. In another, it is a physical proportion. In another, it is a model coefficient. In another, it is an attention allocation. All these weights may be nonnegative and sum to one, but those shared constraints do not erase their conceptual differences. A probability may support claims about uncertainty. A mixture proportion may support claims about composition. A model weight may support claims about influence. An attention weight may support claims about contribution within a representation. One kind of claim cannot automatically be transferred to another merely because the equations look alike. For example, since attention weights sum to one, they can be mathematically treated like a probability distribution over positions. But it does not follow automatically that an attention weight is the probability that a position is the uniquely correct explanation of a model’s decision. The first statement concerns mathematical form. The second introduces a much stronger semantic interpretation. Therefore, we should separate two levels of understanding:</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+\text{structural interpretation}
+&amp;:\quad
+\text{How are the quantities combined?}\\[4pt]
+\text{semantic interpretation}
+&amp;:\quad
+\text{What do the quantities represent?}
+\end{aligned}
+}
+\]</span></p>
+<p>Structural recognition allows knowledge to transfer between domains. Semantic discipline prevents that transfer from becoming careless.</p>
+<hr>
+</section>
+<section id="what-remains-invariant-across-the-interpretations" class="level3">
+<h3 class="anchored" data-anchor-id="what-remains-invariant-across-the-interpretations">What remains invariant across the interpretations?</h3>
+<p>Although the meanings differ, several mathematical facts remain valid whenever</p>
+<p><span class="math display">\[
+w_i\geq 0
+\qquad\text{and}\qquad
+\sum_iw_i=1.
+\]</span></p>
+<p>For scalar alternatives,</p>
+<p><span class="math display">\[
+\min_iA_i
+\leq
+\sum_iw_iA_i
+\leq
+\max_iA_i.
+\]</span></p>
+<p>For vector alternatives, the result lies in their convex hull:</p>
+<p><span class="math display">\[
+C\in\operatorname{conv}\{A_1,\ldots,A_n\}.
+\]</span></p>
+<p>If every alternative is the same object <span class="math inline">\(A\)</span>, then</p>
+<p><span class="math display">\[
+\sum_iw_iA
+=
+\left(\sum_iw_i\right)A
+=
+A.
+\]</span></p>
+<p>If one weight equals one and all the others equal zero, then the weighted combination becomes hard selection:</p>
+<p><span class="math display">\[
+w_k=1
+\quad\Longrightarrow\quad
+C=A_k.
+\]</span></p>
+<p>A continuous change in the weights produces a continuous movement through the region generated by the alternatives. These properties are algebraic and geometric. They remain available regardless of whether the weights represent probabilities, proportions, model influence, or attention. This is the productive power of abstraction. Once the shared mathematical structure has been identified, general results can be proved once and applied in many settings. But abstraction must preserve enough information to return to the original problem. If we forget what the weights and alternatives represent, we may retain the calculation while losing its meaning.</p>
+<hr>
+</section>
+<section id="from-mathematical-skeleton-to-program" class="level3">
+<h3 class="anchored" data-anchor-id="from-mathematical-skeleton-to-program">From mathematical skeleton to program</h3>
+<p>The same weighted-combination program can operate on many interpretations.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> weighted_combination(weights, alternatives):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">sum</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        weight <span class="op">*</span> alternative</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> weight, alternative <span class="kw">in</span> <span class="bu">zip</span>(weights, alternatives)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For scalar alternatives:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> [<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.3</span>]</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>alternatives <span class="op">=</span> [<span class="dv">20</span>, <span class="dv">50</span>, <span class="dv">80</span>]</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> weighted_combination(weights, alternatives)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The result is</p>
+<pre class="text"><code>53.0</code></pre>
+<p>The function cannot determine whether <code>53.0</code> is an expectation, a mixture concentration, or an ensemble prediction. That meaning exists in the relationship between the program and the problem being modeled. For NumPy vectors, the same construction can be written as a weighted reduction:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> np.array([<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.3</span>])</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> np.array([</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">1.0</span>, <span class="fl">0.0</span>],</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">0.0</span>, <span class="fl">2.0</span>],</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">3.0</span>, <span class="fl">1.0</span>],</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>context <span class="op">=</span> np.<span class="bu">sum</span>(weights[:, <span class="va">None</span>] <span class="op">*</span> values, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(context)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The expression</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>weights[:, <span class="va">None</span>] <span class="op">*</span> values</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>scales every value vector by its corresponding weight. The reduction</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>np.<span class="bu">sum</span>(..., axis<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>then adds the weighted vectors. The program implements</p>
+<p><span class="math display">\[
+\mathbf{c}
+=
+\sum_{i=1}^{n}w_i\mathbf{v}_i.
+\]</span></p>
+<p>Once again, the machine executes the structure. The surrounding model supplies the interpretation.</p>
+</section>
+<section id="chapter-conclusion" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-conclusion">Chapter conclusion</h3>
+<p>This chapter began by extending a choice between two alternatives into a choice among many alternatives. Hard selection was represented by a one-hot vector:</p>
+<p><span class="math display">\[
+C=\sum_{i=1}^{n}I_iA_i,
+\]</span></p>
+<p>where</p>
+<p><span class="math display">\[
+I_i\in\{0,1\}
+\qquad\text{and}\qquad
+\sum_iI_i=1.
+\]</span></p>
+<p>The one-hot restriction was then relaxed into graded shares:</p>
+<p><span class="math display">\[
+C=\sum_{i=1}^{n}w_iA_i,
+\]</span></p>
+<p>where</p>
+<p><span class="math display">\[
+w_i\geq 0
+\qquad\text{and}\qquad
+\sum_iw_i=1.
+\]</span></p>
+<p>This relaxation transformed discrete choice into continuous allocation. Instead of preserving exactly one alternative, the computation could distribute influence across several alternatives.</p>
+<p>We then distinguished a raw weighted sum,</p>
+<p><span class="math display">\[
+S=\sum_i a_iA_i,
+\]</span></p>
+<p>from a normalized weighted average,</p>
+<p><span class="math display">\[
+C=
+\frac{\sum_i a_iA_i}{\sum_i a_i}
+=
+\sum_iw_iA_i.
+\]</span></p>
+<p>Finally, we observed that the same normalized equation supports several computational meanings:</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+\text{expectation}
+&amp;:\quad
+\sum_i p_ix_i,\\[4pt]
+\text{mixture}
+&amp;:\quad
+\sum_i w_iA_i,\\[4pt]
+\text{ensemble}
+&amp;:\quad
+\sum_i w_i\widehat{y}_i,\\[4pt]
+\text{attention}
+&amp;:\quad
+\sum_i\alpha_i\mathbf{v}_i.
+\end{aligned}
+}
+\]</span></p>
+<p>The common structure is valuable because it allows mathematical knowledge to move between domains. The differing meanings are equally important because they determine which conclusions may legitimately move with it. The central lesson is therefore not merely that many systems use weighted combinations. It is that mathematical programming requires us to reason at two levels simultaneously:</p>
+<p><span class="math display">\[
+\boxed{
+\text{recognize the shared structure}
+\quad+\quad
+\text{preserve the domain-specific meaning}.
+}
+\]</span></p>
+<p>One major question remains unanswered. In this chapter, the normalized weights were assumed to exist. But real computational systems often begin with arbitrary scores:</p>
+<p><span class="math display">\[
+s_1,s_2,\ldots,s_n.
+\]</span></p>
+<p>These scores may be negative. They may not sum to one. They may have no immediate interpretation as shares. How can unrestricted scores be transformed into nonnegative weights satisfying</p>
+<p><span class="math display">\[
+\sum_iw_i=1?
+\]</span></p>
+<p>That transformation is the subject of the next chapter.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/hafizarslanamjad\.github\.io\/mathematical-understanding\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Articles and books by Hafiz Arslan Amjad</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="https://github.com/hafizarslanamjad/mathematical-understanding">
+<p>Source</p>
+</a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

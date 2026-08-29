@@ -1,0 +1,2570 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="A chapter about relaxing zero-or-one selection into continuous allocation, complementary shares, interpolation, extrapolation, mixtures, expectations, and soft mathematical gates.">
+
+<title>Chapter 11 — From Hard Selection to Soft Selection – Mathematical Understanding</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../../">
+<script src="../../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../../site_libs/bootstrap/bootstrap-e3adbaa939bcd423dddc8c8a834270b4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../../../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../../index.html">
+    <span class="navbar-title">Mathematical Understanding</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../index.html"> 
+<span class="menu-text">Articles</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../books/mathematical-programming/index.html"> 
+<span class="menu-text">Mathematical Programming</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/hafizarslanamjad/mathematical-understanding"> <i class="bi bi-github" role="img" aria-label="GitHub repository">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#when-zero-and-one-are-too-restrictive" id="toc-when-zero-and-one-are-too-restrictive" class="nav-link active" data-scroll-target="#when-zero-and-one-are-too-restrictive">11.1 When Zero and One Are Too Restrictive</a>
+  <ul class="collapse">
+  <li><a href="#the-output-must-also-admit-intermediate-states" id="toc-the-output-must-also-admit-intermediate-states" class="nav-link" data-scroll-target="#the-output-must-also-admit-intermediate-states">The Output Must Also Admit Intermediate States</a></li>
+  <li><a href="#partial-activation-requires-a-new-interpretation-of-multiplication" id="toc-partial-activation-requires-a-new-interpretation-of-multiplication" class="nav-link" data-scroll-target="#partial-activation-requires-a-new-interpretation-of-multiplication">Partial Activation Requires a New Interpretation of Multiplication</a></li>
+  <li><a href="#verifying-the-endpoint-requirements" id="toc-verifying-the-endpoint-requirements" class="nav-link" data-scroll-target="#verifying-the-endpoint-requirements">Verifying the Endpoint Requirements</a></li>
+  <li><a href="#verifying-intermediate-shares" id="toc-verifying-intermediate-shares" class="nav-link" data-scroll-target="#verifying-intermediate-shares">Verifying Intermediate Shares</a></li>
+  <li><a href="#generalizing-the-endpoints" id="toc-generalizing-the-endpoints" class="nav-link" data-scroll-target="#generalizing-the-endpoints">Generalizing the Endpoints</a></li>
+  <li><a href="#why-the-weights-must-sum-to-one" id="toc-why-the-weights-must-sum-to-one" class="nav-link" data-scroll-target="#why-the-weights-must-sum-to-one">Why the Weights Must Sum to One</a></li>
+  <li><a href="#the-result-remains-between-the-endpoints" id="toc-the-result-remains-between-the-endpoints" class="nav-link" data-scroll-target="#the-result-remains-between-the-endpoints">The Result Remains Between the Endpoints</a></li>
+  <li><a href="#translation-preserves-the-combined-relationship" id="toc-translation-preserves-the-combined-relationship" class="nav-link" data-scroll-target="#translation-preserves-the-combined-relationship">Translation Preserves the Combined Relationship</a></li>
+  </ul></li>
+  <li><a href="#moving-along-the-difference-between-two-values" id="toc-moving-along-the-difference-between-two-values" class="nav-link" data-scroll-target="#moving-along-the-difference-between-two-values">11.3 Moving Along the Difference Between Two Values</a>
+  <ul class="collapse">
+  <li><a href="#the-difference-is-a-directed-displacement" id="toc-the-difference-is-a-directed-displacement" class="nav-link" data-scroll-target="#the-difference-is-a-directed-displacement">The Difference Is a Directed Displacement</a></li>
+  <li><a href="#the-weight-scales-the-displacement" id="toc-the-weight-scales-the-displacement" class="nav-link" data-scroll-target="#the-weight-scales-the-displacement">The Weight Scales the Displacement</a></li>
+  <li><a href="#endpoint-behavior-in-the-displacement-form" id="toc-endpoint-behavior-in-the-displacement-form" class="nav-link" data-scroll-target="#endpoint-behavior-in-the-displacement-form">Endpoint Behavior in the Displacement Form</a></li>
+  <li><a href="#interpolation" id="toc-interpolation" class="nav-link" data-scroll-target="#interpolation">Interpolation</a></li>
+  <li><a href="#relative-position-is-preserved" id="toc-relative-position-is-preserved" class="nav-link" data-scroll-target="#relative-position-is-preserved">Relative Position Is Preserved</a></li>
+  <li><a href="#recovering-the-progress-from-an-intermediate-value" id="toc-recovering-the-progress-from-an-intermediate-value" class="nav-link" data-scroll-target="#recovering-the-progress-from-an-intermediate-value">Recovering the Progress from an Intermediate Value</a></li>
+  <li><a href="#reversing-the-endpoints-reverses-the-parameter" id="toc-reversing-the-endpoints-reverses-the-parameter" class="nav-link" data-scroll-target="#reversing-the-endpoints-reverses-the-parameter">Reversing the Endpoints Reverses the Parameter</a></li>
+  <li><a href="#vector-endpoints" id="toc-vector-endpoints" class="nav-link" data-scroll-target="#vector-endpoints">Vector Endpoints</a></li>
+  <li><a href="#interpolation-remains-inside-the-segment" id="toc-interpolation-remains-inside-the-segment" class="nav-link" data-scroll-target="#interpolation-remains-inside-the-segment">Interpolation Remains Inside the Segment</a></li>
+  <li><a href="#weights-outside-the-interval" id="toc-weights-outside-the-interval" class="nav-link" data-scroll-target="#weights-outside-the-interval">Weights Outside the Interval</a></li>
+  <li><a href="#complementary-weights-during-extrapolation" id="toc-complementary-weights-during-extrapolation" class="nav-link" data-scroll-target="#complementary-weights-during-extrapolation">Complementary Weights During Extrapolation</a></li>
+  <li><a href="#a-geometric-interpretation-of-the-weight" id="toc-a-geometric-interpretation-of-the-weight" class="nav-link" data-scroll-target="#a-geometric-interpretation-of-the-weight">A Geometric Interpretation of the Weight</a></li>
+  <li><a href="#the-completed-construction" id="toc-the-completed-construction" class="nav-link" data-scroll-target="#the-completed-construction">The Completed Construction</a></li>
+  </ul></li>
+  <li><a href="#the-same-formula-can-carry-different-meanings" id="toc-the-same-formula-can-carry-different-meanings" class="nav-link" data-scroll-target="#the-same-formula-can-carry-different-meanings">11.4 The Same Formula Can Carry Different Meanings</a>
+  <ul class="collapse">
+  <li><a href="#interpretation-1-an-actual-intermediate-state" id="toc-interpretation-1-an-actual-intermediate-state" class="nav-link" data-scroll-target="#interpretation-1-an-actual-intermediate-state">Interpretation 1: An Actual Intermediate State</a></li>
+  <li><a href="#interpretation-2-a-physical-mixture" id="toc-interpretation-2-a-physical-mixture" class="nav-link" data-scroll-target="#interpretation-2-a-physical-mixture">Interpretation 2: A Physical Mixture</a></li>
+  <li><a href="#interpretation-3-time-sharing" id="toc-interpretation-3-time-sharing" class="nav-link" data-scroll-target="#interpretation-3-time-sharing">Interpretation 3: Time Sharing</a></li>
+  <li><a href="#interpretation-4-uncertainty-and-expected-value" id="toc-interpretation-4-uncertainty-and-expected-value" class="nav-link" data-scroll-target="#interpretation-4-uncertainty-and-expected-value">Interpretation 4: Uncertainty and Expected Value</a></li>
+  <li><a href="#interpretation-5-combining-predictions" id="toc-interpretation-5-combining-predictions" class="nav-link" data-scroll-target="#interpretation-5-combining-predictions">Interpretation 5: Combining Predictions</a></li>
+  <li><a href="#interpretation-6-a-continuously-controlled-gate" id="toc-interpretation-6-a-continuously-controlled-gate" class="nav-link" data-scroll-target="#interpretation-6-a-continuously-controlled-gate">Interpretation 6: A Continuously Controlled Gate</a></li>
+  <li><a href="#one-number-can-describe-different-ontologies" id="toc-one-number-can-describe-different-ontologies" class="nav-link" data-scroll-target="#one-number-can-describe-different-ontologies">One Number Can Describe Different Ontologies</a></li>
+  <li><a href="#a-weight-does-not-explain-itself" id="toc-a-weight-does-not-explain-itself" class="nav-link" data-scroll-target="#a-weight-does-not-explain-itself">A Weight Does Not Explain Itself</a></li>
+  <li><a href="#confidence-is-not-automatically-probability" id="toc-confidence-is-not-automatically-probability" class="nav-link" data-scroll-target="#confidence-is-not-automatically-probability">Confidence Is Not Automatically Probability</a></li>
+  <li><a href="#soft-selection-does-not-always-approximate-hard-selection" id="toc-soft-selection-does-not-always-approximate-hard-selection" class="nav-link" data-scroll-target="#soft-selection-does-not-always-approximate-hard-selection">Soft Selection Does Not Always Approximate Hard Selection</a></li>
+  <li><a href="#why-continuous-weights-matter-for-learning" id="toc-why-continuous-weights-matter-for-learning" class="nav-link" data-scroll-target="#why-continuous-weights-matter-for-learning">Why Continuous Weights Matter for Learning</a></li>
+  <li><a href="#the-complete-meaning-first-procedure" id="toc-the-complete-meaning-first-procedure" class="nav-link" data-scroll-target="#the-complete-meaning-first-procedure">The Complete Meaning-First Procedure</a></li>
+  <li><a href="#the-completed-structure-of-soft-selection" id="toc-the-completed-structure-of-soft-selection" class="nav-link" data-scroll-target="#the-completed-structure-of-soft-selection">The Completed Structure of Soft Selection</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Chapter 11 — From Hard Selection to Soft Selection</h1>
+<p class="subtitle lead">From Binary Choice to Graded Contribution</p>
+</div>
+
+<div>
+  <div class="description">
+    A chapter about relaxing zero-or-one selection into continuous allocation, complementary shares, interpolation, extrapolation, mixtures, expectations, and soft mathematical gates.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="when-zero-and-one-are-too-restrictive" class="level2">
+<h2 class="anchored" data-anchor-id="when-zero-and-one-are-too-restrictive">11.1 When Zero and One Are Too Restrictive</h2>
+<p>Consider a robotic joint that can move between two reference angles. Its initial reference angle is <span class="math inline">\(20^\circ,\)</span> and its final reference angle is <span class="math inline">\(80^\circ.\)</span> A binary program could choose one of the two angles:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> move_to_final_position:</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    angle <span class="op">=</span> <span class="dv">80</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    angle <span class="op">=</span> <span class="dv">20</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Let the Boolean condition be represented by the binary indicator <span class="math inline">\(I\in\{0,1\}.\)</span> The algebraic selector is</p>
+<p><span class="math display">\[
+I(80)+(1-I)(20).
+\]</span></p>
+<p>When <span class="math inline">\(I=0,\)</span> the result is</p>
+<p><span class="math display">\[
+0(80)+(1-0)(20)=20.
+\]</span></p>
+<p>When <span class="math inline">\(I=1,\)</span> the result is</p>
+<p><span class="math display">\[
+1(80)+(1-1)(20)=80.
+\]</span></p>
+<p>The robot is commanded either to the initial reference angle or to the final reference angle. There is no third possible output. Now suppose the requirement changes. The joint should move gradually from <span class="math inline">\(20^\circ\)</span> to <span class="math inline">\(80^\circ\)</span>. A control value should describe how far the movement has progressed. At the beginning of the movement, the progress should be <span class="math inline">\(0.\)</span> At the end, the progress should be <span class="math inline">\(1.\)</span> Halfway through the movement, the progress should become <span class="math inline">\(\frac12.\)</span> A quarter of the way through, the progress should become <span class="math inline">\(\frac14.\)</span> Therefore, the control value must now represent more than two states:</p>
+<p><span class="math display">\[
+0,
+\quad
+\frac14,
+\quad
+\frac12,
+\quad
+\frac34,
+\quad
+1,
+\]</span></p>
+<p>as well as every intermediate real value between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span>. But A binary indicator cannot represent this requirement because its domain contains only <span class="math inline">\(\{0,1\}.\)</span> Instead, the new control value must belong to the interval <span class="math inline">\([0,1].\)</span> Let this value be denoted by</p>
+<p><span class="math display">\[
+w\in[0,1].
+\]</span></p>
+<p>The symbol <span class="math inline">\(w\)</span> is no longer a Boolean indicator. It is a graded quantity. Its numerical value records a degree of progress between two endpoints. The binary set <span class="math inline">\(\{0,1\}\)</span> contains two isolated values. There is no admissible binary value strictly between them. If <span class="math inline">\(I\in\{0,1\},\)</span> then the statements <span class="math inline">\(0&lt;I&lt;1\)</span> and <span class="math inline">\(I=\frac12\)</span> are impossible. This makes binary indicators suitable for propositions:</p>
+<ul>
+<li>the condition is false or true;</li>
+<li>the gate is closed or open;</li>
+<li>the item is excluded or included;</li>
+<li>the first branch or the second branch is selected.</li>
+</ul>
+<p>These situations require mutually exclusive states. For the robotic joint, a binary selector can represent:</p>
+<p><span class="math display">\[
+\text{use the initial reference}
+\]</span></p>
+<p>or</p>
+<p><span class="math display">\[
+\text{use the final reference}.
+\]</span></p>
+<p>It cannot represent:</p>
+<p><span class="math display">\[
+\text{move halfway from the initial reference to the final reference}.
+\]</span></p>
+<p>The interval</p>
+<p><span class="math display">\[
+[0,1]
+=
+\{w\in\mathbb{R}:0\leq w\leq1\}
+\]</span></p>
+<p>however contains infinitely many values. The endpoints retain their familiar meanings:</p>
+<p><span class="math display">\[
+w=0
+\quad\text{represents no progress toward the final state},
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+w=1
+\quad\text{represents complete progress toward the final state}.
+\]</span></p>
+<p>Intermediate values represent partial progress:</p>
+<p><span class="math display">\[
+w=\frac14
+\quad\text{represents one quarter of the movement},
+\]</span></p>
+<p><span class="math display">\[
+w=\frac12
+\quad\text{represents one half of the movement},
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+w=\frac34
+\quad\text{represents three quarters of the movement}.
+\]</span></p>
+<p>Unlike a Boolean value, <span class="math inline">\(w\)</span> does not answer only “which state?” It answers “to what degree?” This produces a conceptual transition:</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+I\in\{0,1\}
+&amp;:\quad
+\text{exclusive state},\\
+w\in[0,1]
+&amp;:\quad
+\text{degree between states}.
+\end{aligned}
+}
+\]</span></p>
+<section id="the-output-must-also-admit-intermediate-states" class="level3">
+<h3 class="anchored" data-anchor-id="the-output-must-also-admit-intermediate-states">The Output Must Also Admit Intermediate States</h3>
+<p>The angular distance between the two reference positions is</p>
+<p><span class="math display">\[
+80-20=60^\circ.
+\]</span></p>
+<p>If the joint has completed one quarter of this movement, it has traveled</p>
+<p><span class="math display">\[
+\frac14(60)=15^\circ
+\]</span></p>
+<p>from the starting angle. Its position is therefore</p>
+<p><span class="math display">\[
+20+15=35^\circ.
+\]</span></p>
+<p>At half progress, it has traveled</p>
+<p><span class="math display">\[
+\frac12(60)=30^\circ,
+\]</span></p>
+<p>so its angle is</p>
+<p><span class="math display">\[
+20+30=50^\circ.
+\]</span></p>
+<p>At three-quarter progress, it has traveled</p>
+<p><span class="math display">\[
+\frac34(60)=45^\circ,
+\]</span></p>
+<p>so its angle is</p>
+<p><span class="math display">\[
+20+45=65^\circ.
+\]</span>`</p>
+<p>The output set is no longer <span class="math inline">\(\{20,80\}.\)</span> It is the entire interval <span class="math inline">\([20,80].\)</span> Every admissible progress value should correspond to an admissible intermediate angle. The input and output structures have both changed:</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+\text{hard selection}
+&amp;:\quad
+\{0,1\}\longrightarrow\{20,80\},\\
+\text{graded transition}
+&amp;:\quad
+[0,1]\longrightarrow[20,80].
+\end{aligned}
+}
+\]</span></p>
+<p>The first relationship chooses between two isolated outputs. The second must map a continuous interval of control values into a continuous interval of states. Allowing intermediate states does not mean that any progress value may produce any angle. The ordering must be preserved. If <span class="math inline">\(w_a&lt;w_b,\)</span> then the angle associated with <span class="math inline">\(w_a\)</span> should not lie farther toward <span class="math inline">\(80^\circ\)</span> than the angle associated with <span class="math inline">\(w_b\)</span>.</p>
+<p>For example, <span class="math inline">\(\frac14&lt;\frac12,\)</span> so the quarter-progress angle <span class="math inline">\(35^\circ\)</span> must occur before the halfway angle <span class="math inline">\(50^\circ.\)</span> The distance traveled should also correspond proportionally to the progress value. Half progress should apply half of the complete displacement. One-quarter progress should apply one quarter of it. Thus the control value <span class="math inline">\(w\)</span> has a defined semantic role:</p>
+<p><span class="math display">\[
+\boxed{
+w
+=
+\text{fraction of the complete transition that has been applied}.
+}
+\]</span></p>
+<p>The problem is not merely to generate numbers between <span class="math inline">\(20\)</span> and <span class="math inline">\(80\)</span>. It is to preserve a proportional relationship between progress and displacement.</p>
+</section>
+<section id="partial-activation-requires-a-new-interpretation-of-multiplication" class="level3">
+<h3 class="anchored" data-anchor-id="partial-activation-requires-a-new-interpretation-of-multiplication">Partial Activation Requires a New Interpretation of Multiplication</h3>
+<p>For a binary gate, <span class="math inline">\(Ix\)</span> has two possible behaviors:</p>
+<p><span class="math display">\[
+0x=0,
+\]</span></p>
+<p><span class="math display">\[
+1x=x.
+\]</span></p>
+<p>When the gate is allowed to take an intermediate value <span class="math inline">\(w\in[0,1]\)</span> then the multiplication produces partial magnitude <span class="math inline">\(wx.\)</span> For example, <span class="math inline">\(\frac14x\)</span> represents one quarter of <span class="math inline">\(x\)</span>, <span class="math inline">\(\frac12x\)</span> represents one half of <span class="math inline">\(x\)</span>, and <span class="math inline">\(\frac34x\)</span> represents three quarters of <span class="math inline">\(x\)</span>. The operation has moved from binary preservation or suppression to graded scaling. Binary gating is therefore a special case of graded scaling. The values <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span> select the two extreme behaviors of multiplication, while intermediate weights produce intermediate magnitudes. However, scaling one endpoint alone does not yet solve the two-endpoint transition. The expression <span class="math inline">\(w(80)\)</span> produces <span class="math inline">\(0\)</span> when <span class="math inline">\(w=0\)</span>, but the required starting angle is <span class="math inline">\(20,\)</span> not zero for our current problem. Similarly, adding the starting angle unconditionally, <span class="math inline">\(20+w(80),\)</span> would produce <span class="math inline">\(100\)</span> when <span class="math inline">\(w=1\)</span>, not <span class="math inline">\(80\)</span>. The problem requires coordinated contributions from both endpoint values. As the influence of one endpoint increases, the influence of the other must decrease.</p>
+<p>At the beginning, when <span class="math inline">\(w=0,\)</span> then the final endpoint <span class="math inline">\(80\)</span> should have no influence, while the starting endpoint <span class="math inline">\(20\)</span> should have complete influence. At the end, <span class="math inline">\(w=1,\)</span> the final endpoint should have complete influence, while the starting endpoint should have no influence. At half progress, <span class="math inline">\(w=\frac12,\)</span> the two endpoints should have equal influence. The required influence pattern is:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Progress toward <span class="math inline">\(80\)</span></th>
+<th style="text-align: right;">Influence of <span class="math inline">\(80\)</span></th>
+<th style="text-align: right;">Influence of <span class="math inline">\(20\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><span class="math inline">\(0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(1\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><span class="math inline">\(\frac14\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\frac14\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\frac34\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><span class="math inline">\(\frac12\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\frac12\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\frac12\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><span class="math inline">\(\frac34\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\frac34\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\frac14\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><span class="math inline">\(1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(0\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The two influences move in opposite directions. When the share assigned to <span class="math inline">\(80\)</span> increases, the share assigned to <span class="math inline">\(20\)</span> decreases by the same amount. They must also account for one complete output:</p>
+<p><span class="math display">\[
+\text{share of }80
++
+\text{share of }20
+=
+1.
+\]</span></p>
+<p>This requirement extends the complementarity of binary gates into a continuous setting. For a binary indicator,</p>
+<p><span class="math display">\[
+I+(1-I)=1.
+\]</span></p>
+<p>For a graded selector, we need two shares that also sum to one for every</p>
+<p><span class="math display">\[
+w\in[0,1].
+\]</span></p>
+<p>The new construction problem is therefore:</p>
+<blockquote class="blockquote">
+<p>If <span class="math inline">\(w\)</span> represents the share of influence assigned to the final endpoint, what expression represents the complementary share assigned to the starting endpoint?</p>
+</blockquote>
+<p>Once these two shares have been constructed, they can be used to determine how much each endpoint contributes to the intermediate state. We therefore need two shares:</p>
+<p><span class="math display">\[
+\text{share assigned to }80=w,
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\text{share assigned to }20=q.
+\]</span></p>
+<p>The symbol <span class="math inline">\(q\)</span> temporarily represents the unknown second share. The two shares must account for one complete allocation:</p>
+<p><span class="math display">\[
+w+q=1.
+\]</span></p>
+<p>Solving for <span class="math inline">\(q\)</span> gives</p>
+<p><span class="math display">\[
+q=1-w.
+\]</span></p>
+<p>The complementary share is therefore</p>
+<p><span class="math display">\[
+\boxed{
+1-w.
+}
+\]</span></p>
+<p>This expression is not introduced by analogy alone. It is forced by the requirement that the two shares sum to one.</p>
+<p>Suppose the final endpoint receives the share</p>
+<p><span class="math display">\[
+w=\frac14.
+\]</span></p>
+<p>One quarter of the total influence has been assigned. The amount remaining is</p>
+<p><span class="math display">\[
+1-\frac14=\frac34.
+\]</span></p>
+<p>Therefore the starting endpoint must receive</p>
+<p><span class="math display">\[
+\frac34.
+\]</span></p>
+<p>If</p>
+<p><span class="math display">\[
+w=\frac12,
+\]</span></p>
+<p>the remaining share is</p>
+<p><span class="math display">\[
+1-\frac12=\frac12.
+\]</span></p>
+<p>If</p>
+<p><span class="math display">\[
+w=\frac34,
+\]</span></p>
+<p>the remaining share is</p>
+<p><span class="math display">\[
+1-\frac34=\frac14.
+\]</span></p>
+<p>At the endpoints,</p>
+<p><span class="math display">\[
+w=0
+\quad\Longrightarrow\quad
+1-w=1,
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+w=1
+\quad\Longrightarrow\quad
+1-w=0.
+\]</span></p>
+<p>Thus the two shares behave oppositely while preserving their total:</p>
+<p><span class="math display">\[
+\boxed{
+w+(1-w)=1.
+}
+\]</span></p>
+<p>The relationship is valid for every real value of <span class="math inline">\(w\)</span>, but restricting <span class="math inline">\(0\leq w\leq1\)</span> ensures that both shares are nonnegative <span class="math inline">\(w\geq0,\)</span> <span class="math inline">\(1-w\geq0.\)</span> The pair <span class="math inline">\((w,1-w)\)</span> therefore divides one complete unit of influence into two nonnegative parts.</p>
+<p>A share alone is dimensionless. It describes a fraction, not an angle. To determine how much an endpoint contributes, multiply its value by its assigned share. The contribution of the final angle is <span class="math inline">\(w(80).\)</span> The contribution of the starting angle is <span class="math inline">\((1-w)(20).\)</span> Both contributions are measured in degrees because multiplication by a dimensionless share preserves the unit of the endpoint value. The complete angle is obtained by adding the two contributions:</p>
+<p><span class="math display">\[
+\boxed{
+\text{angle}=w(80)+(1-w)(20).
+}
+\]</span></p>
+<p>Addition is meaningful because both terms represent angular contributions:</p>
+<p><span class="math display">\[
+\underbrace{w}_{\text{dimensionless}}
+\underbrace{(80)}_{\text{degrees}}
++
+\underbrace{(1-w)}_{\text{dimensionless}}
+\underbrace{(20)}_{\text{degrees}}.
+\]</span></p>
+<p>The expression has units of degrees:</p>
+<p><span class="math display">\[
+\text{degrees}+\text{degrees}
+=
+\text{degrees}.
+\]</span></p>
+<p>The computation is therefore dimensionally coherent.</p>
+</section>
+<section id="verifying-the-endpoint-requirements" class="level3">
+<h3 class="anchored" data-anchor-id="verifying-the-endpoint-requirements">Verifying the Endpoint Requirements</h3>
+<p>At the starting state,</p>
+<p><span class="math display">\[
+w=0.
+\]</span></p>
+<p>Substitution gives</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{angle}
+&amp;=0(80)+(1-0)(20)\\
+&amp;=0+1(20)\\
+&amp;=20.
+\end{aligned}
+\]</span></p>
+<p>The final endpoint contributes nothing, and the starting endpoint contributes completely.</p>
+<p>At the final state,</p>
+<p><span class="math display">\[
+w=1.
+\]</span></p>
+<p>Then</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{angle}
+&amp;=1(80)+(1-1)(20)\\
+&amp;=80+0(20)\\
+&amp;=80.
+\end{aligned}
+\]</span></p>
+<p>The final endpoint contributes completely, and the starting endpoint contributes nothing.</p>
+<p>The formula therefore preserves both boundary conditions:</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+w=0&amp;\Longrightarrow20,\\
+w=1&amp;\Longrightarrow80.
+\end{aligned}
+}
+\]</span></p>
+<p>A continuous construction between two endpoints must satisfy these conditions. If it fails at either endpoint, it does not represent the intended transition.</p>
+</section>
+<section id="verifying-intermediate-shares" class="level3">
+<h3 class="anchored" data-anchor-id="verifying-intermediate-shares">Verifying Intermediate Shares</h3>
+<p>At one-quarter progress,</p>
+<p><span class="math display">\[
+w=\frac14.
+\]</span></p>
+<p>The endpoint contributions are</p>
+<p><span class="math display">\[
+\frac14(80)=20
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\left(1-\frac14\right)(20)
+=
+\frac34(20)
+=
+15.
+\]</span></p>
+<p>Their sum is</p>
+<p><span class="math display">\[
+20+15=35.
+\]</span></p>
+<p>Thus,</p>
+<p><span class="math display">\[
+\frac14(80)+\frac34(20)=35.
+\]</span></p>
+<p>At half progress,</p>
+<p><span class="math display">\[
+w=\frac12.
+\]</span></p>
+<p>The two contributions are</p>
+<p><span class="math display">\[
+\frac12(80)=40
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\frac12(20)=10.
+\]</span></p>
+<p>Their sum is</p>
+<p><span class="math display">\[
+40+10=50.
+\]</span></p>
+<p>At three-quarter progress,</p>
+<p><span class="math display">\[
+w=\frac34.
+\]</span></p>
+<p>The contributions are</p>
+<p><span class="math display">\[
+\frac34(80)=60
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\frac14(20)=5.
+\]</span></p>
+<p>Their sum is</p>
+<p><span class="math display">\[
+60+5=65.
+\]</span></p>
+<p>The complete verification is:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;"><span class="math inline">\(w\)</span></th>
+<th style="text-align: right;">Share of <span class="math inline">\(80\)</span></th>
+<th style="text-align: right;">Contribution from <span class="math inline">\(80\)</span></th>
+<th style="text-align: right;">Share of <span class="math inline">\(20\)</span></th>
+<th style="text-align: right;">Contribution from <span class="math inline">\(20\)</span></th>
+<th style="text-align: right;">Result</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><span class="math inline">\(0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(20\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(20\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><span class="math inline">\(\frac14\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\frac14\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(20\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\frac34\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(15\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(35\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><span class="math inline">\(\frac12\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\frac12\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(40\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\frac12\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(10\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(50\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><span class="math inline">\(\frac34\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\frac34\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(60\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\frac14\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(65\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><span class="math inline">\(1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(80\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(80\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The result changes continuously because both endpoint contributions change continuously with <span class="math inline">\(w\)</span>.</p>
+</section>
+<section id="generalizing-the-endpoints" class="level3">
+<h3 class="anchored" data-anchor-id="generalizing-the-endpoints">Generalizing the Endpoints</h3>
+<p>Replace the final endpoint <span class="math inline">\(80\)</span> by a general value <span class="math inline">\(A\)</span> and the starting endpoint <span class="math inline">\(20\)</span> by a general value <span class="math inline">\(B\)</span>. The share assigned to <span class="math inline">\(A\)</span> is <span class="math inline">\(w,\)</span> and the complementary share assigned to <span class="math inline">\(B\)</span> is <span class="math inline">\(1-w.\)</span> The two contributions are <span class="math inline">\(wA\)</span> and <span class="math inline">\((1-w)B.\)</span> Adding them produces</p>
+<p><span class="math display">\[
+\boxed{
+C(w)=wA+(1-w)B,
+\qquad
+0\leq w\leq1.
+}
+\]</span></p>
+<p>The function <span class="math inline">\(C\)</span> maps a weight to a combined value. Its endpoint behavior is <span class="math inline">\(C(0)=B\)</span> and <span class="math inline">\(C(1)=A.\)</span> At the midpoint,</p>
+<p><span class="math display">\[
+C\left(\frac12\right)
+=
+\frac12A+\frac12B
+=
+\frac{A+B}{2}.
+\]</span></p>
+<p>The expression therefore moves from <span class="math inline">\(B\)</span> to <span class="math inline">\(A\)</span> as <span class="math inline">\(w\)</span> moves from <span class="math inline">\(0\)</span> to <span class="math inline">\(1\)</span>.</p>
+</section>
+<section id="why-the-weights-must-sum-to-one" class="level3">
+<h3 class="anchored" data-anchor-id="why-the-weights-must-sum-to-one">Why the Weights Must Sum to One</h3>
+<p>Suppose two arbitrary nonnegative weights <span class="math inline">\(u\)</span> and <span class="math inline">\(v\)</span> were used as <span class="math inline">\(uA+vB.\)</span> If <span class="math inline">\(u+v\neq1,\)</span> then the result contains either more or less than one complete allocation of the endpoints. For example, let <span class="math inline">\(A=80,\)</span> <span class="math inline">\(B=20,\)</span> and choose <span class="math inline">\(u=v=1.\)</span> Then</p>
+<p><span class="math display">\[
+uA+vB=80+20=100.
+\]</span></p>
+<p>Both endpoints have contributed completely. This is addition of the endpoints, not an intermediate state between them. If <span class="math inline">\(u=v=\frac14,\)</span> then</p>
+<p><span class="math display">\[
+uA+vB
+=
+\frac14(80)+\frac14(20)
+=
+20+5
+=
+25.
+\]</span></p>
+<p>The weights account for only</p>
+<p><span class="math display">\[
+\frac14+\frac14=\frac12
+\]</span></p>
+<p>of a complete allocation. The result is scaled toward zero rather than representing a balanced location between the endpoints. Requiring <span class="math inline">\(u+v=1\)</span> removes this extra scaling. Once <span class="math inline">\(u=w,\)</span> the requirement forces <span class="math inline">\(v=1-w.\)</span> The sum-to-one condition ensures that the output is formed from exactly one complete unit of combined influence.</p>
+<p>Suppose the two endpoints are equal as <span class="math inline">\(A=B=K.\)</span> A sensible combination should return the same value <span class="math inline">\(K\)</span> regardless of <span class="math inline">\(w\)</span>. Substituting gives</p>
+<p><span class="math display">\[
+\begin{aligned}
+wK+(1-w)K
+&amp;=\bigl(w+1-w\bigr)K\\
+&amp;=1K\\
+&amp;=K.
+\end{aligned}
+\]</span></p>
+<p>Thus,</p>
+<p><span class="math display">\[
+\boxed{
+A=B=K
+\quad\Longrightarrow\quad
+wA+(1-w)B=K.
+}
+\]</span></p>
+<p>This property depends on the weights summing to one. With arbitrary weights <span class="math inline">\(u\)</span> and <span class="math inline">\(v\)</span>,</p>
+<p><span class="math display">\[
+uK+vK=(u+v)K.
+\]</span></p>
+<p>The common value is preserved only if <span class="math inline">\(u+v=1.\)</span> This is one reason normalized weights are mathematically important: they preserve constant inputs.</p>
+</section>
+<section id="the-result-remains-between-the-endpoints" class="level3">
+<h3 class="anchored" data-anchor-id="the-result-remains-between-the-endpoints">The Result Remains Between the Endpoints</h3>
+<p>Assume</p>
+<p><span class="math display">\[
+A\geq B
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+0\leq w\leq1.
+\]</span></p>
+<p>We want to show that</p>
+<p><span class="math display">\[
+B\leq wA+(1-w)B\leq A.
+\]</span></p>
+<p>Begin with the lower bound. Since</p>
+<p><span class="math display">\[
+A\geq B,
+\]</span></p>
+<p>multiplying by the nonnegative weight <span class="math inline">\(w\)</span> preserves the inequality:</p>
+<p><span class="math display">\[
+wA\geq wB.
+\]</span></p>
+<p>Adding <span class="math inline">\((1-w)B\)</span> to both sides gives</p>
+<p><span class="math display">\[
+wA+(1-w)B
+\geq
+wB+(1-w)B.
+\]</span></p>
+<p>The right side simplifies to</p>
+<p><span class="math display">\[
+wB+(1-w)B=B.
+\]</span></p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+wA+(1-w)B\geq B.
+\]</span></p>
+<p>For the upper bound, since</p>
+<p><span class="math display">\[
+B\leq A
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+1-w\geq0,
+\]</span></p>
+<p>we have</p>
+<p><span class="math display">\[
+(1-w)B\leq(1-w)A.
+\]</span></p>
+<p>Adding <span class="math inline">\(wA\)</span> gives</p>
+<p><span class="math display">\[
+wA+(1-w)B
+\leq
+wA+(1-w)A.
+\]</span></p>
+<p>The right side simplifies to</p>
+<p><span class="math display">\[
+A.
+\]</span></p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+wA+(1-w)B\leq A.
+\]</span></p>
+<p>Combining the inequalities gives</p>
+<p><span class="math display">\[
+\boxed{
+B
+\leq
+wA+(1-w)B
+\leq
+A.
+}
+\]</span></p>
+<p>If <span class="math inline">\(B\geq A\)</span>, the same reasoning gives</p>
+<p><span class="math display">\[
+A
+\leq
+wA+(1-w)B
+\leq
+B.
+\]</span></p>
+<p>Thus, for weights in <span class="math inline">\([0,1]\)</span>, the combined value remains inside the interval determined by the endpoints.</p>
+<p>This boundedness is not an accidental numerical pattern. It follows from two requirements:</p>
+<p><span class="math display">\[
+w\geq0,
+\]</span></p>
+<p><span class="math display">\[
+1-w\geq0,
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+w+(1-w)=1.
+\]</span></p>
+<p>A combination with nonnegative weights summing to one is called a <strong>convex combination</strong>.</p>
+<p>For two scalar endpoints, a convex combination lies between them.</p>
+</section>
+<section id="translation-preserves-the-combined-relationship" class="level3">
+<h3 class="anchored" data-anchor-id="translation-preserves-the-combined-relationship">Translation Preserves the Combined Relationship</h3>
+<p>Suppose both endpoints are shifted by the same amount <span class="math inline">\(c\)</span>:</p>
+<p><span class="math display">\[
+A'=A+c,
+\]</span></p>
+<p><span class="math display">\[
+B'=B+c.
+\]</span></p>
+<p>Their combination is</p>
+<p><span class="math display">\[
+\begin{aligned}
+wA'+(1-w)B'
+&amp;=w(A+c)+(1-w)(B+c)\\
+&amp;=wA+wc+(1-w)B+(1-w)c\\
+&amp;=wA+(1-w)B+\bigl(w+1-w\bigr)c\\
+&amp;=wA+(1-w)B+c.
+\end{aligned}
+\]</span></p>
+<p>Thus shifting both endpoints by <span class="math inline">\(c\)</span> shifts the combined value by exactly <span class="math inline">\(c\)</span>:</p>
+<p><span class="math display">\[
+\boxed{
+w(A+c)+(1-w)(B+c)
+=
+wA+(1-w)B+c.
+}
+\]</span></p>
+<p>The relative position between the endpoints is preserved under a change of reference. This property also depends on the weights summing to one. It shows that the combination respects translation rather than being anchored artificially to zero.</p>
+</section>
+</section>
+<section id="moving-along-the-difference-between-two-values" class="level2">
+<h2 class="anchored" data-anchor-id="moving-along-the-difference-between-two-values">11.3 Moving Along the Difference Between Two Values</h2>
+<p>Section 11.2 constructed the convex combination</p>
+<p><span class="math display">\[
+C(w)=wA+(1-w)B.
+\]</span></p>
+<p>This form describes the result through two complementary contributions:</p>
+<p><span class="math display">\[
+wA
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+(1-w)B.
+\]</span></p>
+<p>The same expression can be reorganized to reveal a different mathematical structure. Distribute <span class="math inline">\(B\)</span> across the second term:</p>
+<p><span class="math display">\[
+wA+(1-w)B
+=
+wA+B-wB.
+\]</span></p>
+<p>Group the terms containing <span class="math inline">\(w\)</span>:</p>
+<p><span class="math display">\[
+wA+B-wB
+=
+B+wA-wB.
+\]</span></p>
+<p>Factor out <span class="math inline">\(w\)</span>:</p>
+<p><span class="math display">\[
+B+wA-wB
+=
+B+w(A-B).
+\]</span></p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+\boxed{
+wA+(1-w)B
+=
+B+w(A-B).
+}
+\]</span></p>
+<p>The two forms are algebraically equivalent, but they organize the meaning differently.</p>
+<p>The expression</p>
+<p><span class="math display">\[
+wA+(1-w)B
+\]</span></p>
+<p>describes complementary shares of two endpoints.</p>
+<p>The expression</p>
+<p><span class="math display">\[
+B+w(A-B)
+\]</span></p>
+<p>describes movement from a starting point.</p>
+<section id="the-difference-is-a-directed-displacement" class="level3">
+<h3 class="anchored" data-anchor-id="the-difference-is-a-directed-displacement">The Difference Is a Directed Displacement</h3>
+<p>The quantity</p>
+<p><span class="math display">\[
+A-B
+\]</span></p>
+<p>answers:</p>
+<blockquote class="blockquote">
+<p>What must be added to <span class="math inline">\(B\)</span> to reach <span class="math inline">\(A\)</span>?</p>
+</blockquote>
+<p>Its defining relationship is</p>
+<p><span class="math display">\[
+B+(A-B)=A.
+\]</span></p>
+<p>Thus <span class="math inline">\(A-B\)</span> is the complete displacement from <span class="math inline">\(B\)</span> to <span class="math inline">\(A\)</span>.</p>
+<p>For the robotic joint,</p>
+<p><span class="math display">\[
+B=20,
+\]</span></p>
+<p><span class="math display">\[
+A=80.
+\]</span></p>
+<p>The displacement is</p>
+<p><span class="math display">\[
+A-B=80-20=60.
+\]</span></p>
+<p>Beginning at <span class="math inline">\(20\)</span> and applying the complete displacement gives</p>
+<p><span class="math display">\[
+20+60=80.
+\]</span></p>
+<p>The order of subtraction matters. The displacement from <span class="math inline">\(20\)</span> to <span class="math inline">\(80\)</span> is</p>
+<p><span class="math display">\[
+80-20=60.
+\]</span></p>
+<p>The displacement from <span class="math inline">\(80\)</span> to <span class="math inline">\(20\)</span> is</p>
+<p><span class="math display">\[
+20-80=-60.
+\]</span></p>
+<p>These quantities have equal magnitude but opposite direction.</p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+\boxed{
+A-B
+=
+\text{directed displacement from }B\text{ to }A.
+}
+\]</span></p>
+<p>The term <em>directed</em> means that the sign records orientation. A positive displacement moves in the increasing numerical direction; a negative displacement moves in the decreasing direction.</p>
+</section>
+<section id="the-weight-scales-the-displacement" class="level3">
+<h3 class="anchored" data-anchor-id="the-weight-scales-the-displacement">The Weight Scales the Displacement</h3>
+<p>The expression</p>
+<p><span class="math display">\[
+w(A-B)
+\]</span></p>
+<p>does not represent a share of an endpoint. In the displacement form, it represents a share of the complete movement.</p>
+<p>For the joint,</p>
+<p><span class="math display">\[
+A-B=60.
+\]</span></p>
+<p>At</p>
+<p><span class="math display">\[
+w=\frac14,
+\]</span></p>
+<p>the applied displacement is</p>
+<p><span class="math display">\[
+\frac14(60)=15.
+\]</span></p>
+<p>Beginning at <span class="math inline">\(B=20\)</span> gives</p>
+<p><span class="math display">\[
+20+15=35.
+\]</span></p>
+<p>At</p>
+<p><span class="math display">\[
+w=\frac12,
+\]</span></p>
+<p>the applied displacement is</p>
+<p><span class="math display">\[
+\frac12(60)=30,
+\]</span></p>
+<p>so</p>
+<p><span class="math display">\[
+20+30=50.
+\]</span></p>
+<p>At</p>
+<p><span class="math display">\[
+w=\frac34,
+\]</span></p>
+<p>the applied displacement is</p>
+<p><span class="math display">\[
+\frac34(60)=45,
+\]</span></p>
+<p>so</p>
+<p><span class="math display">\[
+20+45=65.
+\]</span></p>
+<p>At</p>
+<p><span class="math display">\[
+w=1,
+\]</span></p>
+<p>the complete displacement is applied:</p>
+<p><span class="math display">\[
+20+1(60)=80.
+\]</span></p>
+<p>The formula is therefore</p>
+<p><span class="math display">\[
+\boxed{
+C(w)
+=
+\underbrace{B}_{\text{starting point}}
++
+\underbrace{w}_{\text{fraction applied}}
+\underbrace{(A-B)}_{\text{complete displacement}}.
+}
+\]</span></p>
+<p>Each factor has a distinct semantic role.</p>
+</section>
+<section id="endpoint-behavior-in-the-displacement-form" class="level3">
+<h3 class="anchored" data-anchor-id="endpoint-behavior-in-the-displacement-form">Endpoint Behavior in the Displacement Form</h3>
+<p>At</p>
+<p><span class="math display">\[
+w=0,
+\]</span></p>
+<p>no displacement is applied:</p>
+<p><span class="math display">\[
+C(0)=B+0(A-B)=B.
+\]</span></p>
+<p>At</p>
+<p><span class="math display">\[
+w=1,
+\]</span></p>
+<p>the complete displacement is applied:</p>
+<p><span class="math display">\[
+\begin{aligned}
+C(1)
+&amp;=B+1(A-B)\\
+&amp;=B+A-B\\
+&amp;=A.
+\end{aligned}
+\]</span></p>
+<p>For</p>
+<p><span class="math display">\[
+0&lt;w&lt;1,
+\]</span></p>
+<p>only a fraction of the displacement is applied.</p>
+<p>The selector <span class="math inline">\(w\)</span> therefore describes progress along the route from <span class="math inline">\(B\)</span> to <span class="math inline">\(A\)</span>:</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+w=0
+&amp;:\quad
+\text{at }B,\\
+0&lt;w&lt;1
+&amp;:\quad
+\text{between }B\text{ and }A,\\
+w=1
+&amp;:\quad
+\text{at }A.
+\end{aligned}
+}
+\]</span></p>
+</section>
+<section id="interpolation" class="level3">
+<h3 class="anchored" data-anchor-id="interpolation">Interpolation</h3>
+<p>The process of constructing intermediate values between known endpoints is called <strong>interpolation</strong>.</p>
+<p>For scalar endpoints <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, linear interpolation is</p>
+<p><span class="math display">\[
+\boxed{
+C(w)=B+w(A-B),
+\qquad
+0\leq w\leq1.
+}
+\]</span></p>
+<p>It is called linear interpolation because equal changes in <span class="math inline">\(w\)</span> produce equal fractions of the complete displacement.</p>
+<p>Suppose <span class="math inline">\(w\)</span> increases by an amount <span class="math inline">\(\delta\)</span>:</p>
+<p><span class="math display">\[
+w\longrightarrow w+\delta.
+\]</span></p>
+<p>The change in the interpolated value is</p>
+<p><span class="math display">\[
+\begin{aligned}
+C(w+\delta)-C(w)
+&amp;=
+\left[B+(w+\delta)(A-B)\right]
+-
+\left[B+w(A-B)\right]\\
+&amp;=
+\delta(A-B).
+\end{aligned}
+\]</span></p>
+<p>Thus,</p>
+<p><span class="math display">\[
+\boxed{
+C(w+\delta)-C(w)
+=
+\delta(A-B).
+}
+\]</span></p>
+<p>A fixed increase in <span class="math inline">\(w\)</span> always produces the same fraction of the endpoint displacement. The relationship has a constant rate of change with respect to <span class="math inline">\(w\)</span>:</p>
+<p><span class="math display">\[
+\frac{dC}{dw}=A-B.
+\]</span></p>
+<p>For the joint,</p>
+<p><span class="math display">\[
+\frac{dC}{dw}=60.
+\]</span></p>
+<p>An increase of</p>
+<p><span class="math display">\[
+0.1
+\]</span></p>
+<p>in progress produces an angular change of</p>
+<p><span class="math display">\[
+0.1(60)=6^\circ.
+\]</span></p>
+<p>The linearity lies in the relationship between progress and displacement.</p>
+</section>
+<section id="relative-position-is-preserved" class="level3">
+<h3 class="anchored" data-anchor-id="relative-position-is-preserved">Relative Position Is Preserved</h3>
+<p>Consider two progress values</p>
+<p><span class="math display">\[
+w_1
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+w_2.
+\]</span></p>
+<p>Their corresponding states are</p>
+<p><span class="math display">\[
+C(w_1)=B+w_1(A-B)
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+C(w_2)=B+w_2(A-B).
+\]</span></p>
+<p>Subtracting gives</p>
+<p><span class="math display">\[
+\begin{aligned}
+C(w_2)-C(w_1)
+&amp;=
+\left[B+w_2(A-B)\right]
+-
+\left[B+w_1(A-B)\right]\\
+&amp;=
+(w_2-w_1)(A-B).
+\end{aligned}
+\]</span></p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+\boxed{
+C(w_2)-C(w_1)
+=
+(w_2-w_1)(A-B).
+}
+\]</span></p>
+<p>The separation between two interpolated states is proportional to the separation between their weights.</p>
+<p>If</p>
+<p><span class="math display">\[
+w_2-w_1=\frac14,
+\]</span></p>
+<p>then the states differ by one quarter of the complete displacement:</p>
+<p><span class="math display">\[
+C(w_2)-C(w_1)
+=
+\frac14(A-B).
+\]</span></p>
+<p>This property explains why the values</p>
+<p><span class="math display">\[
+0,\quad\frac14,\quad\frac12,\quad\frac34,\quad1
+\]</span></p>
+<p>produce equally spaced positions along the interval from <span class="math inline">\(B\)</span> to <span class="math inline">\(A\)</span>.</p>
+</section>
+<section id="recovering-the-progress-from-an-intermediate-value" class="level3">
+<h3 class="anchored" data-anchor-id="recovering-the-progress-from-an-intermediate-value">Recovering the Progress from an Intermediate Value</h3>
+<p>For scalar endpoints with</p>
+<p><span class="math display">\[
+A\neq B,
+\]</span></p>
+<p>the interpolation equation can be solved for <span class="math inline">\(w\)</span>.</p>
+<p>Begin with</p>
+<p><span class="math display">\[
+C=B+w(A-B).
+\]</span></p>
+<p>Subtract <span class="math inline">\(B\)</span>:</p>
+<p><span class="math display">\[
+C-B=w(A-B).
+\]</span></p>
+<p>Divide by <span class="math inline">\(A-B\)</span>:</p>
+<p><span class="math display">\[
+\boxed{
+w=\frac{C-B}{A-B}.
+}
+\]</span></p>
+<p>The numerator</p>
+<p><span class="math display">\[
+C-B
+\]</span></p>
+<p>is the displacement from the starting point to the current state.</p>
+<p>The denominator</p>
+<p><span class="math display">\[
+A-B
+\]</span></p>
+<p>is the complete displacement from the starting point to the endpoint.</p>
+<p>Their ratio is therefore</p>
+<p><span class="math display">\[
+\boxed{
+w
+=
+\frac{\text{displacement already traveled}}
+{\text{complete displacement}}.
+}
+\]</span></p>
+<p>For the joint angle</p>
+<p><span class="math display">\[
+C=50,
+\]</span></p>
+<p>we obtain</p>
+<p><span class="math display">\[
+w
+=
+\frac{50-20}{80-20}
+=
+\frac{30}{60}
+=
+\frac12.
+\]</span></p>
+<p>The inverse relationship confirms that <span class="math inline">\(w\)</span> measures relative position between the endpoints.</p>
+</section>
+<section id="reversing-the-endpoints-reverses-the-parameter" class="level3">
+<h3 class="anchored" data-anchor-id="reversing-the-endpoints-reverses-the-parameter">Reversing the Endpoints Reverses the Parameter</h3>
+<p>Suppose the same interval is described from <span class="math inline">\(A\)</span> toward <span class="math inline">\(B\)</span> rather than from <span class="math inline">\(B\)</span> toward <span class="math inline">\(A\)</span>.</p>
+<p>The original interpolation is</p>
+<p><span class="math display">\[
+C(w)=wA+(1-w)B.
+\]</span></p>
+<p>If the endpoint labels are reversed, the expression becomes</p>
+<p><span class="math display">\[
+\widetilde{C}(u)=uB+(1-u)A.
+\]</span></p>
+<p>The same physical position is obtained when</p>
+<p><span class="math display">\[
+u=1-w.
+\]</span></p>
+<p>Indeed,</p>
+<p><span class="math display">\[
+\begin{aligned}
+\widetilde{C}(1-w)
+&amp;=(1-w)B+\bigl(1-(1-w)\bigr)A\\
+&amp;=(1-w)B+wA\\
+&amp;=C(w).
+\end{aligned}
+\]</span></p>
+<p>Thus,</p>
+<p><span class="math display">\[
+\boxed{
+\text{reversing the endpoints replaces }w\text{ by }1-w.
+}
+\]</span></p>
+<p>A position one quarter of the way from <span class="math inline">\(B\)</span> to <span class="math inline">\(A\)</span> is three quarters of the way from <span class="math inline">\(A\)</span> to <span class="math inline">\(B\)</span>.</p>
+<p>This shows that <span class="math inline">\(w\)</span> is not an absolute property of the intermediate value. It is relative to an ordered pair of endpoints.</p>
+</section>
+<section id="vector-endpoints" class="level3">
+<h3 class="anchored" data-anchor-id="vector-endpoints">Vector Endpoints</h3>
+<p>The endpoints need not be scalars. Let</p>
+<p><span class="math display">\[
+\mathbf{A},\mathbf{B}\in\mathbb{R}^{n}.
+\]</span></p>
+<p>Their displacement is</p>
+<p><span class="math display">\[
+\mathbf{A}-\mathbf{B}.
+\]</span></p>
+<p>The interpolated point is</p>
+<p><span class="math display">\[
+\boxed{
+\mathbf{C}(w)
+=
+\mathbf{B}
++
+w(\mathbf{A}-\mathbf{B}).
+}
+\]</span></p>
+<p>Equivalently,</p>
+<p><span class="math display">\[
+\boxed{
+\mathbf{C}(w)
+=
+w\mathbf{A}
++
+(1-w)\mathbf{B}.
+}
+\]</span></p>
+<p>For example, let</p>
+<p><span class="math display">\[
+\mathbf{B}
+=
+\begin{bmatrix}
+1\\
+2
+\end{bmatrix}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\mathbf{A}
+=
+\begin{bmatrix}
+7\\
+6
+\end{bmatrix}.
+\]</span></p>
+<p>The complete displacement is</p>
+<p><span class="math display">\[
+\mathbf{A}-\mathbf{B}
+=
+\begin{bmatrix}
+6\\
+4
+\end{bmatrix}.
+\]</span></p>
+<p>At</p>
+<p><span class="math display">\[
+w=\frac12,
+\]</span></p>
+<p>the applied displacement is</p>
+<p><span class="math display">\[
+\frac12
+\begin{bmatrix}
+6\\
+4
+\end{bmatrix}
+=
+\begin{bmatrix}
+3\\
+2
+\end{bmatrix}.
+\]</span></p>
+<p>Adding it to <span class="math inline">\(\mathbf{B}\)</span> gives</p>
+<p><span class="math display">\[
+\mathbf{C}\left(\frac12\right)
+=
+\begin{bmatrix}
+1\\
+2
+\end{bmatrix}
++
+\begin{bmatrix}
+3\\
+2
+\end{bmatrix}
+=
+\begin{bmatrix}
+4\\
+4
+\end{bmatrix}.
+\]</span></p>
+<p>The midpoint is therefore</p>
+<p><span class="math display">\[
+\frac{\mathbf{A}+\mathbf{B}}{2}
+=
+\begin{bmatrix}
+4\\
+4
+\end{bmatrix}.
+\]</span></p>
+<p>As <span class="math inline">\(w\)</span> varies from <span class="math inline">\(0\)</span> to <span class="math inline">\(1\)</span>, <span class="math inline">\(\mathbf{C}(w)\)</span> traces the straight line segment from <span class="math inline">\(\mathbf{B}\)</span> to <span class="math inline">\(\mathbf{A}\)</span>.</p>
+<p>For scalar endpoints, this segment is an interval. For vector endpoints, it is a geometric line segment in <span class="math inline">\(\mathbb{R}^{n}\)</span>.</p>
+</section>
+<section id="interpolation-remains-inside-the-segment" class="level3">
+<h3 class="anchored" data-anchor-id="interpolation-remains-inside-the-segment">Interpolation Remains Inside the Segment</h3>
+<p>When</p>
+<p><span class="math display">\[
+0\leq w\leq1,
+\]</span></p>
+<p>the applied displacement</p>
+<p><span class="math display">\[
+w(\mathbf{A}-\mathbf{B})
+\]</span></p>
+<p>ranges from zero displacement to the complete displacement.</p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+\mathbf{C}(w)
+\]</span></p>
+<p>remains on the segment connecting <span class="math inline">\(\mathbf{B}\)</span> and <span class="math inline">\(\mathbf{A}\)</span>.</p>
+<p>This is the geometric meaning of a convex combination of two points:</p>
+<p><span class="math display">\[
+\boxed{
+\left\{
+w\mathbf{A}+(1-w)\mathbf{B}
+:
+0\leq w\leq1
+\right\}
+=
+\text{line segment from }\mathbf{B}\text{ to }\mathbf{A}.
+}
+\]</span></p>
+<p>The nonnegative complementary weights ensure that the point remains between the endpoints.</p>
+</section>
+<section id="weights-outside-the-interval" class="level3">
+<h3 class="anchored" data-anchor-id="weights-outside-the-interval">Weights Outside the Interval</h3>
+<p>The algebraic expression</p>
+<p><span class="math display">\[
+C(w)=B+w(A-B)
+\]</span></p>
+<p>is defined for values of <span class="math inline">\(w\)</span> outside <span class="math inline">\([0,1]\)</span>. However, the geometric meaning changes.</p>
+<p>Suppose</p>
+<p><span class="math display">\[
+w&gt;1.
+\]</span></p>
+<p>Then more than the complete displacement is applied. For the joint,</p>
+<p><span class="math display">\[
+w=1.25
+\]</span></p>
+<p>gives</p>
+<p><span class="math display">\[
+\begin{aligned}
+C(1.25)
+&amp;=20+1.25(60)\\
+&amp;=20+75\\
+&amp;=95.
+\end{aligned}
+\]</span></p>
+<p>The result lies beyond the final endpoint <span class="math inline">\(80\)</span>.</p>
+<p>Suppose</p>
+<p><span class="math display">\[
+w&lt;0.
+\]</span></p>
+<p>Then the displacement is applied in the opposite direction. For</p>
+<p><span class="math display">\[
+w=-0.25,
+\]</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+C(-0.25)
+&amp;=20-0.25(60)\\
+&amp;=20-15\\
+&amp;=5.
+\end{aligned}
+\]</span></p>
+<p>The result lies beyond the starting endpoint <span class="math inline">\(20\)</span> in the direction away from <span class="math inline">\(80\)</span>.</p>
+<p>This behavior is called <strong>extrapolation</strong>.</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+0\leq w\leq1
+&amp;:\quad
+\text{interpolation between the endpoints},\\
+w&lt;0
+&amp;:\quad
+\text{extrapolation beyond }B,\\
+w&gt;1
+&amp;:\quad
+\text{extrapolation beyond }A.
+\end{aligned}
+}
+\]</span></p>
+<p>The formula has not changed. The domain assigned to <span class="math inline">\(w\)</span> determines whether the result is interpreted as interpolation or extrapolation.</p>
+</section>
+<section id="complementary-weights-during-extrapolation" class="level3">
+<h3 class="anchored" data-anchor-id="complementary-weights-during-extrapolation">Complementary Weights During Extrapolation</h3>
+<p>When</p>
+<p><span class="math display">\[
+w&gt;1,
+\]</span></p>
+<p>the complementary coefficient</p>
+<p><span class="math display">\[
+1-w
+\]</span></p>
+<p>is negative.</p>
+<p>For example, if</p>
+<p><span class="math display">\[
+w=1.25,
+\]</span></p>
+<p>then</p>
+<p><span class="math display">\[
+1-w=-0.25.
+\]</span></p>
+<p>The expression becomes</p>
+<p><span class="math display">\[
+1.25A-0.25B.
+\]</span></p>
+<p>The coefficients still sum to one:</p>
+<p><span class="math display">\[
+1.25+(-0.25)=1,
+\]</span></p>
+<p>so the transformation remains translation-consistent. However, the coefficients are no longer both nonnegative.</p>
+<p>This distinguishes an <strong>affine combination</strong> from a <strong>convex combination</strong>.</p>
+<p>An affine combination requires weights summing to one:</p>
+<p><span class="math display">\[
+u+v=1.
+\]</span></p>
+<p>A convex combination additionally requires nonnegative weights:</p>
+<p><span class="math display">\[
+u\geq0,
+\qquad
+v\geq0.
+\]</span></p>
+<p>Thus,</p>
+<p><span class="math display">\[
+\boxed{
+\text{convex combination}
+=
+\text{affine combination with nonnegative weights}.
+}
+\]</span></p>
+<p>Interpolation uses a convex combination. Extrapolation uses an affine combination whose weights may include a negative value.</p>
+</section>
+<section id="a-geometric-interpretation-of-the-weight" class="level3">
+<h3 class="anchored" data-anchor-id="a-geometric-interpretation-of-the-weight">A Geometric Interpretation of the Weight</h3>
+<p>The weight <span class="math inline">\(w\)</span> can now be understood in three equivalent ways.</p>
+<p>In the complementary-share form,</p>
+<p><span class="math display">\[
+wA+(1-w)B,
+\]</span></p>
+<p>it is the share assigned to endpoint <span class="math inline">\(A\)</span>.</p>
+<p>In the displacement form,</p>
+<p><span class="math display">\[
+B+w(A-B),
+\]</span></p>
+<p>it is the fraction of the displacement from <span class="math inline">\(B\)</span> to <span class="math inline">\(A\)</span>.</p>
+<p>In the geometric form, it is the coordinate locating a point along the directed line through <span class="math inline">\(B\)</span> and <span class="math inline">\(A\)</span>.</p>
+<p>These interpretations agree because the expressions are algebraically equivalent:</p>
+<p><span class="math display">\[
+\boxed{
+wA+(1-w)B
+=
+B+w(A-B).
+}
+\]</span></p>
+<p>The first form emphasizes combination. The second emphasizes movement. The mathematical structure is the same.</p>
+</section>
+<section id="the-completed-construction" class="level3">
+<h3 class="anchored" data-anchor-id="the-completed-construction">The Completed Construction</h3>
+<p>The section began with two endpoint contributions:</p>
+<p><span class="math display">\[
+wA+(1-w)B.
+\]</span></p>
+<p>Algebraic rearrangement revealed</p>
+<p><span class="math display">\[
+B+w(A-B).
+\]</span></p>
+<p>The difference</p>
+<p><span class="math display">\[
+A-B
+\]</span></p>
+<p>is the complete directed displacement from <span class="math inline">\(B\)</span> to <span class="math inline">\(A\)</span>. The weight <span class="math inline">\(w\)</span> scales that displacement.</p>
+<p>For</p>
+<p><span class="math display">\[
+0\leq w\leq1,
+\]</span></p>
+<p>the result lies between the endpoints and performs interpolation.</p>
+<p>For</p>
+<p><span class="math display">\[
+w&lt;0
+\]</span></p>
+<p>or</p>
+<p><span class="math display">\[
+w&gt;1,
+\]</span></p>
+<p>the result lies outside the endpoint segment and performs extrapolation.</p>
+<p>The conceptual relationship is</p>
+<p><span class="math display">\[
+\boxed{
+\text{new state}
+=
+\text{starting state}
++
+\text{scaled displacement}.
+}
+\]</span></p>
+<p>The equation determines how the endpoints and weight combine. It does not by itself determine what <span class="math inline">\(w\)</span> means in a particular application. A weight may represent physical proportion, progress through time, uncertainty, responsibility, confidence, or another quantity. The next section will distinguish these interpretations and show why identical algebra does not imply identical semantics.</p>
+</section>
+</section>
+<section id="the-same-formula-can-carry-different-meanings" class="level2">
+<h2 class="anchored" data-anchor-id="the-same-formula-can-carry-different-meanings">11.4 The Same Formula Can Carry Different Meanings</h2>
+<p>The previous sections constructed <span class="math inline">\(C=wA+(1-w)B\)</span> and its equivalent displacement form <span class="math inline">\(C=B+w(A-B).\)</span> For <span class="math inline">\(A=80,\)</span> <span class="math inline">\(B=20,\)</span> <span class="math inline">\(w=\frac14,\)</span> the result is</p>
+<p><span class="math display">\[
+\begin{aligned}
+C
+&amp;=\frac14(80)+\frac34(20)\\
+&amp;=20+15\\
+&amp;=35.
+\end{aligned}
+\]</span></p>
+<p>The calculation is unambiguous. The number <span class="math inline">\(35\)</span> follows from the given endpoints and weights. What does <span class="math inline">\(35\)</span> represent?</p>
+<p>The equation alone cannot answer. The same numerical relationship can arise from several different models of the world. In one model, <span class="math inline">\(35\)</span> is an actual intermediate state. In another, it is an average of states that occurred at different times. In another, it is an expected value of mutually exclusive outcomes, even though the system never produces <span class="math inline">\(35\)</span> as an actual outcome. This leads to a fundamental distinction:</p>
+<p><span class="math display">\[
+\boxed{
+\text{algebraic form}
+\neq
+\text{semantic interpretation}.
+}
+\]</span></p>
+<p>The algebra states how quantities are combined. The surrounding problem states what those quantities and weights mean.</p>
+<section id="interpretation-1-an-actual-intermediate-state" class="level3">
+<h3 class="anchored" data-anchor-id="interpretation-1-an-actual-intermediate-state">Interpretation 1: An Actual Intermediate State</h3>
+<p>For the robotic joint, let <span class="math inline">\(B=20^\circ\)</span> be the starting angle and <span class="math inline">\(A=80^\circ\)</span> be the final angle. If <span class="math inline">\(w=\frac14\)</span> represents one-quarter progress from <span class="math inline">\(B\)</span> to <span class="math inline">\(A\)</span>, then <span class="math inline">\(C=35^\circ\)</span> is the joint’s actual commanded position. The joint is not at <span class="math inline">\(20^\circ\)</span> for part of the calculation and <span class="math inline">\(80^\circ\)</span> for another part. It is commanded to one intermediate physical state <span class="math inline">\(35^\circ.\)</span></p>
+<p>The displacement interpretation is <span class="math inline">\(C=B+w(A-B).\)</span> Here, <span class="math inline">\(A-B=60^\circ\)</span> is the complete angular displacement and <span class="math inline">\(w(A-B)=15^\circ\)</span> is the portion already applied. The output <span class="math inline">\(35^\circ\)</span> belongs to the same state space as the endpoints. It is a genuine point between them. This interpretation is appropriate when intermediate states are physically and conceptually meaningful.</p>
+</section>
+<section id="interpretation-2-a-physical-mixture" class="level3">
+<h3 class="anchored" data-anchor-id="interpretation-2-a-physical-mixture">Interpretation 2: A Physical Mixture</h3>
+<p>Suppose <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> represent concentrations of the same substance in two solutions <span class="math inline">\(A=80\%,\)</span> <span class="math inline">\(B=20\%.\)</span> Suppose one-quarter of the final mixture comes from solution <span class="math inline">\(A\)</span> and three-quarters comes from solution <span class="math inline">\(B:w=\frac14,\)</span> <span class="math inline">\(1-w=\frac34.\)</span> Under a linear mixture model, the resulting concentration is</p>
+<p><span class="math display">\[
+\begin{aligned}
+C
+&amp;=\frac14(80\%)+\frac34(20\%)\\
+&amp;=20\%+15\%\\
+&amp;=35\%.
+\end{aligned}
+\]</span></p>
+<p>Here, the weights represent physical shares of the final mixture. The output <span class="math inline">\(35\%\)</span> is an actual property of the combined material. The equation is valid because the property being modeled is assumed to combine linearly with the mixture proportions. This assumption should not be treated as automatic. Some physical properties do not mix linearly. Temperature, volume, chemical activity, color perception, and other quantities may require additional physical laws or nonlinear models. The formula <span class="math inline">\(wA+(1-w)B\)</span> describes a physical mixture only when the modeled quantity obeys the required linear relationship. Thus the semantics include an assumption:</p>
+<p><span class="math display">\[
+\boxed{
+\text{mixture shares combine the chosen property linearly}.
+}
+\]</span></p>
+</section>
+<section id="interpretation-3-time-sharing" class="level3">
+<h3 class="anchored" data-anchor-id="interpretation-3-time-sharing">Interpretation 3: Time Sharing</h3>
+<p>Suppose a machine operates at power level</p>
+<p><span class="math display">\[
+A=80\text{ watts}
+\]</span></p>
+<p>for one-quarter of a time interval and at</p>
+<p><span class="math display">\[
+B=20\text{ watts}
+\]</span></p>
+<p>for the remaining three-quarters. Its average power over the interval is</p>
+<p><span class="math display">\[
+\begin{aligned}
+\bar{P}
+&amp;=\frac14(80)+\frac34(20)\\
+&amp;=35\text{ watts}.
+\end{aligned}
+\]</span></p>
+<p>The same weighted expression appears: <span class="math inline">\(\bar{P}=wA+(1-w)B.\)</span> But the machine may never operate at <span class="math inline">\(35\)</span> watts. Its actual instantaneous states are only</p>
+<p><span class="math display">\[
+80\text{ watts}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+20\text{ watts}.
+\]</span></p>
+<p>The number <span class="math inline">\(35\)</span> describes an average across time, not an intermediate instantaneous state. This differs fundamentally from the robotic-joint interpretation:</p>
+<ul>
+<li>the joint may actually occupy the intermediate angle <span class="math inline">\(35^\circ\)</span>;</li>
+<li>the time-sharing machine may alternate between <span class="math inline">\(80\)</span> and <span class="math inline">\(20\)</span> watts without ever occupying <span class="math inline">\(35\)</span> watts.</li>
+</ul>
+<p>The same number can therefore represent either a state or a summary of several states.</p>
+<p>The weight now means</p>
+<p><span class="math display">\[
+w
+=
+\text{fraction of time spent in state }A.
+\]</span></p>
+<p>The complementary weight means</p>
+<p><span class="math display">\[
+1-w
+=
+\text{fraction of time spent in state }B.
+\]</span></p>
+<p>Their sum is one because the two modes partition the complete time interval.</p>
+</section>
+<section id="interpretation-4-uncertainty-and-expected-value" class="level3">
+<h3 class="anchored" data-anchor-id="interpretation-4-uncertainty-and-expected-value">Interpretation 4: Uncertainty and Expected Value</h3>
+<p>Suppose a future quantity <span class="math inline">\(X\)</span> can take one of two mutually exclusive values:</p>
+<p><span class="math display">\[
+X=
+\begin{cases}
+80, &amp; \text{with probability }\frac14,\\
+20, &amp; \text{with probability }\frac34.
+\end{cases}
+\]</span></p>
+<p>The expected value is</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mathbb{E}[X]
+&amp;=\frac14(80)+\frac34(20)\\
+&amp;=35.
+\end{aligned}
+\]</span></p>
+<p>Again, the formula is</p>
+<p><span class="math display">\[
+\mathbb{E}[X]=wA+(1-w)B.
+\]</span></p>
+<p>Here, <span class="math inline">\(w\)</span> is neither geometric progress nor physical mixture proportion nor time fraction. It is a probability:</p>
+<p><span class="math display">\[
+w=P(X=A).
+\]</span></p>
+<p>Its complement is</p>
+<p><span class="math display">\[
+1-w=P(X=B).
+\]</span></p>
+<p>The expected value <span class="math inline">\(35\)</span> is a probability-weighted average over possible outcomes. The actual outcome is still either</p>
+<p><span class="math display">\[
+80
+\]</span></p>
+<p>or</p>
+<p><span class="math display">\[
+20.
+\]</span></p>
+<p>If the experiment is performed once, the result is not necessarily <span class="math inline">\(35\)</span>. Indeed, <span class="math inline">\(35\)</span> may not be a possible outcome at all. This distinction is essential:</p>
+<p><span class="math display">\[
+\boxed{
+\mathbb{E}[X]=35
+\quad\not\Longrightarrow\quad
+X=35.
+}
+\]</span></p>
+<p>The expected value is a summary of the probability distribution, not a prediction that the variable must equal its expectation on a particular trial. The uncertainty interpretation therefore differs from interpolation:</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+\text{interpolation}
+&amp;:\quad
+35\text{ is an admissible intermediate state},\\
+\text{expectation}
+&amp;:\quad
+35\text{ summarizes uncertainty over }20\text{ and }80.
+\end{aligned}
+}
+\]</span></p>
+</section>
+<section id="interpretation-5-combining-predictions" class="level3">
+<h3 class="anchored" data-anchor-id="interpretation-5-combining-predictions">Interpretation 5: Combining Predictions</h3>
+<p>Suppose two models produce predictions</p>
+<p><span class="math display">\[
+A=80
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+B=20.
+\]</span></p>
+<p>A combined predictor may use</p>
+<p><span class="math display">\[
+w=\frac14
+\]</span></p>
+<p>for the first model and</p>
+<p><span class="math display">\[
+1-w=\frac34
+\]</span></p>
+<p>for the second:</p>
+<p><span class="math display">\[
+\hat{y}
+=
+wA+(1-w)B
+=
+35.
+\]</span></p>
+<p>The output <span class="math inline">\(35\)</span> is a new prediction formed from the two model outputs.</p>
+<p>The weight might represent:</p>
+<ul>
+<li>a fixed design choice;</li>
+<li>validation performance;</li>
+<li>estimated reliability;</li>
+<li>an input-dependent learned value;</li>
+<li>the output of another model.</li>
+</ul>
+<p>The weighted prediction has the same algebraic form as interpolation and expectation. Its semantics depend on how the models and weights were constructed. If <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are predicted numerical values, then <span class="math inline">\(35\)</span> may be an admissible prediction even if neither model produced it individually. If <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are class labels encoded as numbers, directly averaging them may be meaningless. For example, averaging class identifier <code>1</code> and class identifier <code>3</code> to obtain <code>2</code> does not imply that class <code>2</code> is a meaningful compromise between the other classes. The values must belong to a space in which the weighted combination has a defined interpretation.</p>
+</section>
+<section id="interpretation-6-a-continuously-controlled-gate" class="level3">
+<h3 class="anchored" data-anchor-id="interpretation-6-a-continuously-controlled-gate">Interpretation 6: A Continuously Controlled Gate</h3>
+<p>Suppose <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are two candidate computational pathways. A controller produces <span class="math inline">\(w\in[0,1].\)</span> The output is <span class="math inline">\(C=wA+(1-w)B.\)</span> When <span class="math inline">\(w\approx1,\)</span> pathway <span class="math inline">\(A\)</span> dominates. When <span class="math inline">\(w\approx0,\)</span> pathway <span class="math inline">\(B\)</span> dominates. When <span class="math inline">\(w\approx\frac12,\)</span> both pathways contribute substantially. This structure is often called a <strong>soft gate</strong>. Unlike a binary gate, it does not necessarily suppress one pathway completely. The two contributions are <span class="math inline">\(wA\)</span> and <span class="math inline">\((1-w)B.\)</span> Both may be nonzero when <span class="math inline">\(0&lt;w&lt;1.\)</span> The word <em>gate</em> emphasizes control over contribution. The word <em>soft</em> indicates that control is graded rather than binary. This structure appears in mixture models, learned routing, neural gates, recurrent networks, attention-like mechanisms, and ensemble systems. The detailed meanings differ across those applications, but the common algebraic skeleton is complementary weighted contribution.</p>
+</section>
+<section id="one-number-can-describe-different-ontologies" class="level3">
+<h3 class="anchored" data-anchor-id="one-number-can-describe-different-ontologies">One Number Can Describe Different Ontologies</h3>
+<p>For the same values</p>
+<p><span class="math display">\[
+A=80,
+\qquad
+B=20,
+\qquad
+w=\frac14,
+\]</span></p>
+<p>the result is always</p>
+<p><span class="math display">\[
+35.
+\]</span></p>
+<p>But the object represented by <span class="math inline">\(35\)</span> changes:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 35%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Interpretation</th>
+<th>Meaning of <span class="math inline">\(w\)</span></th>
+<th>Meaning of <span class="math inline">\(35\)</span></th>
+<th style="text-align: center;">Must the system actually occupy <span class="math inline">\(35\)</span>?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Interpolation</td>
+<td>fraction of displacement</td>
+<td>intermediate state</td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr class="even">
+<td>Physical mixture</td>
+<td>material share</td>
+<td>property of mixture</td>
+<td style="text-align: center;">Usually, under the model</td>
+</tr>
+<tr class="odd">
+<td>Time sharing</td>
+<td>fraction of time</td>
+<td>temporal average</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr class="even">
+<td>Uncertainty</td>
+<td>probability of outcome <span class="math inline">\(A\)</span></td>
+<td>expected value</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr class="odd">
+<td>Model combination</td>
+<td>influence assigned to model <span class="math inline">\(A\)</span></td>
+<td>combined prediction</td>
+<td style="text-align: center;">Depends on output space</td>
+</tr>
+<tr class="even">
+<td>Soft gate</td>
+<td>activation of pathway <span class="math inline">\(A\)</span></td>
+<td>blended pathway output</td>
+<td style="text-align: center;">Usually as computed output</td>
+</tr>
+</tbody>
+</table>
+<p>These interpretations share the equation</p>
+<p><span class="math display">\[
+wA+(1-w)B.
+\]</span></p>
+<p>They do not share the same ontology—the same account of what kinds of things the quantities represent.</p>
+<p>An equation can preserve numerical structure while the meaning of its symbols changes from one application to another.</p>
+</section>
+<section id="a-weight-does-not-explain-itself" class="level3">
+<h3 class="anchored" data-anchor-id="a-weight-does-not-explain-itself">A Weight Does Not Explain Itself</h3>
+<p>Seeing</p>
+<p><span class="math display">\[
+w=0.8
+\]</span></p>
+<p>does not tell us whether <span class="math inline">\(w\)</span> is:</p>
+<ul>
+<li>an <span class="math inline">\(80\%\)</span> mixture proportion;</li>
+<li>an <span class="math inline">\(80\%\)</span> probability;</li>
+<li>an <span class="math inline">\(80\%\)</span> progress value;</li>
+<li>an <span class="math inline">\(80\%\)</span> time allocation;</li>
+<li>a learned gate activation;</li>
+<li>a manually chosen model weight.</li>
+</ul>
+<p>The interval constraint</p>
+<p><span class="math display">\[
+0\leq w\leq1
+\]</span></p>
+<p>is shared by all these interpretations. It does not identify which interpretation applies.</p>
+<p>Even the condition</p>
+<p><span class="math display">\[
+w+(1-w)=1
+\]</span></p>
+<p>only states complementarity. It does not state what is being divided into complementary shares.</p>
+<p>The semantics must come from the problem definition:</p>
+<p><span class="math display">\[
+\boxed{
+\text{weight value}
++
+\text{constraint}
+\not\Longrightarrow
+\text{weight meaning}.
+}
+\]</span></p>
+<p>The reader must ask:</p>
+<blockquote class="blockquote">
+<p>What complete quantity is being divided?</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>What does each share measure?</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Why must the shares sum to one?</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>What does the weighted output represent?</p>
+</blockquote>
+</section>
+<section id="confidence-is-not-automatically-probability" class="level3">
+<h3 class="anchored" data-anchor-id="confidence-is-not-automatically-probability">Confidence Is Not Automatically Probability</h3>
+<p>In machine-learning discussions, a number in <span class="math inline">\([0,1]\)</span> is often casually called confidence. This word can hide several different mathematical objects.</p>
+<p>A gate value</p>
+<p><span class="math display">\[
+w=0.8
+\]</span></p>
+<p>may mean that pathway <span class="math inline">\(A\)</span> receives <span class="math inline">\(80\%\)</span> of the combined influence. It does not automatically mean:</p>
+<p><span class="math display">\[
+P(A\text{ is correct})=0.8.
+\]</span></p>
+<p>For the weight to be interpreted as a probability, it must belong to a probability model with defined events and appropriate normalization.</p>
+<p>Likewise, a model score may lie between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span> without being statistically calibrated. Numerical range alone does not establish probabilistic meaning.</p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+\boxed{
+w\in[0,1]
+\quad\not\Longrightarrow\quad
+w\text{ is a probability}.
+}
+\]</span></p>
+<p>Probability is a semantic and mathematical role, not merely a numerical interval.</p>
+</section>
+<section id="soft-selection-does-not-always-approximate-hard-selection" class="level3">
+<h3 class="anchored" data-anchor-id="soft-selection-does-not-always-approximate-hard-selection">Soft Selection Does Not Always Approximate Hard Selection</h3>
+<p>A soft gate is sometimes used as a smooth approximation to a hard decision. As the weight approaches an endpoint,</p>
+<p><span class="math display">\[
+w\rightarrow1,
+\]</span></p>
+<p>the output approaches <span class="math inline">\(A\)</span>:</p>
+<p><span class="math display">\[
+wA+(1-w)B\rightarrow A.
+\]</span></p>
+<p>As</p>
+<p><span class="math display">\[
+w\rightarrow0,
+\]</span></p>
+<p>the output approaches <span class="math inline">\(B\)</span>.</p>
+<p>In such a model, soft selection may be a temporary or differentiable substitute for hard selection.</p>
+<p>In other applications, the mixture is the intended final behavior. An ensemble may deliberately combine models. A physical mixture may genuinely contain both components. An expected value is not an approximation to one outcome; it is a summary of a distribution.</p>
+<p>Thus the phrase <em>soft selection</em> covers at least two purposes:</p>
+<p><span class="math display">\[
+\boxed{
+\begin{aligned}
+\text{soft as approximation}
+&amp;:\quad
+\text{eventually imitate a hard choice},\\
+\text{soft as model}
+&amp;:\quad
+\text{represent genuine simultaneous influence}.
+\end{aligned}
+}
+\]</span></p>
+<p>The purpose must be determined from context.</p>
+</section>
+<section id="why-continuous-weights-matter-for-learning" class="level3">
+<h3 class="anchored" data-anchor-id="why-continuous-weights-matter-for-learning">Why Continuous Weights Matter for Learning</h3>
+<p>The output</p>
+<p><span class="math display">\[
+C(w)=wA+(1-w)B
+\]</span></p>
+<p>changes continuously with <span class="math inline">\(w\)</span>. Its derivative is</p>
+<p><span class="math display">\[
+\frac{dC}{dw}=A-B.
+\]</span></p>
+<p>A small change <span class="math inline">\(\delta\)</span> in the weight produces</p>
+<p><span class="math display">\[
+C(w+\delta)-C(w)=\delta(A-B).
+\]</span></p>
+<p>This predictable sensitivity allows an optimization process to adjust <span class="math inline">\(w\)</span> gradually.</p>
+<p>A binary selector</p>
+<p><span class="math display">\[
+I\in\{0,1\}
+\]</span></p>
+<p>cannot be changed by an arbitrarily small amount while remaining binary. It must jump from one admissible value to the other.</p>
+<p>A continuous weight permits local adjustments:</p>
+<p><span class="math display">\[
+0.40
+\longrightarrow
+0.41
+\longrightarrow
+0.42.
+\]</span></p>
+<p>This does not by itself explain how learning occurs, but it establishes why soft gates are compatible with gradient-based adjustment. Their outputs vary continuously with their parameters.</p>
+<p>The mathematical transition is</p>
+<p><span class="math display">\[
+\boxed{
+\text{discrete choice}
+\rightarrow
+\text{continuous influence}
+\rightarrow
+\text{adjustable contribution}.
+}
+\]</span></p>
+<p>This will become important when weights are produced or learned by machine-learning models.</p>
+</section>
+<section id="the-complete-meaning-first-procedure" class="level3">
+<h3 class="anchored" data-anchor-id="the-complete-meaning-first-procedure">The Complete Meaning-First Procedure</h3>
+<p>When encountering</p>
+<p><span class="math display">\[
+C=wA+(1-w)B,
+\]</span></p>
+<p>the reader should not immediately label it interpolation, probability, expectation, or attention.</p>
+<p>Instead, ask:</p>
+<ol type="1">
+<li>What do <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> represent?</li>
+<li>Do they belong to a space in which addition is meaningful?</li>
+<li>What does multiplication by <span class="math inline">\(w\)</span> mean?</li>
+<li>What complete quantity is divided into the shares <span class="math inline">\(w\)</span> and <span class="math inline">\(1-w\)</span>?</li>
+<li>Is <span class="math inline">\(C\)</span> an actual state, a mixture property, a temporal average, an expected value, or a prediction?</li>
+<li>Is <span class="math inline">\(w\)</span> fixed, observed, calculated, estimated, or learned?</li>
+<li>Are intermediate outputs meaningful in the problem domain?</li>
+</ol>
+<p>Only after these questions are answered should the algebra receive an application-specific name.</p>
+<p>The safe reasoning order is</p>
+<p><span class="math display">\[
+\boxed{
+\text{problem semantics}
+\rightarrow
+\text{meaning of endpoints}
+\rightarrow
+\text{meaning of weights}
+\rightarrow
+\text{weighted equation}
+\rightarrow
+\text{interpretation of output}.
+}
+\]</span></p>
+</section>
+<section id="the-completed-structure-of-soft-selection" class="level3">
+<h3 class="anchored" data-anchor-id="the-completed-structure-of-soft-selection">The Completed Structure of Soft Selection</h3>
+<p>This chapter began with binary selection:</p>
+<p><span class="math display">\[
+I\in\{0,1\}.
+\]</span></p>
+<p>A hard selector chooses one of two endpoints:</p>
+<p><span class="math display">\[
+IA+(1-I)B.
+\]</span></p>
+<p>The selector domain was expanded to</p>
+<p><span class="math display">\[
+w\in[0,1],
+\]</span></p>
+<p>allowing partial influence.</p>
+<p>Complementary shares produced the convex combination</p>
+<p><span class="math display">\[
+wA+(1-w)B.
+\]</span></p>
+<p>Algebraic rearrangement revealed the displacement form</p>
+<p><span class="math display">\[
+B+w(A-B).
+\]</span></p>
+<p>For weights in <span class="math inline">\([0,1]\)</span>, the expression interpolates between the endpoints. For weights outside that interval, it extrapolates along the same affine line.</p>
+<p>Finally, the same equation was shown to support several distinct interpretations. The algebraic skeleton remains stable:</p>
+<p><span class="math display">\[
+\boxed{
+C=wA+(1-w)B.
+}
+\]</span></p>
+<p>The semantic model determines whether <span class="math inline">\(C\)</span> is an intermediate state, physical mixture, time average, expectation, combined prediction, or softly gated output.</p>
+<p>The chapter’s final principle is therefore</p>
+<p><span class="math display">\[
+\boxed{
+\text{the equation determines how contributions combine;
+the problem determines what those contributions mean}.
+}
+\]</span></p>
+<p>Soft selection has introduced two complementary weights. The next chapter will generalize this structure from two alternatives to many:</p>
+<p><span class="math display">\[
+w_1A_1+w_2A_2+\cdots+w_nA_n.
+\]</span></p>
+<p>That generalization will require us to determine what conditions the weights must satisfy, why normalization matters, and how weighted combinations connect expectations, mixtures, model ensembles, and attention.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/hafizarslanamjad\.github\.io\/mathematical-understanding\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Articles and books by Hafiz Arslan Amjad</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="https://github.com/hafizarslanamjad/mathematical-understanding">
+<p>Source</p>
+</a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

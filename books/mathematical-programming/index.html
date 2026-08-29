@@ -165,6 +165,10 @@ window.Quarto = {
   <li><a href="#chapter-5-masks-turning-many-conditions-into-one-mathematical-object" id="toc-chapter-5-masks-turning-many-conditions-into-one-mathematical-object" class="nav-link" data-scroll-target="#chapter-5-masks-turning-many-conditions-into-one-mathematical-object"><span class="header-section-number">1.5</span> Chapter 5 — Masks: Turning Many Conditions into One Mathematical Object</a></li>
   <li><a href="#chapter-6-selective-updates" id="toc-chapter-6-selective-updates" class="nav-link" data-scroll-target="#chapter-6-selective-updates"><span class="header-section-number">1.6</span> Chapter 6 — Selective Updates</a></li>
   <li><a href="#chapter-9-from-element-by-element-thinking-to-vector-thinking" id="toc-chapter-9-from-element-by-element-thinking-to-vector-thinking" class="nav-link" data-scroll-target="#chapter-9-from-element-by-element-thinking-to-vector-thinking"><span class="header-section-number">1.7</span> Chapter 9 — From Element-by-Element Thinking to Vector Thinking</a></li>
+  <li><a href="#chapter-10-dimension-reduction" id="toc-chapter-10-dimension-reduction" class="nav-link" data-scroll-target="#chapter-10-dimension-reduction"><span class="header-section-number">1.8</span> Chapter 10 — Dimension Reduction</a></li>
+  <li><a href="#chapter-11-from-hard-selection-to-soft-selection" id="toc-chapter-11-from-hard-selection-to-soft-selection" class="nav-link" data-scroll-target="#chapter-11-from-hard-selection-to-soft-selection"><span class="header-section-number">1.9</span> Chapter 11 — From Hard Selection to Soft Selection</a></li>
+  <li><a href="#chapter-12-weighted-combinations" id="toc-chapter-12-weighted-combinations" class="nav-link" data-scroll-target="#chapter-12-weighted-combinations"><span class="header-section-number">1.10</span> Chapter 12 — Weighted Combinations</a></li>
+  <li><a href="#chapter-13-from-scores-to-shares" id="toc-chapter-13-from-scores-to-shares" class="nav-link" data-scroll-target="#chapter-13-from-scores-to-shares"><span class="header-section-number">1.11</span> Chapter 13 — From Scores to Shares</a></li>
   </ul></li>
   <li><a href="#how-this-book-is-being-written" id="toc-how-this-book-is-being-written" class="nav-link" data-scroll-target="#how-this-book-is-being-written"><span class="header-section-number">2</span> How This Book Is Being Written</a></li>
   <li><a href="#intended-journey" id="toc-intended-journey" class="nav-link" data-scroll-target="#intended-journey"><span class="header-section-number">3</span> Intended Journey</a></li>
@@ -245,6 +249,22 @@ window.Quarto = {
 <section id="chapter-9-from-element-by-element-thinking-to-vector-thinking" class="level3" data-number="1.7">
 <h3 data-number="1.7" class="anchored" data-anchor-id="chapter-9-from-element-by-element-thinking-to-vector-thinking"><span class="header-section-number">1.7</span> <a href="../../books/mathematical-programming/chapters/09-vector-thinking/index.html">Chapter 9 — From Element-by-Element Thinking to Vector Thinking</a></h3>
 <p>This chapter develops the transition from repeated scalar operations to transformations of structured collections. It separates execution order from mathematical dependency, constructs coordinatewise lifting, teaches componentwise interpretation of vector expressions, and distinguishes independent elementwise transformations from locally and globally coupled transformations.</p>
+</section>
+<section id="chapter-10-dimension-reduction" class="level3" data-number="1.8">
+<h3 data-number="1.8" class="anchored" data-anchor-id="chapter-10-dimension-reduction"><span class="header-section-number">1.8</span> <a href="../../books/mathematical-programming/chapters/10-dimension-reduction/index.html">Chapter 10 — Dimension Reduction</a></h3>
+<p>This chapter examines computations in which many values are deliberately reduced into a smaller result. It distinguishes different reductions by the information they preserve, separates maximum value from maximum position, develops axis-based reduction, and interprets reduction as a controlled loss of dimensional information.</p>
+</section>
+<section id="chapter-11-from-hard-selection-to-soft-selection" class="level3" data-number="1.9">
+<h3 data-number="1.9" class="anchored" data-anchor-id="chapter-11-from-hard-selection-to-soft-selection"><span class="header-section-number">1.9</span> <a href="../../books/mathematical-programming/chapters/11-hard-and-soft-selection/index.html">Chapter 11 — From Hard Selection to Soft Selection</a></h3>
+<p>This chapter relaxes binary selection into graded contribution. It begins with the limitations of choosing only zero or one, derives complementary shares through <span class="math inline">\(wA+(1-w)B\)</span>, interprets <span class="math inline">\(B+w(A-B)\)</span> as movement from a baseline, and distinguishes interpolation, extrapolation, mixture, expectation, and soft gating.</p>
+</section>
+<section id="chapter-12-weighted-combinations" class="level3" data-number="1.10">
+<h3 data-number="1.10" class="anchored" data-anchor-id="chapter-12-weighted-combinations"><span class="header-section-number">1.10</span> <a href="../../books/mathematical-programming/chapters/12-weighted-combinations/index.html">Chapter 12 — Weighted Combinations</a></h3>
+<p>This chapter generalizes selection from two alternatives to many. It develops one-hot choice, graded shares, weighted sums, weighted averages, and convex combinations, then shows how the same algebraic structure supports expectation, mixtures, model ensembles, and attention while preserving their different meanings.</p>
+</section>
+<section id="chapter-13-from-scores-to-shares" class="level3" data-number="1.11">
+<h3 data-number="1.11" class="anchored" data-anchor-id="chapter-13-from-scores-to-shares"><span class="header-section-number">1.11</span> <a href="../../books/mathematical-programming/chapters/13-normalizing-scores/index.html">Chapter 13 — From Scores to Shares</a></h3>
+<p>This chapter explains how unrestricted numerical scores become normalized weights. It derives normalization from part-to-whole reasoning, examines why ordinary division fails for arbitrary signed scores, derives exponentiation from the relationship between score differences and weight ratios, and constructs softmax as a smooth, stable allocation mechanism.</p>
 </section>
 </section>
 <section id="how-this-book-is-being-written" class="level2" data-number="2">
