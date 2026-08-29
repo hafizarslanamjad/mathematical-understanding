@@ -1,0 +1,2329 @@
+---
+title: "Chapter 11 — From Hard Selection to Soft Selection"
+subtitle: "From Binary Choice to Graded Contribution"
+description: "A chapter about relaxing zero-or-one selection into continuous allocation, complementary shares, interpolation, extrapolation, mixtures, expectations, and soft mathematical gates."
+number-sections: false
+---
+
+## 11.1 When Zero and One Are Too Restrictive
+
+Consider a robotic joint that can move between two reference angles. Its initial reference angle is $20^\circ,$ and its final reference angle is $80^\circ.$ A binary program could choose one of the two angles:
+
+```python
+if move_to_final_position:
+    angle = 80
+else:
+    angle = 20
+```
+
+Let the Boolean condition be represented by the binary indicator $I\in\{0,1\}.$ The algebraic selector is
+
+$$
+I(80)+(1-I)(20).
+$$
+
+When $I=0,$ the result is
+
+$$
+0(80)+(1-0)(20)=20.
+$$
+
+When $I=1,$ the result is
+
+$$
+1(80)+(1-1)(20)=80.
+$$
+
+The robot is commanded either to the initial reference angle or to the final reference angle. There is no third possible output. Now suppose the requirement changes. The joint should move gradually from $20^\circ$ to $80^\circ$. A control value should describe how far the movement has progressed. At the beginning of the movement, the progress should be $0.$ At the end, the progress should be $1.$ Halfway through the movement, the progress should become $\frac12.$ A quarter of the way through, the progress should become $\frac14.$ Therefore, the control value must now represent more than two states:
+
+$$
+0,
+\quad
+\frac14,
+\quad
+\frac12,
+\quad
+\frac34,
+\quad
+1,
+$$
+
+as well as every intermediate real value between $0$ and $1$. But A binary indicator cannot represent this requirement because its domain contains only $\{0,1\}.$ Instead, the new control value must belong to the interval $[0,1].$ Let this value be denoted by
+
+$$
+w\in[0,1].
+$$
+
+The symbol $w$ is no longer a Boolean indicator. It is a graded quantity. Its numerical value records a degree of progress between two endpoints. The binary set $\{0,1\}$ contains two isolated values. There is no admissible binary value strictly between them. If $I\in\{0,1\},$ then the statements $0<I<1$ and $I=\frac12$ are impossible. This makes binary indicators suitable for propositions:
+
+- the condition is false or true;
+- the gate is closed or open;
+- the item is excluded or included;
+- the first branch or the second branch is selected.
+
+These situations require mutually exclusive states. For the robotic joint, a binary selector can represent:
+
+$$
+\text{use the initial reference}
+$$
+
+or
+
+$$
+\text{use the final reference}.
+$$
+
+It cannot represent:
+
+$$
+\text{move halfway from the initial reference to the final reference}.
+$$
+
+The interval
+
+$$
+[0,1]
+=
+\{w\in\mathbb{R}:0\leq w\leq1\}
+$$
+
+however contains infinitely many values. The endpoints retain their familiar meanings:
+
+$$
+w=0
+\quad\text{represents no progress toward the final state},
+$$
+
+and
+
+$$
+w=1
+\quad\text{represents complete progress toward the final state}.
+$$
+
+Intermediate values represent partial progress:
+
+$$
+w=\frac14
+\quad\text{represents one quarter of the movement},
+$$
+
+$$
+w=\frac12
+\quad\text{represents one half of the movement},
+$$
+
+and
+
+$$
+w=\frac34
+\quad\text{represents three quarters of the movement}.
+$$
+
+Unlike a Boolean value, $w$ does not answer only “which state?” It answers “to what degree?” This produces a conceptual transition:
+
+$$
+\boxed{
+\begin{aligned}
+I\in\{0,1\}
+&:\quad
+\text{exclusive state},\\
+w\in[0,1]
+&:\quad
+\text{degree between states}.
+\end{aligned}
+}
+$$
+
+### The Output Must Also Admit Intermediate States
+
+The angular distance between the two reference positions is
+
+$$
+80-20=60^\circ.
+$$
+
+If the joint has completed one quarter of this movement, it has traveled
+
+$$
+\frac14(60)=15^\circ
+$$
+
+from the starting angle. Its position is therefore
+
+$$
+20+15=35^\circ.
+$$
+
+At half progress, it has traveled
+
+$$
+\frac12(60)=30^\circ,
+$$
+
+so its angle is
+
+$$
+20+30=50^\circ.
+$$
+
+At three-quarter progress, it has traveled
+
+$$
+\frac34(60)=45^\circ,
+$$
+
+so its angle is
+
+$$
+20+45=65^\circ.
+$$`
+
+The output set is no longer $\{20,80\}.$ It is the entire interval $[20,80].$ Every admissible progress value should correspond to an admissible intermediate angle. The input and output structures have both changed:
+
+$$
+\boxed{
+\begin{aligned}
+\text{hard selection}
+&:\quad
+\{0,1\}\longrightarrow\{20,80\},\\
+\text{graded transition}
+&:\quad
+[0,1]\longrightarrow[20,80].
+\end{aligned}
+}
+$$
+
+The first relationship chooses between two isolated outputs. The second must map a continuous interval of control values into a continuous interval of states. Allowing intermediate states does not mean that any progress value may produce any angle. The ordering must be preserved. If $w_a<w_b,$ then the angle associated with $w_a$ should not lie farther toward $80^\circ$ than the angle associated with $w_b$.
+
+For example, $\frac14<\frac12,$ so the quarter-progress angle $35^\circ$ must occur before the halfway angle $50^\circ.$ The distance traveled should also correspond proportionally to the progress value. Half progress should apply half of the complete displacement. One-quarter progress should apply one quarter of it. Thus the control value $w$ has a defined semantic role:
+
+$$
+\boxed{
+w
+=
+\text{fraction of the complete transition that has been applied}.
+}
+$$
+
+The problem is not merely to generate numbers between $20$ and $80$. It is to preserve a proportional relationship between progress and displacement.
+
+### Partial Activation Requires a New Interpretation of Multiplication
+
+For a binary gate, $Ix$ has two possible behaviors:
+
+$$
+0x=0,
+$$
+
+$$
+1x=x.
+$$
+
+When the gate is allowed to take an intermediate value $w\in[0,1]$ then the multiplication produces partial magnitude $wx.$ For example, $\frac14x$ represents one quarter of $x$, $\frac12x$ represents one half of $x$, and $\frac34x$ represents three quarters of $x$. The operation has moved from binary preservation or suppression to graded scaling. Binary gating is therefore a special case of graded scaling. The values $0$ and $1$ select the two extreme behaviors of multiplication, while intermediate weights produce intermediate magnitudes. However, scaling one endpoint alone does not yet solve the two-endpoint transition. The expression $w(80)$ produces $0$ when $w=0$, but the required starting angle is $20,$ not zero for our current problem. Similarly, adding the starting angle unconditionally, $20+w(80),$ would produce $100$ when $w=1$, not $80$. The problem requires coordinated contributions from both endpoint values. As the influence of one endpoint increases, the influence of the other must decrease.
+
+At the beginning, when $w=0,$ then the final endpoint $80$ should have no influence, while the starting endpoint $20$ should have complete influence. At the end, $w=1,$ the final endpoint should have complete influence, while the starting endpoint should have no influence. At half progress, $w=\frac12,$ the two endpoints should have equal influence. The required influence pattern is:
+
+| Progress toward $80$ | Influence of $80$ | Influence of $20$ |
+|---:|---:|---:|
+| $0$ | $0$ | $1$ |
+| $\frac14$ | $\frac14$ | $\frac34$ |
+| $\frac12$ | $\frac12$ | $\frac12$ |
+| $\frac34$ | $\frac34$ | $\frac14$ |
+| $1$ | $1$ | $0$ |
+
+The two influences move in opposite directions. When the share assigned to $80$ increases, the share assigned to $20$ decreases by the same amount. They must also account for one complete output:
+
+$$
+\text{share of }80
++
+\text{share of }20
+=
+1.
+$$
+
+This requirement extends the complementarity of binary gates into a continuous setting. For a binary indicator,
+
+$$
+I+(1-I)=1.
+$$
+
+For a graded selector, we need two shares that also sum to one for every
+
+$$
+w\in[0,1].
+$$
+
+The new construction problem is therefore:
+
+> If $w$ represents the share of influence assigned to the final endpoint, what expression represents the complementary share assigned to the starting endpoint?
+
+Once these two shares have been constructed, they can be used to determine how much each endpoint contributes to the intermediate state. We therefore need two shares:
+
+$$
+\text{share assigned to }80=w,
+$$
+
+and
+
+$$
+\text{share assigned to }20=q.
+$$
+
+The symbol $q$ temporarily represents the unknown second share. The two shares must account for one complete allocation:
+
+$$
+w+q=1.
+$$
+
+Solving for $q$ gives
+
+$$
+q=1-w.
+$$
+
+The complementary share is therefore
+
+$$
+\boxed{
+1-w.
+}
+$$
+
+This expression is not introduced by analogy alone. It is forced by the requirement that the two shares sum to one.
+
+Suppose the final endpoint receives the share
+
+$$
+w=\frac14.
+$$
+
+One quarter of the total influence has been assigned. The amount remaining is
+
+$$
+1-\frac14=\frac34.
+$$
+
+Therefore the starting endpoint must receive
+
+$$
+\frac34.
+$$
+
+If
+
+$$
+w=\frac12,
+$$
+
+the remaining share is
+
+$$
+1-\frac12=\frac12.
+$$
+
+If
+
+$$
+w=\frac34,
+$$
+
+the remaining share is
+
+$$
+1-\frac34=\frac14.
+$$
+
+At the endpoints,
+
+$$
+w=0
+\quad\Longrightarrow\quad
+1-w=1,
+$$
+
+and
+
+$$
+w=1
+\quad\Longrightarrow\quad
+1-w=0.
+$$
+
+Thus the two shares behave oppositely while preserving their total:
+
+$$
+\boxed{
+w+(1-w)=1.
+}
+$$
+
+The relationship is valid for every real value of $w$, but restricting $0\leq w\leq1$ ensures that both shares are nonnegative $w\geq0,$ $1-w\geq0.$ The pair $(w,1-w)$ therefore divides one complete unit of influence into two nonnegative parts.
+
+A share alone is dimensionless. It describes a fraction, not an angle. To determine how much an endpoint contributes, multiply its value by its assigned share. The contribution of the final angle is $w(80).$ The contribution of the starting angle is $(1-w)(20).$ Both contributions are measured in degrees because multiplication by a dimensionless share preserves the unit of the endpoint value. The complete angle is obtained by adding the two contributions:
+
+$$
+\boxed{
+\text{angle}=w(80)+(1-w)(20).
+}
+$$
+
+Addition is meaningful because both terms represent angular contributions:
+
+$$
+\underbrace{w}_{\text{dimensionless}}
+\underbrace{(80)}_{\text{degrees}}
++
+\underbrace{(1-w)}_{\text{dimensionless}}
+\underbrace{(20)}_{\text{degrees}}.
+$$
+
+The expression has units of degrees:
+
+$$
+\text{degrees}+\text{degrees}
+=
+\text{degrees}.
+$$
+
+The computation is therefore dimensionally coherent.
+
+### Verifying the Endpoint Requirements
+
+At the starting state,
+
+$$
+w=0.
+$$
+
+Substitution gives
+
+$$
+\begin{aligned}
+\text{angle}
+&=0(80)+(1-0)(20)\\
+&=0+1(20)\\
+&=20.
+\end{aligned}
+$$
+
+The final endpoint contributes nothing, and the starting endpoint contributes completely.
+
+At the final state,
+
+$$
+w=1.
+$$
+
+Then
+
+$$
+\begin{aligned}
+\text{angle}
+&=1(80)+(1-1)(20)\\
+&=80+0(20)\\
+&=80.
+\end{aligned}
+$$
+
+The final endpoint contributes completely, and the starting endpoint contributes nothing.
+
+The formula therefore preserves both boundary conditions:
+
+$$
+\boxed{
+\begin{aligned}
+w=0&\Longrightarrow20,\\
+w=1&\Longrightarrow80.
+\end{aligned}
+}
+$$
+
+A continuous construction between two endpoints must satisfy these conditions. If it fails at either endpoint, it does not represent the intended transition.
+
+### Verifying Intermediate Shares
+
+At one-quarter progress,
+
+$$
+w=\frac14.
+$$
+
+The endpoint contributions are
+
+$$
+\frac14(80)=20
+$$
+
+and
+
+$$
+\left(1-\frac14\right)(20)
+=
+\frac34(20)
+=
+15.
+$$
+
+Their sum is
+
+$$
+20+15=35.
+$$
+
+Thus,
+
+$$
+\frac14(80)+\frac34(20)=35.
+$$
+
+At half progress,
+
+$$
+w=\frac12.
+$$
+
+The two contributions are
+
+$$
+\frac12(80)=40
+$$
+
+and
+
+$$
+\frac12(20)=10.
+$$
+
+Their sum is
+
+$$
+40+10=50.
+$$
+
+At three-quarter progress,
+
+$$
+w=\frac34.
+$$
+
+The contributions are
+
+$$
+\frac34(80)=60
+$$
+
+and
+
+$$
+\frac14(20)=5.
+$$
+
+Their sum is
+
+$$
+60+5=65.
+$$
+
+The complete verification is:
+
+| $w$ | Share of $80$ | Contribution from $80$ | Share of $20$ | Contribution from $20$ | Result |
+|---:|---:|---:|---:|---:|---:|
+| $0$ | $0$ | $0$ | $1$ | $20$ | $20$ |
+| $\frac14$ | $\frac14$ | $20$ | $\frac34$ | $15$ | $35$ |
+| $\frac12$ | $\frac12$ | $40$ | $\frac12$ | $10$ | $50$ |
+| $\frac34$ | $\frac34$ | $60$ | $\frac14$ | $5$ | $65$ |
+| $1$ | $1$ | $80$ | $0$ | $0$ | $80$ |
+
+The result changes continuously because both endpoint contributions change continuously with $w$.
+
+### Generalizing the Endpoints
+
+Replace the final endpoint $80$ by a general value $A$ and the starting endpoint $20$ by a general value $B$. The share assigned to $A$ is $w,$ and the complementary share assigned to $B$ is $1-w.$ The two contributions are $wA$ and $(1-w)B.$ Adding them produces
+
+$$
+\boxed{
+C(w)=wA+(1-w)B,
+\qquad
+0\leq w\leq1.
+}
+$$
+
+The function $C$ maps a weight to a combined value. Its endpoint behavior is $C(0)=B$ and $C(1)=A.$ At the midpoint,
+
+$$
+C\left(\frac12\right)
+=
+\frac12A+\frac12B
+=
+\frac{A+B}{2}.
+$$
+
+The expression therefore moves from $B$ to $A$ as $w$ moves from $0$ to $1$.
+
+### Why the Weights Must Sum to One
+
+Suppose two arbitrary nonnegative weights $u$ and $v$ were used as $uA+vB.$ If $u+v\neq1,$ then the result contains either more or less than one complete allocation of the endpoints. For example, let $A=80,$ $B=20,$ and choose $u=v=1.$ Then
+
+$$
+uA+vB=80+20=100.
+$$
+
+Both endpoints have contributed completely. This is addition of the endpoints, not an intermediate state between them. If $u=v=\frac14,$ then
+
+$$
+uA+vB
+=
+\frac14(80)+\frac14(20)
+=
+20+5
+=
+25.
+$$
+
+The weights account for only
+
+$$
+\frac14+\frac14=\frac12
+$$
+
+of a complete allocation. The result is scaled toward zero rather than representing a balanced location between the endpoints. Requiring $u+v=1$ removes this extra scaling. Once $u=w,$ the requirement forces $v=1-w.$ The sum-to-one condition ensures that the output is formed from exactly one complete unit of combined influence.
+
+Suppose the two endpoints are equal as $A=B=K.$ A sensible combination should return the same value $K$ regardless of $w$. Substituting gives
+
+$$
+\begin{aligned}
+wK+(1-w)K
+&=\bigl(w+1-w\bigr)K\\
+&=1K\\
+&=K.
+\end{aligned}
+$$
+
+Thus,
+
+$$
+\boxed{
+A=B=K
+\quad\Longrightarrow\quad
+wA+(1-w)B=K.
+}
+$$
+
+This property depends on the weights summing to one. With arbitrary weights $u$ and $v$,
+
+$$
+uK+vK=(u+v)K.
+$$
+
+The common value is preserved only if $u+v=1.$  This is one reason normalized weights are mathematically important: they preserve constant inputs.
+
+### The Result Remains Between the Endpoints
+
+Assume
+
+$$
+A\geq B
+$$
+
+and
+
+$$
+0\leq w\leq1.
+$$
+
+We want to show that
+
+$$
+B\leq wA+(1-w)B\leq A.
+$$
+
+Begin with the lower bound. Since
+
+$$
+A\geq B,
+$$
+
+multiplying by the nonnegative weight $w$ preserves the inequality:
+
+$$
+wA\geq wB.
+$$
+
+Adding $(1-w)B$ to both sides gives
+
+$$
+wA+(1-w)B
+\geq
+wB+(1-w)B.
+$$
+
+The right side simplifies to
+
+$$
+wB+(1-w)B=B.
+$$
+
+Therefore,
+
+$$
+wA+(1-w)B\geq B.
+$$
+
+For the upper bound, since
+
+$$
+B\leq A
+$$
+
+and
+
+$$
+1-w\geq0,
+$$
+
+we have
+
+$$
+(1-w)B\leq(1-w)A.
+$$
+
+Adding $wA$ gives
+
+$$
+wA+(1-w)B
+\leq
+wA+(1-w)A.
+$$
+
+The right side simplifies to
+
+$$
+A.
+$$
+
+Therefore,
+
+$$
+wA+(1-w)B\leq A.
+$$
+
+Combining the inequalities gives
+
+$$
+\boxed{
+B
+\leq
+wA+(1-w)B
+\leq
+A.
+}
+$$
+
+If $B\geq A$, the same reasoning gives
+
+$$
+A
+\leq
+wA+(1-w)B
+\leq
+B.
+$$
+
+Thus, for weights in $[0,1]$, the combined value remains inside the interval determined by the endpoints.
+
+This boundedness is not an accidental numerical pattern. It follows from two requirements:
+
+$$
+w\geq0,
+$$
+
+$$
+1-w\geq0,
+$$
+
+and
+
+$$
+w+(1-w)=1.
+$$
+
+A combination with nonnegative weights summing to one is called a **convex combination**.
+
+For two scalar endpoints, a convex combination lies between them.
+
+### Translation Preserves the Combined Relationship
+
+Suppose both endpoints are shifted by the same amount $c$:
+
+$$
+A'=A+c,
+$$
+
+$$
+B'=B+c.
+$$
+
+Their combination is
+
+$$
+\begin{aligned}
+wA'+(1-w)B'
+&=w(A+c)+(1-w)(B+c)\\
+&=wA+wc+(1-w)B+(1-w)c\\
+&=wA+(1-w)B+\bigl(w+1-w\bigr)c\\
+&=wA+(1-w)B+c.
+\end{aligned}
+$$
+
+Thus shifting both endpoints by $c$ shifts the combined value by exactly $c$:
+
+$$
+\boxed{
+w(A+c)+(1-w)(B+c)
+=
+wA+(1-w)B+c.
+}
+$$
+
+The relative position between the endpoints is preserved under a change of reference. This property also depends on the weights summing to one. It shows that the combination respects translation rather than being anchored artificially to zero.
+
+## 11.3 Moving Along the Difference Between Two Values
+
+Section 11.2 constructed the convex combination
+
+$$
+C(w)=wA+(1-w)B.
+$$
+
+This form describes the result through two complementary contributions:
+
+$$
+wA
+$$
+
+and
+
+$$
+(1-w)B.
+$$
+
+The same expression can be reorganized to reveal a different mathematical structure. Distribute $B$ across the second term:
+
+$$
+wA+(1-w)B
+=
+wA+B-wB.
+$$
+
+Group the terms containing $w$:
+
+$$
+wA+B-wB
+=
+B+wA-wB.
+$$
+
+Factor out $w$:
+
+$$
+B+wA-wB
+=
+B+w(A-B).
+$$
+
+Therefore,
+
+$$
+\boxed{
+wA+(1-w)B
+=
+B+w(A-B).
+}
+$$
+
+The two forms are algebraically equivalent, but they organize the meaning differently.
+
+The expression
+
+$$
+wA+(1-w)B
+$$
+
+describes complementary shares of two endpoints.
+
+The expression
+
+$$
+B+w(A-B)
+$$
+
+describes movement from a starting point.
+
+### The Difference Is a Directed Displacement
+
+The quantity
+
+$$
+A-B
+$$
+
+answers:
+
+> What must be added to $B$ to reach $A$?
+
+Its defining relationship is
+
+$$
+B+(A-B)=A.
+$$
+
+Thus $A-B$ is the complete displacement from $B$ to $A$.
+
+For the robotic joint,
+
+$$
+B=20,
+$$
+
+$$
+A=80.
+$$
+
+The displacement is
+
+$$
+A-B=80-20=60.
+$$
+
+Beginning at $20$ and applying the complete displacement gives
+
+$$
+20+60=80.
+$$
+
+The order of subtraction matters. The displacement from $20$ to $80$ is
+
+$$
+80-20=60.
+$$
+
+The displacement from $80$ to $20$ is
+
+$$
+20-80=-60.
+$$
+
+These quantities have equal magnitude but opposite direction.
+
+Therefore,
+
+$$
+\boxed{
+A-B
+=
+\text{directed displacement from }B\text{ to }A.
+}
+$$
+
+The term *directed* means that the sign records orientation. A positive displacement moves in the increasing numerical direction; a negative displacement moves in the decreasing direction.
+
+### The Weight Scales the Displacement
+
+The expression
+
+$$
+w(A-B)
+$$
+
+does not represent a share of an endpoint. In the displacement form, it represents a share of the complete movement.
+
+For the joint,
+
+$$
+A-B=60.
+$$
+
+At
+
+$$
+w=\frac14,
+$$
+
+the applied displacement is
+
+$$
+\frac14(60)=15.
+$$
+
+Beginning at $B=20$ gives
+
+$$
+20+15=35.
+$$
+
+At
+
+$$
+w=\frac12,
+$$
+
+the applied displacement is
+
+$$
+\frac12(60)=30,
+$$
+
+so
+
+$$
+20+30=50.
+$$
+
+At
+
+$$
+w=\frac34,
+$$
+
+the applied displacement is
+
+$$
+\frac34(60)=45,
+$$
+
+so
+
+$$
+20+45=65.
+$$
+
+At
+
+$$
+w=1,
+$$
+
+the complete displacement is applied:
+
+$$
+20+1(60)=80.
+$$
+
+The formula is therefore
+
+$$
+\boxed{
+C(w)
+=
+\underbrace{B}_{\text{starting point}}
++
+\underbrace{w}_{\text{fraction applied}}
+\underbrace{(A-B)}_{\text{complete displacement}}.
+}
+$$
+
+Each factor has a distinct semantic role.
+
+### Endpoint Behavior in the Displacement Form
+
+At
+
+$$
+w=0,
+$$
+
+no displacement is applied:
+
+$$
+C(0)=B+0(A-B)=B.
+$$
+
+At
+
+$$
+w=1,
+$$
+
+the complete displacement is applied:
+
+$$
+\begin{aligned}
+C(1)
+&=B+1(A-B)\\
+&=B+A-B\\
+&=A.
+\end{aligned}
+$$
+
+For
+
+$$
+0<w<1,
+$$
+
+only a fraction of the displacement is applied.
+
+The selector $w$ therefore describes progress along the route from $B$ to $A$:
+
+$$
+\boxed{
+\begin{aligned}
+w=0
+&:\quad
+\text{at }B,\\
+0<w<1
+&:\quad
+\text{between }B\text{ and }A,\\
+w=1
+&:\quad
+\text{at }A.
+\end{aligned}
+}
+$$
+
+### Interpolation
+
+The process of constructing intermediate values between known endpoints is called **interpolation**.
+
+For scalar endpoints $A$ and $B$, linear interpolation is
+
+$$
+\boxed{
+C(w)=B+w(A-B),
+\qquad
+0\leq w\leq1.
+}
+$$
+
+It is called linear interpolation because equal changes in $w$ produce equal fractions of the complete displacement.
+
+Suppose $w$ increases by an amount $\delta$:
+
+$$
+w\longrightarrow w+\delta.
+$$
+
+The change in the interpolated value is
+
+$$
+\begin{aligned}
+C(w+\delta)-C(w)
+&=
+\left[B+(w+\delta)(A-B)\right]
+-
+\left[B+w(A-B)\right]\\
+&=
+\delta(A-B).
+\end{aligned}
+$$
+
+Thus,
+
+$$
+\boxed{
+C(w+\delta)-C(w)
+=
+\delta(A-B).
+}
+$$
+
+A fixed increase in $w$ always produces the same fraction of the endpoint displacement. The relationship has a constant rate of change with respect to $w$:
+
+$$
+\frac{dC}{dw}=A-B.
+$$
+
+For the joint,
+
+$$
+\frac{dC}{dw}=60.
+$$
+
+An increase of
+
+$$
+0.1
+$$
+
+in progress produces an angular change of
+
+$$
+0.1(60)=6^\circ.
+$$
+
+The linearity lies in the relationship between progress and displacement.
+
+### Relative Position Is Preserved
+
+Consider two progress values
+
+$$
+w_1
+$$
+
+and
+
+$$
+w_2.
+$$
+
+Their corresponding states are
+
+$$
+C(w_1)=B+w_1(A-B)
+$$
+
+and
+
+$$
+C(w_2)=B+w_2(A-B).
+$$
+
+Subtracting gives
+
+$$
+\begin{aligned}
+C(w_2)-C(w_1)
+&=
+\left[B+w_2(A-B)\right]
+-
+\left[B+w_1(A-B)\right]\\
+&=
+(w_2-w_1)(A-B).
+\end{aligned}
+$$
+
+Therefore,
+
+$$
+\boxed{
+C(w_2)-C(w_1)
+=
+(w_2-w_1)(A-B).
+}
+$$
+
+The separation between two interpolated states is proportional to the separation between their weights.
+
+If
+
+$$
+w_2-w_1=\frac14,
+$$
+
+then the states differ by one quarter of the complete displacement:
+
+$$
+C(w_2)-C(w_1)
+=
+\frac14(A-B).
+$$
+
+This property explains why the values
+
+$$
+0,\quad\frac14,\quad\frac12,\quad\frac34,\quad1
+$$
+
+produce equally spaced positions along the interval from $B$ to $A$.
+
+### Recovering the Progress from an Intermediate Value
+
+For scalar endpoints with
+
+$$
+A\neq B,
+$$
+
+the interpolation equation can be solved for $w$.
+
+Begin with
+
+$$
+C=B+w(A-B).
+$$
+
+Subtract $B$:
+
+$$
+C-B=w(A-B).
+$$
+
+Divide by $A-B$:
+
+$$
+\boxed{
+w=\frac{C-B}{A-B}.
+}
+$$
+
+The numerator
+
+$$
+C-B
+$$
+
+is the displacement from the starting point to the current state.
+
+The denominator
+
+$$
+A-B
+$$
+
+is the complete displacement from the starting point to the endpoint.
+
+Their ratio is therefore
+
+$$
+\boxed{
+w
+=
+\frac{\text{displacement already traveled}}
+{\text{complete displacement}}.
+}
+$$
+
+For the joint angle
+
+$$
+C=50,
+$$
+
+we obtain
+
+$$
+w
+=
+\frac{50-20}{80-20}
+=
+\frac{30}{60}
+=
+\frac12.
+$$
+
+The inverse relationship confirms that $w$ measures relative position between the endpoints.
+
+### Reversing the Endpoints Reverses the Parameter
+
+Suppose the same interval is described from $A$ toward $B$ rather than from $B$ toward $A$.
+
+The original interpolation is
+
+$$
+C(w)=wA+(1-w)B.
+$$
+
+If the endpoint labels are reversed, the expression becomes
+
+$$
+\widetilde{C}(u)=uB+(1-u)A.
+$$
+
+The same physical position is obtained when
+
+$$
+u=1-w.
+$$
+
+Indeed,
+
+$$
+\begin{aligned}
+\widetilde{C}(1-w)
+&=(1-w)B+\bigl(1-(1-w)\bigr)A\\
+&=(1-w)B+wA\\
+&=C(w).
+\end{aligned}
+$$
+
+Thus,
+
+$$
+\boxed{
+\text{reversing the endpoints replaces }w\text{ by }1-w.
+}
+$$
+
+A position one quarter of the way from $B$ to $A$ is three quarters of the way from $A$ to $B$.
+
+This shows that $w$ is not an absolute property of the intermediate value. It is relative to an ordered pair of endpoints.
+
+### Vector Endpoints
+
+The endpoints need not be scalars. Let
+
+$$
+\mathbf{A},\mathbf{B}\in\mathbb{R}^{n}.
+$$
+
+Their displacement is
+
+$$
+\mathbf{A}-\mathbf{B}.
+$$
+
+The interpolated point is
+
+$$
+\boxed{
+\mathbf{C}(w)
+=
+\mathbf{B}
++
+w(\mathbf{A}-\mathbf{B}).
+}
+$$
+
+Equivalently,
+
+$$
+\boxed{
+\mathbf{C}(w)
+=
+w\mathbf{A}
++
+(1-w)\mathbf{B}.
+}
+$$
+
+For example, let
+
+$$
+\mathbf{B}
+=
+\begin{bmatrix}
+1\\
+2
+\end{bmatrix}
+$$
+
+and
+
+$$
+\mathbf{A}
+=
+\begin{bmatrix}
+7\\
+6
+\end{bmatrix}.
+$$
+
+The complete displacement is
+
+$$
+\mathbf{A}-\mathbf{B}
+=
+\begin{bmatrix}
+6\\
+4
+\end{bmatrix}.
+$$
+
+At
+
+$$
+w=\frac12,
+$$
+
+the applied displacement is
+
+$$
+\frac12
+\begin{bmatrix}
+6\\
+4
+\end{bmatrix}
+=
+\begin{bmatrix}
+3\\
+2
+\end{bmatrix}.
+$$
+
+Adding it to $\mathbf{B}$ gives
+
+$$
+\mathbf{C}\left(\frac12\right)
+=
+\begin{bmatrix}
+1\\
+2
+\end{bmatrix}
++
+\begin{bmatrix}
+3\\
+2
+\end{bmatrix}
+=
+\begin{bmatrix}
+4\\
+4
+\end{bmatrix}.
+$$
+
+The midpoint is therefore
+
+$$
+\frac{\mathbf{A}+\mathbf{B}}{2}
+=
+\begin{bmatrix}
+4\\
+4
+\end{bmatrix}.
+$$
+
+As $w$ varies from $0$ to $1$, $\mathbf{C}(w)$ traces the straight line segment from $\mathbf{B}$ to $\mathbf{A}$.
+
+For scalar endpoints, this segment is an interval. For vector endpoints, it is a geometric line segment in $\mathbb{R}^{n}$.
+
+### Interpolation Remains Inside the Segment
+
+When
+
+$$
+0\leq w\leq1,
+$$
+
+the applied displacement
+
+$$
+w(\mathbf{A}-\mathbf{B})
+$$
+
+ranges from zero displacement to the complete displacement.
+
+Therefore,
+
+$$
+\mathbf{C}(w)
+$$
+
+remains on the segment connecting $\mathbf{B}$ and $\mathbf{A}$.
+
+This is the geometric meaning of a convex combination of two points:
+
+$$
+\boxed{
+\left\{
+w\mathbf{A}+(1-w)\mathbf{B}
+:
+0\leq w\leq1
+\right\}
+=
+\text{line segment from }\mathbf{B}\text{ to }\mathbf{A}.
+}
+$$
+
+The nonnegative complementary weights ensure that the point remains between the endpoints.
+
+### Weights Outside the Interval
+
+The algebraic expression
+
+$$
+C(w)=B+w(A-B)
+$$
+
+is defined for values of $w$ outside $[0,1]$. However, the geometric meaning changes.
+
+Suppose
+
+$$
+w>1.
+$$
+
+Then more than the complete displacement is applied. For the joint,
+
+$$
+w=1.25
+$$
+
+gives
+
+$$
+\begin{aligned}
+C(1.25)
+&=20+1.25(60)\\
+&=20+75\\
+&=95.
+\end{aligned}
+$$
+
+The result lies beyond the final endpoint $80$.
+
+Suppose
+
+$$
+w<0.
+$$
+
+Then the displacement is applied in the opposite direction. For
+
+$$
+w=-0.25,
+$$
+
+$$
+\begin{aligned}
+C(-0.25)
+&=20-0.25(60)\\
+&=20-15\\
+&=5.
+\end{aligned}
+$$
+
+The result lies beyond the starting endpoint $20$ in the direction away from $80$.
+
+This behavior is called **extrapolation**.
+
+$$
+\boxed{
+\begin{aligned}
+0\leq w\leq1
+&:\quad
+\text{interpolation between the endpoints},\\
+w<0
+&:\quad
+\text{extrapolation beyond }B,\\
+w>1
+&:\quad
+\text{extrapolation beyond }A.
+\end{aligned}
+}
+$$
+
+The formula has not changed. The domain assigned to $w$ determines whether the result is interpreted as interpolation or extrapolation.
+
+### Complementary Weights During Extrapolation
+
+When
+
+$$
+w>1,
+$$
+
+the complementary coefficient
+
+$$
+1-w
+$$
+
+is negative.
+
+For example, if
+
+$$
+w=1.25,
+$$
+
+then
+
+$$
+1-w=-0.25.
+$$
+
+The expression becomes
+
+$$
+1.25A-0.25B.
+$$
+
+The coefficients still sum to one:
+
+$$
+1.25+(-0.25)=1,
+$$
+
+so the transformation remains translation-consistent. However, the coefficients are no longer both nonnegative.
+
+This distinguishes an **affine combination** from a **convex combination**.
+
+An affine combination requires weights summing to one:
+
+$$
+u+v=1.
+$$
+
+A convex combination additionally requires nonnegative weights:
+
+$$
+u\geq0,
+\qquad
+v\geq0.
+$$
+
+Thus,
+
+$$
+\boxed{
+\text{convex combination}
+=
+\text{affine combination with nonnegative weights}.
+}
+$$
+
+Interpolation uses a convex combination. Extrapolation uses an affine combination whose weights may include a negative value.
+
+### A Geometric Interpretation of the Weight
+
+The weight $w$ can now be understood in three equivalent ways.
+
+In the complementary-share form,
+
+$$
+wA+(1-w)B,
+$$
+
+it is the share assigned to endpoint $A$.
+
+In the displacement form,
+
+$$
+B+w(A-B),
+$$
+
+it is the fraction of the displacement from $B$ to $A$.
+
+In the geometric form, it is the coordinate locating a point along the directed line through $B$ and $A$.
+
+These interpretations agree because the expressions are algebraically equivalent:
+
+$$
+\boxed{
+wA+(1-w)B
+=
+B+w(A-B).
+}
+$$
+
+The first form emphasizes combination. The second emphasizes movement. The mathematical structure is the same.
+
+### The Completed Construction
+
+The section began with two endpoint contributions:
+
+$$
+wA+(1-w)B.
+$$
+
+Algebraic rearrangement revealed
+
+$$
+B+w(A-B).
+$$
+
+The difference
+
+$$
+A-B
+$$
+
+is the complete directed displacement from $B$ to $A$. The weight $w$ scales that displacement.
+
+For
+
+$$
+0\leq w\leq1,
+$$
+
+the result lies between the endpoints and performs interpolation.
+
+For
+
+$$
+w<0
+$$
+
+or
+
+$$
+w>1,
+$$
+
+the result lies outside the endpoint segment and performs extrapolation.
+
+The conceptual relationship is
+
+$$
+\boxed{
+\text{new state}
+=
+\text{starting state}
++
+\text{scaled displacement}.
+}
+$$
+
+The equation determines how the endpoints and weight combine. It does not by itself determine what $w$ means in a particular application. A weight may represent physical proportion, progress through time, uncertainty, responsibility, confidence, or another quantity. The next section will distinguish these interpretations and show why identical algebra does not imply identical semantics.
+
+## 11.4 The Same Formula Can Carry Different Meanings
+
+The previous sections constructed $C=wA+(1-w)B$ and its equivalent displacement form $C=B+w(A-B).$ For $A=80,$ $B=20,$ $w=\frac14,$ the result is
+
+$$
+\begin{aligned}
+C
+&=\frac14(80)+\frac34(20)\\
+&=20+15\\
+&=35.
+\end{aligned}
+$$
+
+The calculation is unambiguous. The number $35$ follows from the given endpoints and weights. What does $35$ represent?
+
+The equation alone cannot answer. The same numerical relationship can arise from several different models of the world. In one model, $35$ is an actual intermediate state. In another, it is an average of states that occurred at different times. In another, it is an expected value of mutually exclusive outcomes, even though the system never produces $35$ as an actual outcome. This leads to a fundamental distinction:
+
+$$
+\boxed{
+\text{algebraic form}
+\neq
+\text{semantic interpretation}.
+}
+$$
+
+The algebra states how quantities are combined. The surrounding problem states what those quantities and weights mean.
+
+### Interpretation 1: An Actual Intermediate State
+
+For the robotic joint, let $B=20^\circ$ be the starting angle and $A=80^\circ$ be the final angle. If $w=\frac14$ represents one-quarter progress from $B$ to $A$, then $C=35^\circ$ is the joint’s actual commanded position. The joint is not at $20^\circ$ for part of the calculation and $80^\circ$ for another part. It is commanded to one intermediate physical state $35^\circ.$
+
+The displacement interpretation is $C=B+w(A-B).$ Here, $A-B=60^\circ$ is the complete angular displacement and $w(A-B)=15^\circ$ is the portion already applied. The output $35^\circ$ belongs to the same state space as the endpoints. It is a genuine point between them. This interpretation is appropriate when intermediate states are physically and conceptually meaningful.
+
+### Interpretation 2: A Physical Mixture
+
+Suppose $A$ and $B$ represent concentrations of the same substance in two solutions $A=80\%,$ $B=20\%.$ Suppose one-quarter of the final mixture comes from solution $A$ and three-quarters comes from solution $B:w=\frac14,$ $1-w=\frac34.$ Under a linear mixture model, the resulting concentration is
+
+$$
+\begin{aligned}
+C
+&=\frac14(80\%)+\frac34(20\%)\\
+&=20\%+15\%\\
+&=35\%.
+\end{aligned}
+$$
+
+Here, the weights represent physical shares of the final mixture. The output $35\%$ is an actual property of the combined material. The equation is valid because the property being modeled is assumed to combine linearly with the mixture proportions. This assumption should not be treated as automatic. Some physical properties do not mix linearly. Temperature, volume, chemical activity, color perception, and other quantities may require additional physical laws or nonlinear models. The formula $wA+(1-w)B$ describes a physical mixture only when the modeled quantity obeys the required linear relationship. Thus the semantics include an assumption:
+
+$$
+\boxed{
+\text{mixture shares combine the chosen property linearly}.
+}
+$$
+
+### Interpretation 3: Time Sharing
+
+Suppose a machine operates at power level
+
+$$
+A=80\text{ watts}
+$$
+
+for one-quarter of a time interval and at
+
+$$
+B=20\text{ watts}
+$$
+
+for the remaining three-quarters. Its average power over the interval is
+
+$$
+\begin{aligned}
+\bar{P}
+&=\frac14(80)+\frac34(20)\\
+&=35\text{ watts}.
+\end{aligned}
+$$
+
+The same weighted expression appears: $\bar{P}=wA+(1-w)B.$ But the machine may never operate at $35$ watts. Its actual instantaneous states are only
+
+$$
+80\text{ watts}
+$$
+
+and
+
+$$
+20\text{ watts}.
+$$
+
+The number $35$ describes an average across time, not an intermediate instantaneous state. This differs fundamentally from the robotic-joint interpretation:
+
+- the joint may actually occupy the intermediate angle $35^\circ$;
+- the time-sharing machine may alternate between $80$ and $20$ watts without ever occupying $35$ watts.
+
+The same number can therefore represent either a state or a summary of several states.
+
+The weight now means
+
+$$
+w
+=
+\text{fraction of time spent in state }A.
+$$
+
+The complementary weight means
+
+$$
+1-w
+=
+\text{fraction of time spent in state }B.
+$$
+
+Their sum is one because the two modes partition the complete time interval.
+
+### Interpretation 4: Uncertainty and Expected Value
+
+Suppose a future quantity $X$ can take one of two mutually exclusive values:
+
+$$
+X=
+\begin{cases}
+80, & \text{with probability }\frac14,\\
+20, & \text{with probability }\frac34.
+\end{cases}
+$$
+
+The expected value is
+
+$$
+\begin{aligned}
+\mathbb{E}[X]
+&=\frac14(80)+\frac34(20)\\
+&=35.
+\end{aligned}
+$$
+
+Again, the formula is
+
+$$
+\mathbb{E}[X]=wA+(1-w)B.
+$$
+
+Here, $w$ is neither geometric progress nor physical mixture proportion nor time fraction. It is a probability:
+
+$$
+w=P(X=A).
+$$
+
+Its complement is
+
+$$
+1-w=P(X=B).
+$$
+
+The expected value $35$ is a probability-weighted average over possible outcomes. The actual outcome is still either
+
+$$
+80
+$$
+
+or
+
+$$
+20.
+$$
+
+If the experiment is performed once, the result is not necessarily $35$. Indeed, $35$ may not be a possible outcome at all. This distinction is essential:
+
+$$
+\boxed{
+\mathbb{E}[X]=35
+\quad\not\Longrightarrow\quad
+X=35.
+}
+$$
+
+The expected value is a summary of the probability distribution, not a prediction that the variable must equal its expectation on a particular trial. The uncertainty interpretation therefore differs from interpolation:
+
+$$
+\boxed{
+\begin{aligned}
+\text{interpolation}
+&:\quad
+35\text{ is an admissible intermediate state},\\
+\text{expectation}
+&:\quad
+35\text{ summarizes uncertainty over }20\text{ and }80.
+\end{aligned}
+}
+$$
+
+### Interpretation 5: Combining Predictions
+
+Suppose two models produce predictions
+
+$$
+A=80
+$$
+
+and
+
+$$
+B=20.
+$$
+
+A combined predictor may use
+
+$$
+w=\frac14
+$$
+
+for the first model and
+
+$$
+1-w=\frac34
+$$
+
+for the second:
+
+$$
+\hat{y}
+=
+wA+(1-w)B
+=
+35.
+$$
+
+The output $35$ is a new prediction formed from the two model outputs.
+
+The weight might represent:
+
+- a fixed design choice;
+- validation performance;
+- estimated reliability;
+- an input-dependent learned value;
+- the output of another model.
+
+The weighted prediction has the same algebraic form as interpolation and expectation. Its semantics depend on how the models and weights were constructed. If $A$ and $B$ are predicted numerical values, then $35$ may be an admissible prediction even if neither model produced it individually. If $A$ and $B$ are class labels encoded as numbers, directly averaging them may be meaningless. For example, averaging class identifier `1` and class identifier `3` to obtain `2` does not imply that class `2` is a meaningful compromise between the other classes. The values must belong to a space in which the weighted combination has a defined interpretation.
+
+### Interpretation 6: A Continuously Controlled Gate
+
+Suppose $A$ and $B$ are two candidate computational pathways. A controller produces $w\in[0,1].$ The output is $C=wA+(1-w)B.$ When $w\approx1,$ pathway $A$ dominates. When $w\approx0,$ pathway $B$ dominates. When $w\approx\frac12,$ both pathways contribute substantially. This structure is often called a **soft gate**. Unlike a binary gate, it does not necessarily suppress one pathway completely. The two contributions are $wA$ and $(1-w)B.$ Both may be nonzero when $0<w<1.$ The word *gate* emphasizes control over contribution. The word *soft* indicates that control is graded rather than binary. This structure appears in mixture models, learned routing, neural gates, recurrent networks, attention-like mechanisms, and ensemble systems. The detailed meanings differ across those applications, but the common algebraic skeleton is complementary weighted contribution.
+
+### One Number Can Describe Different Ontologies
+
+For the same values
+
+$$
+A=80,
+\qquad
+B=20,
+\qquad
+w=\frac14,
+$$
+
+the result is always
+
+$$
+35.
+$$
+
+But the object represented by $35$ changes:
+
+| Interpretation | Meaning of $w$ | Meaning of $35$ | Must the system actually occupy $35$? |
+|---|---|---|:---:|
+| Interpolation | fraction of displacement | intermediate state | Yes |
+| Physical mixture | material share | property of mixture | Usually, under the model |
+| Time sharing | fraction of time | temporal average | No |
+| Uncertainty | probability of outcome $A$ | expected value | No |
+| Model combination | influence assigned to model $A$ | combined prediction | Depends on output space |
+| Soft gate | activation of pathway $A$ | blended pathway output | Usually as computed output |
+
+These interpretations share the equation
+
+$$
+wA+(1-w)B.
+$$
+
+They do not share the same ontology—the same account of what kinds of things the quantities represent.
+
+An equation can preserve numerical structure while the meaning of its symbols changes from one application to another.
+
+### A Weight Does Not Explain Itself
+
+Seeing
+
+$$
+w=0.8
+$$
+
+does not tell us whether $w$ is:
+
+- an $80\%$ mixture proportion;
+- an $80\%$ probability;
+- an $80\%$ progress value;
+- an $80\%$ time allocation;
+- a learned gate activation;
+- a manually chosen model weight.
+
+The interval constraint
+
+$$
+0\leq w\leq1
+$$
+
+is shared by all these interpretations. It does not identify which interpretation applies.
+
+Even the condition
+
+$$
+w+(1-w)=1
+$$
+
+only states complementarity. It does not state what is being divided into complementary shares.
+
+The semantics must come from the problem definition:
+
+$$
+\boxed{
+\text{weight value}
++
+\text{constraint}
+\not\Longrightarrow
+\text{weight meaning}.
+}
+$$
+
+The reader must ask:
+
+> What complete quantity is being divided?
+
+> What does each share measure?
+
+> Why must the shares sum to one?
+
+> What does the weighted output represent?
+
+### Confidence Is Not Automatically Probability
+
+In machine-learning discussions, a number in $[0,1]$ is often casually called confidence. This word can hide several different mathematical objects.
+
+A gate value
+
+$$
+w=0.8
+$$
+
+may mean that pathway $A$ receives $80\%$ of the combined influence. It does not automatically mean:
+
+$$
+P(A\text{ is correct})=0.8.
+$$
+
+For the weight to be interpreted as a probability, it must belong to a probability model with defined events and appropriate normalization.
+
+Likewise, a model score may lie between $0$ and $1$ without being statistically calibrated. Numerical range alone does not establish probabilistic meaning.
+
+Therefore,
+
+$$
+\boxed{
+w\in[0,1]
+\quad\not\Longrightarrow\quad
+w\text{ is a probability}.
+}
+$$
+
+Probability is a semantic and mathematical role, not merely a numerical interval.
+
+### Soft Selection Does Not Always Approximate Hard Selection
+
+A soft gate is sometimes used as a smooth approximation to a hard decision. As the weight approaches an endpoint,
+
+$$
+w\rightarrow1,
+$$
+
+the output approaches $A$:
+
+$$
+wA+(1-w)B\rightarrow A.
+$$
+
+As
+
+$$
+w\rightarrow0,
+$$
+
+the output approaches $B$.
+
+In such a model, soft selection may be a temporary or differentiable substitute for hard selection.
+
+In other applications, the mixture is the intended final behavior. An ensemble may deliberately combine models. A physical mixture may genuinely contain both components. An expected value is not an approximation to one outcome; it is a summary of a distribution.
+
+Thus the phrase *soft selection* covers at least two purposes:
+
+$$
+\boxed{
+\begin{aligned}
+\text{soft as approximation}
+&:\quad
+\text{eventually imitate a hard choice},\\
+\text{soft as model}
+&:\quad
+\text{represent genuine simultaneous influence}.
+\end{aligned}
+}
+$$
+
+The purpose must be determined from context.
+
+### Why Continuous Weights Matter for Learning
+
+The output
+
+$$
+C(w)=wA+(1-w)B
+$$
+
+changes continuously with $w$. Its derivative is
+
+$$
+\frac{dC}{dw}=A-B.
+$$
+
+A small change $\delta$ in the weight produces
+
+$$
+C(w+\delta)-C(w)=\delta(A-B).
+$$
+
+This predictable sensitivity allows an optimization process to adjust $w$ gradually.
+
+A binary selector
+
+$$
+I\in\{0,1\}
+$$
+
+cannot be changed by an arbitrarily small amount while remaining binary. It must jump from one admissible value to the other.
+
+A continuous weight permits local adjustments:
+
+$$
+0.40
+\longrightarrow
+0.41
+\longrightarrow
+0.42.
+$$
+
+This does not by itself explain how learning occurs, but it establishes why soft gates are compatible with gradient-based adjustment. Their outputs vary continuously with their parameters.
+
+The mathematical transition is
+
+$$
+\boxed{
+\text{discrete choice}
+\rightarrow
+\text{continuous influence}
+\rightarrow
+\text{adjustable contribution}.
+}
+$$
+
+This will become important when weights are produced or learned by machine-learning models.
+
+### The Complete Meaning-First Procedure
+
+When encountering
+
+$$
+C=wA+(1-w)B,
+$$
+
+the reader should not immediately label it interpolation, probability, expectation, or attention.
+
+Instead, ask:
+
+1. What do $A$ and $B$ represent?
+2. Do they belong to a space in which addition is meaningful?
+3. What does multiplication by $w$ mean?
+4. What complete quantity is divided into the shares $w$ and $1-w$?
+5. Is $C$ an actual state, a mixture property, a temporal average, an expected value, or a prediction?
+6. Is $w$ fixed, observed, calculated, estimated, or learned?
+7. Are intermediate outputs meaningful in the problem domain?
+
+Only after these questions are answered should the algebra receive an application-specific name.
+
+The safe reasoning order is
+
+$$
+\boxed{
+\text{problem semantics}
+\rightarrow
+\text{meaning of endpoints}
+\rightarrow
+\text{meaning of weights}
+\rightarrow
+\text{weighted equation}
+\rightarrow
+\text{interpretation of output}.
+}
+$$
+
+### The Completed Structure of Soft Selection
+
+This chapter began with binary selection:
+
+$$
+I\in\{0,1\}.
+$$
+
+A hard selector chooses one of two endpoints:
+
+$$
+IA+(1-I)B.
+$$
+
+The selector domain was expanded to
+
+$$
+w\in[0,1],
+$$
+
+allowing partial influence.
+
+Complementary shares produced the convex combination
+
+$$
+wA+(1-w)B.
+$$
+
+Algebraic rearrangement revealed the displacement form
+
+$$
+B+w(A-B).
+$$
+
+For weights in $[0,1]$, the expression interpolates between the endpoints. For weights outside that interval, it extrapolates along the same affine line.
+
+Finally, the same equation was shown to support several distinct interpretations. The algebraic skeleton remains stable:
+
+$$
+\boxed{
+C=wA+(1-w)B.
+}
+$$
+
+The semantic model determines whether $C$ is an intermediate state, physical mixture, time average, expectation, combined prediction, or softly gated output.
+
+The chapter’s final principle is therefore
+
+$$
+\boxed{
+\text{the equation determines how contributions combine;
+the problem determines what those contributions mean}.
+}
+$$
+
+Soft selection has introduced two complementary weights. The next chapter will generalize this structure from two alternatives to many:
+
+$$
+w_1A_1+w_2A_2+\cdots+w_nA_n.
+$$
+
+That generalization will require us to determine what conditions the weights must satisfy, why normalization matters, and how weighted combinations connect expectations, mixtures, model ensembles, and attention.
