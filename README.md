@@ -32,6 +32,14 @@ The book is being written and published one comprehensive mini-section at a time
 
 - **[Chapter 9 — From Element-by-Element Thinking to Vector Thinking](https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/chapters/09-vector-thinking/)** develops collection-level mathematical reasoning by lifting scalar functions, decoding vector expressions componentwise, and distinguishing independent transformations from coupled dependencies.
 
+- **[Chapter 10 — Dimension Reduction](https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/chapters/10-dimension-reduction/)** examines computations that reduce many values into smaller results, distinguishes different reductions by the information they preserve, separates maximum value from maximum position, and develops axis-based reduction as controlled information loss.
+
+- **[Chapter 11 — From Hard Selection to Soft Selection](https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/chapters/11-hard-and-soft-selection/)** relaxes binary choice into graded contribution and develops complementary shares, interpolation, extrapolation, mixtures, expectations, and soft mathematical gates.
+
+- **[Chapter 12 — Weighted Combinations](https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/chapters/12-weighted-combinations/)** generalizes one-hot selection into graded allocation and develops weighted sums, weighted averages, convex combinations, expectation, mixtures, ensembles, and attention as instances of a shared mathematical structure.
+
+- **[Chapter 13 — From Scores to Shares](https://hafizarslanamjad.github.io/mathematical-understanding/books/mathematical-programming/chapters/13-normalizing-scores/)** derives the transformation from unrestricted scores to normalized weights, explains why exponentiation precedes normalization, and constructs softmax as a smooth and numerically stable allocation mechanism.
+
 ## Published Blog Posts
 
 ### Before Mathematics Begins
@@ -100,7 +108,15 @@ mathematical-understanding/
 │       │   │   └── index.qmd
 │       │   ├── 06-selective-updates/
 │       │   │   └── index.qmd
-│       │   └── 09-vector-thinking/
+│       │   ├── 09-vector-thinking/
+│       │   │   └── index.qmd
+│       │   ├── 10-dimension-reduction/
+│       │   │   └── index.qmd
+│       │   ├── 11-hard-and-soft-selection/
+│       │   │   └── index.qmd
+│       │   ├── 12-weighted-combinations/
+│       │   │   └── index.qmd
+│       │   └── 13-normalizing-scores/
 │       │       └── index.qmd
 │       └── index.qmd
 ├── .gitignore

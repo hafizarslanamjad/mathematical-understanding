@@ -1,0 +1,2994 @@
+---
+title: "Chapter 10 — Dimension Reduction"
+subtitle: "From Many Values to Smaller Results"
+description: "A chapter about reductions as mathematical transformations that compress collections, preserve selected information, remove dimensions, and deliberately discard other information."
+---
+
+## 10.1 When Many Values Must Produce One Result
+
+Consider five response times recorded for a computer service:
+
+```python
+response_times = [18, 25, 13, 31, 22]
+```
+
+Each value is measured in milliseconds. Suppose we want to answer:
+
+> What was the largest response time?
+
+An ordinary program can construct the answer by maintaining a current candidate:
+
+```python
+response_times = [18, 25, 13, 31, 22]
+
+largest = response_times[0]
+
+for response_time in response_times[1:]:
+    if response_time > largest:
+        largest = response_time
+```
+
+The final value is
+
+```python
+31
+```
+
+The input contains five values:
+
+$$
+\mathbf{x}
+=
+\begin{bmatrix}
+18\\
+25\\
+13\\
+31\\
+22
+\end{bmatrix}.
+$$
+
+The output contains one value:
+
+$$
+r=31.
+$$
+
+This computation has a different structure from the vector transformations studied in Chapter 9. An elementwise transformation produces one output for every input position:
+
+$$
+x_i\longrightarrow y_i.
+$$
+
+If the input contains five components, the output also contains five components:
+
+$$
+F:\mathbb{R}^{5}\rightarrow\mathbb{R}^{5}.
+$$
+
+Finding the largest value does not preserve this one-to-one positional structure. The five inputs jointly determine one result:
+
+$$
+R:\mathbb{R}^{5}\rightarrow\mathbb{R}.
+$$
+
+A transformation with this many-to-one structure is called a **reduction**.
+
+### The Output Answers a Question About the Whole Collection
+
+For an elementwise transformation such as
+
+$$
+y_i=2x_i+3,
+$$
+
+the output $y_i$ answers a local question:
+
+> What is the transformed value corresponding to $x_i$?
+
+For the current computation, the output answers a global question:
+
+> Which numerical value is at least as large as every value in the collection?
+
+The result $r$ must satisfy
+
+$$
+r\geq x_i
+\qquad
+\text{for every }i,
+$$
+
+and it must equal one of the values in the collection:
+
+$$
+r=x_k
+\qquad
+\text{for at least one index }k.
+$$
+
+For the concrete values,
+
+$$
+31\geq18,
+$$
+
+$$
+31\geq25,
+$$
+
+$$
+31\geq13,
+$$
+
+$$
+31\geq31,
+$$
+
+and
+
+$$
+31\geq22.
+$$
+
+The number $31$ satisfies the required relationship with every component. None of the other values does.The mathematical result is therefore
+
+$$
+\boxed{
+r=\max_{1\leq i\leq5}x_i=31.
+}
+$$
+
+The maximum operator does not transform each component independently. It examines the order relationship among the components and returns the value that satisfies the global requirement.
+
+### One Output May Depend on Every Input
+
+The output of a reduction has no corresponding input position in the same sense as an elementwise output. We cannot write
+
+$$
+r_i=f(x_i),
+$$
+
+because there is no collection of outputs $r_1,r_2,\ldots,r_5$. There is only one $r$. The dependency structure is
+
+$$
+x_1,x_2,x_3,x_4,x_5
+\longrightarrow
+r.
+$$
+
+Every input is relevant because any input could potentially be the largest. Before examining the collection, we do not know which value will determine the result. Not every input change must alter the result. If $13$ changes to $15$, the maximum remains $31$. Nevertheless, the value at that position participates in the question because it must be compared with the current candidate. Dependency means that an input is permitted to influence the output, not that every possible change must influence it. Thus a reduction can depend on the complete collection even when the final result is numerically equal to one component.
+
+### The Loop Constructs a Global Invariant
+
+The program begins with
+
+```python
+largest = response_times[0]
+```
+
+so the initial candidate is
+
+$$
+18.
+$$
+
+After examining $25$, the candidate becomes
+
+$$
+25.
+$$
+
+After examining $13$, it remains
+
+$$
+25.
+$$
+
+After examining $31$, it becomes
+
+$$
+31.
+$$
+
+After examining $22$, it remains
+
+$$
+31.
+$$
+
+The candidate evolves as
+
+$$
+18
+\longrightarrow
+25
+\longrightarrow
+25
+\longrightarrow
+31
+\longrightarrow
+31.
+$$
+
+At each stage, the variable `largest` has a precise meaning:
+
+> It is the largest value among the elements examined so far.
+
+If $L_k$ denotes the largest value among the first $k$ inputs, then
+
+$$
+L_1=x_1
+$$
+
+and
+
+$$
+L_k=\max(L_{k-1},x_k).
+$$
+
+For the concrete collection,
+
+$$
+L_1=18,
+$$
+
+$$
+L_2=\max(18,25)=25,
+$$
+
+$$
+L_3=\max(25,13)=25,
+$$
+
+$$
+L_4=\max(25,31)=31,
+$$
+
+and
+
+$$
+L_5=\max(31,22)=31.
+$$
+
+The final state satisfies
+
+$$
+L_5=\max(x_1,x_2,x_3,x_4,x_5).
+$$
+
+The loop describes how the answer is constructed sequentially. The reduction expression
+
+$$
+\max_{1\leq i\leq5}x_i
+$$
+
+describes the completed relationship between the collection and its largest value. The reduction is therefore not a mysterious operation that instantly ignores the individual elements. It is a compressed representation of a rule that combines information from across the index domain.
+
+### The Index Domain Disappears from the Output
+
+The input vector is indexed by
+
+$$
+\mathcal{I}=\{1,2,3,4,5\}.
+$$
+
+Each input component is identified by an index:
+
+$$
+x_i
+\qquad
+\text{for }i\in\mathcal{I}.
+$$
+
+After reduction, the output is the scalar
+
+$$
+r=31.
+$$
+
+There is no output vector
+
+$$
+[r_1,r_2,r_3,r_4,r_5].
+$$
+
+The original index $i$ has been eliminated from the shape of the result. It appears inside the reduction notation,
+
+$$
+\max_i x_i,
+$$
+
+because the operator ranges over the indexed inputs, but it does not remain as a free index on the output. This distinction can be made visible by comparing
+
+$$
+y_i=2x_i+3
+$$
+
+with
+
+$$
+r=\max_i x_i.
+$$
+
+In the first equation, $i$ remains in the output $y_i$. The transformation produces one result for each $i$. In the second equation, $i$ is consumed by the maximum operation. The result $r$ has no $i$ subscript. The structural difference is
+
+$$
+\boxed{
+\begin{aligned}
+\text{elementwise transformation}
+&:\quad
+i\text{ remains in the output},\\
+\text{reduction}
+&:\quad
+i\text{ is eliminated from the output}.
+\end{aligned}
+}
+$$
+
+This provides a mathematical way to recognize reductions in more complicated expressions: determine which input indices are no longer present in the result.
+
+### Reducing Shape Without Changing Units
+
+Every response time is measured in milliseconds:
+
+$$
+x_i\text{ has units of milliseconds}.
+$$
+
+The maximum response time is also measured in milliseconds:
+
+$$
+\max_i x_i\text{ has units of milliseconds}.
+$$
+
+The reduction changes the shape of the object but does not necessarily change its physical units:
+
+$$
+\begin{bmatrix}
+18\\
+25\\
+13\\
+31\\
+22
+\end{bmatrix}
+\text{ milliseconds}
+\longrightarrow
+31\text{ milliseconds}.
+$$
+
+Shape and units describe different aspects of a mathematical quantity. Shape tells us how many indexed components the object contains. Units tell us what each numerical magnitude represents. A reduction can remove an index while preserving units. Other reductions may transform units differently. For example, adding several quantities with the same unit produces a total expressed in that unit, while counting elements produces a dimensionless number. The correct unit depends on the semantic question being answered. The important point is that “many values become one” describes a structural change, not a complete description of the result’s meaning.
+
+### A Scalar Result Does Not Preserve the Collection
+
+The reduced result
+
+$$
+r=31
+$$
+
+does not contain enough information to reconstruct
+
+$$
+\mathbf{x}
+=
+\begin{bmatrix}
+18\\
+25\\
+13\\
+31\\
+22
+\end{bmatrix}.
+$$
+
+Many different collections have the same maximum:
+
+$$
+\begin{bmatrix}
+31\\
+1\\
+2
+\end{bmatrix},
+\qquad
+\begin{bmatrix}
+5\\
+31\\
+30
+\end{bmatrix},
+\qquad
+\begin{bmatrix}
+31\\
+31\\
+31
+\end{bmatrix}.
+$$
+
+All reduce to
+
+$$
+31.
+$$
+
+Therefore the maximum transformation is many-to-one not only because many input components participate in one calculation, but also because many distinct input collections can produce the same output. Symbolically, it is possible for
+
+$$
+\mathbf{x}\neq\mathbf{z}
+$$
+
+while
+
+$$
+R(\mathbf{x})=R(\mathbf{z}).
+$$
+
+The reduction preserves the answer to one chosen question—the largest value—while discarding information not required by that question. It does not preserve the number of times the maximum occurs, the ordering of the values, the smaller values, or the location of the maximum. This loss is not a defect. It is the purpose of the reduction. The computation was asked to return the largest response time, not to reproduce the complete dataset.
+
+### Reordering Does Not Change This Reduction
+
+Consider a rearrangement of the response times:
+
+$$
+\begin{bmatrix}
+18\\
+25\\
+13\\
+31\\
+22
+\end{bmatrix}
+\longrightarrow
+\begin{bmatrix}
+31\\
+13\\
+22\\
+18\\
+25
+\end{bmatrix}.
+$$
+
+The maximum remains
+
+$$
+31.
+$$
+
+For this reduction,
+
+$$
+\max(x_1,x_2,\ldots,x_n)
+$$
+
+depends on the values but not on their order. If $\pi$ represents a rearrangement of the indices, then
+
+$$
+\max_i x_i
+=
+\max_i x_{\pi(i)}.
+$$
+
+The maximum is therefore invariant under permutation of the collection. This property differs from the behavior of an elementwise transformation. When the input vector is rearranged, an elementwise output is rearranged correspondingly. The result remains a vector whose positions follow the inputs. For the maximum, rearrangement leaves the scalar output unchanged:
+
+$$
+\boxed{
+\text{elementwise transformation follows the reordering},
+}
+$$
+
+whereas
+
+$$
+\boxed{
+\text{maximum reduction ignores the reordering}.
+}
+$$
+
+Not every operation that produces a scalar must ignore order. The property belongs to the particular reduction rule, not merely to scalar output. The question “what is the largest value?” contains no positional preference, so its answer is invariant under rearrangement.
+
+### A Reduction Is Defined by the Question It Answers
+
+The collection
+
+$$
+\begin{bmatrix}
+18\\
+25\\
+13\\
+31\\
+22
+\end{bmatrix}
+$$
+
+can support many global questions:
+
+- What is the largest response time?
+- What is the smallest response time?
+- What is the total response time?
+- What is the average response time?
+- At which position does the largest response time occur?
+
+These questions use the same input but do not demand the same output. The phrase “reduce the collection” is therefore incomplete. It states that the output will be structurally smaller, but it does not specify what meaning should survive.For the current requirement, the relevant operator is maximum:
+
+$$
+R(\mathbf{x})=\max_i x_i.
+$$
+
+Another requirement would need another reduction. The general structural pattern is
+
+$$
+\boxed{
+R:\mathbb{R}^{n}\rightarrow\mathbb{R},
+}
+$$
+
+but the particular function $R$ must be constructed from the property the problem asks us to preserve. Reduction therefore begins before a library function is chosen. It begins by identifying a question whose answer concerns the collection as a whole.
+
+### The Fundamental Change of Perspective
+
+An element-by-element question asks:
+
+> What output corresponds to this input position?
+
+A reduction question asks:
+
+> What single property should be extracted from all input positions together?
+
+This changes the direction of mathematical reasoning:
+
+$$
+\boxed{
+\begin{aligned}
+\text{elementwise}
+&:\quad
+x_i\longrightarrow y_i,\\
+\text{reduction}
+&:\quad
+x_1,x_2,\ldots,x_n\longrightarrow r.
+\end{aligned}
+}
+$$
+
+The input remains a structured collection, but the output no longer mirrors that structure. The reduction consumes an index domain and returns a result whose meaning is determined by the chosen global question. We have established the defining structural feature:
+
+$$
+\boxed{
+\text{a reduction combines information across an index
+and removes that index from the output}.
+}
+$$
+
+The maximum is one such reduction. Other questions require other operators, and each operator preserves a different property of the collection. The next section will examine how the intended meaning—total, average, minimum, or maximum—determines which reduction must be constructed.
+
+## 10.2 Different Questions Require Different Reductions
+
+Suppose the five response times represent durations from five requests, and we ask:
+
+> How much response time was recorded altogether?
+
+Each request contributes its complete duration to the total:
+
+$$
+18,
+\qquad
+25,
+\qquad
+13,
+\qquad
+31,
+\qquad
+22.
+$$
+
+Because the question asks for accumulated magnitude, the contributions must be joined by addition:
+
+$$
+18+25+13+31+22=109.
+$$
+
+The reduction is
+
+$$
+\boxed{
+T=\sum_{i=1}^{5}x_i=109.
+}
+$$
+
+### Mean: Preserve Average Level
+
+Now ask:
+
+> What was the average response time per request?
+
+The total $109$ does not answer this question by itself. A total depends both on the magnitude of the values and on how many values were accumulated. To express an amount per observation, divide the total by the number of observations:
+
+$$
+\bar{x}
+=
+\frac{1}{5}
+\sum_{i=1}^{5}x_i.
+$$
+
+For the response times,
+
+$$
+\begin{aligned}
+\bar{x}
+&=
+\frac{18+25+13+31+22}{5}\\
+&=
+\frac{109}{5}\\
+&=
+21.8.
+\end{aligned}
+$$
+
+The mean reduction is therefore
+
+$$
+\boxed{
+\bar{x}
+=
+\frac{1}{n}
+\sum_{i=1}^{n}x_i.
+}
+$$
+
+The mean preserves a different property from the total. It answers:
+
+> If the total magnitude were shared equally across all observations, how much would belong to each observation?
+
+For the concrete collection, equal redistribution would produce
+
+$$
+\begin{bmatrix}
+21.8\\
+21.8\\
+21.8\\
+21.8\\
+21.8
+\end{bmatrix}.
+$$
+
+The total of this equalized collection remains
+
+$$
+5(21.8)=109.
+$$
+
+Thus the mean is the common value that would preserve the total if every component were made equal. This gives the defining relationship
+
+$$
+n\bar{x}=\sum_{i=1}^{n}x_i.
+$$
+
+Solving for $\bar{x}$ gives
+
+$$
+\bar{x}
+=
+\frac{1}{n}
+\sum_{i=1}^{n}x_i.
+$$
+
+The mean is therefore not merely “sum and divide because that is the formula.” It is constructed as the equal-share value corresponding to the collection’s total.
+
+### Total and Mean Respond Differently to Repetition
+
+Suppose the entire collection is duplicated:
+
+$$
+\begin{bmatrix}
+18\\
+25\\
+13\\
+31\\
+22
+\end{bmatrix}
+\longrightarrow
+\begin{bmatrix}
+18\\
+25\\
+13\\
+31\\
+22\\
+18\\
+25\\
+13\\
+31\\
+22
+\end{bmatrix}.
+$$
+
+The total doubles:
+
+$$
+109\longrightarrow218.
+$$
+
+This is correct because the duplicated collection contains twice as much accumulated response time. The mean remains unchanged:
+
+$$
+\frac{218}{10}=21.8.
+$$
+
+Duplication changes the amount of data but not its average level. Therefore,
+
+$$
+\boxed{
+\begin{aligned}
+\text{total}
+&:\quad
+\text{sensitive to how many contributions occur},\\
+\text{mean}
+&:\quad
+\text{normalized by the number of contributions}.
+\end{aligned}
+}
+$$
+
+Two collections can have the same mean while having different totals:
+
+$$
+\begin{bmatrix}
+10\\
+20
+\end{bmatrix}
+$$
+
+has mean
+
+$$
+15
+$$
+
+and total
+
+$$
+30,
+$$
+
+while
+
+$$
+\begin{bmatrix}
+10\\
+20\\
+10\\
+20
+\end{bmatrix}
+$$
+
+also has mean
+
+$$
+15
+$$
+
+but total
+
+$$
+60.
+$$
+
+The mean deliberately removes the effect of collection size from the accumulated magnitude.
+
+### Maximum: Preserve the Upper Extreme
+
+The maximum asks:
+
+> Which value is at least as large as every value in the collection?
+
+For the response times,
+
+$$
+\boxed{
+M=\max_i x_i=31.
+}
+$$
+
+Unlike the total, the maximum does not allow every value to contribute additively. A value affects the result only if it exceeds the current candidate. The maximum can also be composed across groups. For the groups
+
+$$
+A=
+\begin{bmatrix}
+18\\
+25
+\end{bmatrix}
+$$
+
+and
+
+$$
+B=
+\begin{bmatrix}
+13\\
+31\\
+22
+\end{bmatrix},
+$$
+
+their maxima are
+
+$$
+\max(A)=25
+$$
+
+and
+
+$$
+\max(B)=31.
+$$
+
+The maximum of the complete collection is
+
+$$
+\max(25,31)=31.
+$$
+
+Thus,
+
+$$
+\max(A\cup B)
+=
+\max\bigl(\max(A),\max(B)\bigr).
+$$
+
+This compositional property makes maximum a reduction operator. Partial maxima can be combined to recover the global maximum. The maximum is associative:
+
+$$
+\max(\max(a,b),c)
+=
+\max(a,\max(b,c)).
+$$
+
+It is also idempotent:
+
+$$
+\max(x,x)=x.
+$$
+
+Repeating an existing value does not change the maximum. Duplicating the complete collection therefore leaves the result unchanged. This contrasts with total:
+
+$$
+x+x=2x,
+$$
+
+so duplication changes accumulated magnitude. The maximum preserves
+
+$$
+\boxed{
+\text{the upper extreme of the collection}.
+}
+$$
+
+It discards how many times that extreme occurs, how far other values lie below it, and how the values are distributed.
+
+### Minimum: Preserve the Lower Extreme
+
+The minimum asks the complementary question:
+
+> Which value is no larger than every value in the collection?
+
+For the response times,
+
+$$
+\boxed{
+m=\min_i x_i=13.
+}
+$$
+
+The required relationship is
+
+$$
+m\leq x_i
+\qquad
+\text{for every }i,
+$$
+
+and
+
+$$
+m=x_k
+\qquad
+\text{for at least one }k.
+$$
+
+Like maximum, minimum composes across groups:
+
+$$
+\min(A\cup B)
+=
+\min\bigl(\min(A),\min(B)\bigr).
+$$
+
+It is associative:
+
+$$
+\min(\min(a,b),c)
+=
+\min(a,\min(b,c)),
+$$
+
+and idempotent:
+
+$$
+\min(x,x)=x.
+$$
+
+Minimum preserves the lower extreme while discarding most other information. Maximum and minimum are related through negation:
+
+$$
+\min_i x_i
+=
+-\max_i(-x_i).
+$$
+
+To find the smallest original value, negate all values, find the largest negated value, and negate the result. For the collection,
+
+$$
+-\mathbf{x}
+=
+\begin{bmatrix}
+-18\\
+-25\\
+-13\\
+-31\\
+-22
+\end{bmatrix}.
+$$
+
+The maximum of the negated values is
+
+$$
+-13.
+$$
+
+Negating it gives
+
+$$
+13,
+$$
+
+which is the original minimum. This equivalence shows that minimum and maximum express the same order structure viewed in opposite directions.
+
+### The Operators Preserve Different Facts
+
+For the same collection,
+
+$$
+\mathbf{x}
+=
+\begin{bmatrix}
+18\\
+25\\
+13\\
+31\\
+22
+\end{bmatrix},
+$$
+
+the reductions produce:
+
+| Question | Reduction | Result | Property preserved |
+|---|---|---:|---|
+| How much altogether? | $\sum_i x_i$ | $109$ | accumulated magnitude |
+| What equal-share level? | $\frac{1}{n}\sum_i x_i$ | $21.8$ | average level |
+| What upper extreme? | $\max_i x_i$ | $31$ | largest value |
+| What lower extreme? | $\min_i x_i$ | $13$ | smallest value |
+
+The results cannot be substituted for one another. A maximum of $31$ does not reveal a total of $109$. A mean of $21.8$ does not reveal a minimum of $13$. Each scalar is correct only relative to the question it was designed to answer. This is why choosing a reduction is a semantic decision before it is a programming decision.
+
+### Similar Results Do Not Imply Equivalent Reductions
+
+For a single-value collection
+
+$$
+\mathbf{x}
+=
+\begin{bmatrix}
+7
+\end{bmatrix},
+$$
+
+we obtain
+
+$$
+\sum_i x_i=7,
+$$
+
+$$
+\frac{1}{n}\sum_i x_i=7,
+$$
+
+$$
+\max_i x_i=7,
+$$
+
+and
+
+$$
+\min_i x_i=7.
+$$
+
+All four reductions produce the same number. Nevertheless, they do not have the same meaning. Their differences appear when the input changes. For
+
+$$
+\begin{bmatrix}
+7\\
+5
+\end{bmatrix},
+$$
+
+the results are
+
+$$
+\text{total}=12,
+$$
+
+$$
+\text{mean}=6,
+$$
+
+$$
+\text{maximum}=7,
+$$
+
+and
+
+$$
+\text{minimum}=5.
+$$
+
+Agreement on one special input does not establish equivalence between functions. Two reductions are equivalent only if they produce the same result for every admissible input in the domain. This principle prevents a common reasoning error: identifying a mathematical operation only from one numerical example. Meaning comes from the relationship the operator defines across its domain.
+
+### Units Help Distinguish the Questions
+
+Each response time $x_i$ is measured in milliseconds. The maximum and minimum are also measured in milliseconds:
+
+$$
+\max_i x_i=31\text{ ms},
+$$
+
+$$
+\min_i x_i=13\text{ ms}.
+$$
+
+The mean is measured in milliseconds per observation, which is ordinarily reported as milliseconds because each observation is one request:
+
+$$
+\bar{x}=21.8\text{ ms per request}.
+$$
+
+The interpretation of the total requires greater care. If the values represent durations of separate requests and the question asks for accumulated duration, then
+
+$$
+\sum_i x_i=109\text{ ms}
+$$
+
+is meaningful as the sum of those durations. It does not necessarily mean that $109$ milliseconds elapsed on a wall clock. If requests occurred concurrently, their accumulated durations and elapsed time would be different quantities.This illustrates that algebraic compatibility is not sufficient for semantic validity. Quantities may share units and still answer different real-world questions.
+
+Before reducing, the reader should ask:
+
+> What does combining these quantities mean in the model of the problem?
+
+### Partial Results and the Information Needed to Combine Them
+
+Suppose a large collection is divided into several parts. A useful reduction often allows partial results to be combined. For totals, store one partial sum per group:
+
+$$
+T_A=\sum_{i\in A}x_i,
+$$
+
+$$
+T_B=\sum_{i\in B}x_i.
+$$
+
+Then
+
+$$
+T=T_A+T_B.
+$$
+
+For maximum,
+
+$$
+M=\max(M_A,M_B).
+$$
+
+For minimum,
+
+$$
+m=\min(m_A,m_B).
+$$
+
+The mean requires more information. The means of two groups cannot generally be averaged directly unless the groups have equal sizes. Suppose group $A$ has mean $\bar{x}_A$ and size $n_A$, while group $B$ has mean $\bar{x}_B$ and size $n_B$. Their combined mean is
+
+$$
+\boxed{
+\bar{x}
+=
+\frac{n_A\bar{x}_A+n_B\bar{x}_B}{n_A+n_B}.
+}
+$$
+
+The group sizes are needed because each mean represents a different number of observations. Equivalently, each group can preserve its total and count:
+
+$$
+(T_A,n_A),
+\qquad
+(T_B,n_B).
+$$
+
+The combined mean is then
+
+$$
+\bar{x}
+=
+\frac{T_A+T_B}{n_A+n_B}.
+$$
+
+This reveals that a mean is not compositionally complete as one scalar unless group sizes are also known. Different reductions require different sufficient information for later combination.
+
+### The Question Determines the Algebra
+
+The words used in a problem suggest different invariants:
+
+- “altogether” asks for accumulated magnitude;
+- “per observation” asks for normalized magnitude;
+- “largest” asks for an upper bound attained by the data;
+- “smallest” asks for a lower bound attained by the data.
+
+These meanings determine the mathematical operator:
+
+$$
+\boxed{
+\begin{aligned}
+\text{total}
+&\longrightarrow
+\sum_i x_i,\\
+\text{mean}
+&\longrightarrow
+\frac{1}{n}\sum_i x_i,\\
+\text{upper extreme}
+&\longrightarrow
+\max_i x_i,\\
+\text{lower extreme}
+&\longrightarrow
+\min_i x_i.
+\end{aligned}
+}
+$$
+
+The correct reasoning order is
+
+$$
+\boxed{
+\text{global question}
+\rightarrow
+\text{property to preserve}
+\rightarrow
+\text{combination rule}
+\rightarrow
+\text{reduced value}.
+}
+$$
+
+The unsafe order is to select a familiar library function first and then invent a meaning for its result. All four reductions return values. A different kind of question remains unanswered:
+
+> At which position does an extreme occur?
+
+The largest value and the location of that value are distinct mathematical objects. The next section will construct this distinction through maximum and argmax.
+
+## 10.3 The Reduced Value and Its Location Are Different Objects
+
+Consider again the response times
+
+$$
+\mathbf{x}
+=
+\begin{bmatrix}
+18\\
+25\\
+13\\
+31\\
+22
+\end{bmatrix}.
+$$
+
+Section 10.2 asked:
+
+> What is the largest response time?
+
+The answer is
+
+$$
+\max_i x_i=31.
+$$
+
+Now consider a different question:
+
+> At which position did the largest response time occur?
+
+The answer is
+
+$$
+4.
+$$
+
+The numbers $31$ and $4$ are related, but they do not represent the same kind of object. The number $31$ is a response-time value. The number $4$ is an index identifying a position in the collection. The relationship between them is
+
+$$
+x_4=31.
+$$
+
+Maximum returns the value:
+
+$$
+\boxed{
+\max_i x_i=31.
+}
+$$
+
+Argmax returns the location:
+
+$$
+\boxed{
+\operatorname*{arg\,max}_i x_i=4.
+}
+$$
+
+The name **argmax** is an abbreviation for “argument of the maximum.” Here, the argument is the index $i$ supplied to the indexed collection $x_i$. Argmax returns the index at which the largest value is attained.
+
+### Value Space and Index Space
+
+The response-time values belong to a numerical measurement space. In this example,
+
+$$
+x_i\in\mathbb{R},
+$$
+
+with each value interpreted in milliseconds. The indices belong to the index set
+
+$$
+\mathcal{I}=\{1,2,3,4,5\}.
+$$
+
+Therefore,
+
+$$
+\max_i x_i\in\mathbb{R},
+$$
+
+while
+
+$$
+\operatorname*{arg\,max}_i x_i\in\mathcal{I}
+$$
+
+when the maximum occurs at exactly one position. The two reductions have different codomains:
+
+$$
+\max:\mathbb{R}^{5}\rightarrow\mathbb{R},
+$$
+
+whereas
+
+$$
+\operatorname*{arg\,max}:\mathbb{R}^{5}\rightarrow\mathcal{I}.
+$$
+
+Maximum returns an element of the value space. Argmax returns an element of the position space. This distinction is semantic, not merely notational. The result
+
+$$
+31
+$$
+
+means “31 milliseconds.” The result
+
+$$
+4
+$$
+
+means “the fourth position.” Treating the index $4$ as though it were a response time would confuse a location with the value stored there.
+
+### Argmax Is Defined Through Maximum
+
+Let
+
+$$
+M=\max_{i\in\mathcal{I}}x_i.
+$$
+
+The argmax is the set of indices whose values equal $M$:
+
+$$
+\boxed{
+\operatorname*{arg\,max}_{i\in\mathcal{I}}x_i
+=
+\{i\in\mathcal{I}:x_i=M\}.
+}
+$$
+
+For the concrete collection,
+
+$$
+M=31.
+$$
+
+We inspect the indexed values:
+
+$$
+x_1=18\neq31,
+$$
+
+$$
+x_2=25\neq31,
+$$
+
+$$
+x_3=13\neq31,
+$$
+
+$$
+x_4=31,
+$$
+
+and
+
+$$
+x_5=22\neq31.
+$$
+
+Therefore,
+
+$$
+\operatorname*{arg\,max}_{i\in\mathcal{I}}x_i
+=
+\{4\}.
+$$
+
+When the maximizing index is unique, mathematical writing often simplifies the singleton set and writes
+
+$$
+\operatorname*{arg\,max}_i x_i=4.
+$$
+
+More precisely, the argmax is the set $\{4\}$, while $4$ is its unique member.
+
+The defining relationship is
+
+$$
+\boxed{
+i^\star\in\operatorname*{arg\,max}_i x_i
+\quad\Longrightarrow\quad
+x_{i^\star}=\max_i x_i.
+}
+$$
+
+The symbol $i^\star$ denotes a maximizing index. Once the location $i^\star$ has been found, indexing the collection at that location recovers the maximum value:
+
+$$
+x_{i^\star}=M.
+$$
+
+For the response times,
+
+$$
+i^\star=4
+$$
+
+and
+
+$$
+x_{i^\star}=x_4=31.
+$$
+
+### Maximum Does Not Reveal Argmax
+
+Knowing only that
+
+$$
+\max_i x_i=31
+$$
+
+does not determine where $31$ occurs. Consider
+
+$$
+\mathbf{a}
+=
+\begin{bmatrix}
+31\\
+18\\
+25
+\end{bmatrix}
+$$
+
+and
+
+$$
+\mathbf{b}
+=
+\begin{bmatrix}
+18\\
+25\\
+31
+\end{bmatrix}.
+$$
+
+Both collections have the same maximum:
+
+$$
+\max_i a_i=31,
+$$
+
+$$
+\max_i b_i=31.
+$$
+
+But their maximizing positions differ:
+
+$$
+\operatorname*{arg\,max}_i a_i=1,
+$$
+
+$$
+\operatorname*{arg\,max}_i b_i=3.
+$$
+
+The maximum preserves the upper extreme while discarding its location. Once the collection has been reduced to the scalar $31$, the positional information cannot be reconstructed. Thus,
+
+$$
+\boxed{
+\text{maximum value alone does not determine its location}.
+}
+$$
+
+### Argmax Does Not Reveal Maximum
+
+The reverse is also true. Knowing only that
+
+$$
+\operatorname*{arg\,max}_i x_i=4
+$$
+
+does not determine the largest value. The collections
+
+$$
+\mathbf{a}
+=
+\begin{bmatrix}
+1\\
+2\\
+3\\
+10\\
+4
+\end{bmatrix}
+$$
+
+and
+
+$$
+\mathbf{b}
+=
+\begin{bmatrix}
+18\\
+25\\
+13\\
+31\\
+22
+\end{bmatrix}
+$$
+
+both satisfy
+
+$$
+\operatorname*{arg\,max}_i a_i=4
+$$
+
+and
+
+$$
+\operatorname*{arg\,max}_i b_i=4.
+$$
+
+However,
+
+$$
+\max_i a_i=10,
+$$
+
+while
+
+$$
+\max_i b_i=31.
+$$
+
+Argmax preserves the location of the upper extreme while discarding its magnitude. Therefore,
+
+$$
+\boxed{
+\text{location alone does not determine the value located there}.
+}
+$$
+
+To preserve both pieces of information, the computation must retain the pair
+
+$$
+(i^\star,x_{i^\star}).
+$$
+
+For the response-time example, this pair is
+
+$$
+(4,31).
+$$
+
+The first component identifies where the event occurred. The second identifies its measured magnitude.
+
+### Units Expose the Difference
+
+Each response time has units of milliseconds:
+
+$$
+x_i\text{ is measured in milliseconds}.
+$$
+
+Therefore,
+
+$$
+\max_i x_i=31\text{ ms}.
+$$
+
+The argmax has no unit of milliseconds:
+
+$$
+\operatorname*{arg\,max}_i x_i=4.
+$$
+
+The index $4$ is a positional label. Depending on the problem, it might refer to:
+
+- the fourth request;
+- the fourth class;
+- the fourth time step;
+- the fourth pixel;
+- the fourth candidate;
+- the fourth row of a matrix.
+
+The index acquires meaning from the index domain, not from the units of the values.
+
+### A Search Variable and an Objective Value
+
+Argmax notation becomes especially meaningful when written as an optimization problem. Suppose a function
+
+$$
+f(i)
+$$
+
+assigns a value to every candidate index $i\in\mathcal{I}$.The maximum objective value is
+
+$$
+\max_{i\in\mathcal{I}}f(i).
+$$
+
+A maximizing argument is
+
+$$
+i^\star
+\in
+\operatorname*{arg\,max}_{i\in\mathcal{I}}f(i).
+$$
+
+These answer two different questions:
+
+$$
+\boxed{
+\begin{aligned}
+\max_{i\in\mathcal{I}}f(i)
+&:\quad
+\text{How large can the objective become?}\\
+\operatorname*{arg\,max}_{i\in\mathcal{I}}f(i)
+&:\quad
+\text{Which candidate makes it that large?}
+\end{aligned}
+}
+$$
+
+For an indexed vector, the objective function is
+
+$$
+f(i)=x_i.
+$$
+
+The search variable is $i$, not $x_i$. This explains the word *argument*: argmax returns the input to the function that produces the largest output. The distinction appears throughout mathematical programming. A classification model may produce one score per class:
+
+$$
+s_1,s_2,\ldots,s_k.
+$$
+
+The maximum score answers
+
+$$
+\max_j s_j,
+$$
+
+while the predicted class is often
+
+$$
+\operatorname*{arg\,max}_j s_j.
+$$
+
+The score and class label are different objects even when both are represented numerically.
+
+### Ties Make Argmax Set-Valued
+
+Now consider
+
+$$
+\mathbf{x}
+=
+\begin{bmatrix}
+18\\
+31\\
+13\\
+31\\
+22
+\end{bmatrix}.
+$$
+
+The maximum remains
+
+$$
+\max_i x_i=31.
+$$
+
+However, the value $31$ occurs at positions $2$ and $4$. Therefore,
+
+$$
+\boxed{
+\operatorname*{arg\,max}_i x_i=\{2,4\}.
+}
+$$
+
+This reveals an important mathematical fact: argmax is naturally set-valued. It returns all arguments at which the maximum is attained. When the maximum is unique, the set contains one element:
+
+$$
+\operatorname*{arg\,max}_i x_i=\{4\}.
+$$
+
+When the maximum is tied, the set contains several elements:
+
+$$
+\operatorname*{arg\,max}_i x_i=\{2,4\}.
+$$
+
+A programming library often returns only one index. For example, it may return the first maximizing position:
+
+```python
+response_times = [18, 31, 13, 31, 22]
+largest_position = response_times.index(max(response_times))
+```
+
+Using zero-based Python indexing, this returns
+
+```python
+1
+```
+
+because the first occurrence of $31$ is at Python index `1`.This behavior includes a tie-breaking rule:
+
+> If several positions attain the maximum, return the first one under the library’s indexing order.
+
+That is a valid software contract, but it is more specific than the mathematical argmax set. The program has chosen one representative from
+
+$$
+\{2,4\}
+$$
+
+under one-based mathematical indexing, or from
+
+$$
+\{1,3\}
+$$
+
+under zero-based Python indexing. The tie-breaking policy should not be mistaken for a mathematical proof that the maximizer is unique.
+
+### Indexing Conventions Change the Numerical Label
+
+Mathematical exposition commonly labels positions as
+
+$$
+1,2,\ldots,n.
+$$
+
+Python labels the same positions as
+
+$$
+0,1,\ldots,n-1.
+$$
+
+For
+
+```python
+response_times = [18, 25, 13, 31, 22]
+```
+
+the mathematical position of $31$ is
+
+$$
+4,
+$$
+
+but its Python index is
+
+```python
+3
+```
+
+because Python begins indexing at zero. Thus,
+
+$$
+\operatorname*{arg\,max}_{i\in\{1,\ldots,5\}}x_i=4
+$$
+
+and a Python `argmax` operation may return
+
+```python
+3
+```
+
+without disagreement. The two results use different coordinate conventions. An index has meaning only relative to an explicitly understood index system. The safe translation is
+
+$$
+\boxed{
+\text{mathematical position }i
+=
+\text{Python index }i-1.
+}
+$$
+
+This offset applies only when the mathematical convention begins at $1$ and the programming convention begins at $0$.
+
+### Reordering Preserves Maximum but Changes Argmax
+
+Consider the original collection
+
+$$
+\mathbf{x}
+=
+\begin{bmatrix}
+18\\
+25\\
+13\\
+31\\
+22
+\end{bmatrix}.
+$$
+
+Its maximum and argmax are
+
+$$
+\max_i x_i=31
+$$
+
+and
+
+$$
+\operatorname*{arg\,max}_i x_i=4.
+$$
+
+Now rearrange the values:
+
+$$
+\widetilde{\mathbf{x}}
+=
+\begin{bmatrix}
+31\\
+18\\
+22\\
+25\\
+13
+\end{bmatrix}.
+$$
+
+The maximum remains
+
+$$
+\max_i\widetilde{x}_i=31.
+$$
+
+The argmax becomes
+
+$$
+\operatorname*{arg\,max}_i\widetilde{x}_i=1.
+$$
+
+Maximum is invariant under reordering because the upper extreme does not depend on where the values are placed. Argmax is not invariant because it reports a location. Instead, argmax follows the permutation. If the maximizing value moves from position $4$ to position $1$, its maximizing index moves correspondingly. Thus,
+
+$$
+\boxed{
+\begin{aligned}
+\text{maximum}
+&:\quad
+\text{preserves value under reordering},\\
+\text{argmax}
+&:\quad
+\text{tracks the reordered location}.
+\end{aligned}
+}
+$$
+
+### Minimum and Argmin Have the Same Distinction
+
+The smallest response time is
+
+$$
+\min_i x_i=13.
+$$
+
+Its location is
+
+$$
+\operatorname*{arg\,min}_i x_i=3
+$$
+
+under one-based indexing. Minimum returns a value:
+
+$$
+\min_i x_i\in\mathbb{R}.
+$$
+
+Argmin returns an index or set of indices:
+
+$$
+\operatorname*{arg\,min}_i x_i\subseteq\mathcal{I}.
+$$
+
+Formally,
+
+$$
+\boxed{
+\operatorname*{arg\,min}_{i\in\mathcal{I}}x_i
+=
+\left\{
+i\in\mathcal{I}:
+x_i=\min_{j\in\mathcal{I}}x_j
+\right\}.
+}
+$$
+
+The same questions arise:
+
+- Is the minimizing position unique?
+- Which indexing convention is used?
+- If several minima occur, which tie-breaking rule does the software apply?
+- Does the computation need the value, the position, or both?
+
+### The Structural Difference
+
+Maximum and argmax both inspect the entire indexed collection, but they preserve different aspects of it:
+
+$$
+\boxed{
+\begin{aligned}
+\max_i x_i
+&:\quad
+\text{preserves the extreme value and discards its position},\\
+\operatorname*{arg\,max}_i x_i
+&:\quad
+\text{preserves the extreme position and discards its value}.
+\end{aligned}
+}
+$$
+
+Retaining both requires
+
+$$
+\boxed{
+\left(
+i^\star,
+x_{i^\star}
+\right),
+\qquad
+i^\star\in\operatorname*{arg\,max}_i x_i.
+}
+$$
+
+This distinction becomes even more important for matrices and tensors, where a reduction may eliminate one index while preserving others. The next section will examine how reducing along a chosen axis determines which indices disappear and which remain in the output.
+
+## 10.4 Reducing One Axis While Preserving Another
+
+A vector has one index:
+
+$$
+x_i.
+$$
+
+Reducing that index produces a scalar:
+
+$$
+r=\max_i x_i.
+$$
+
+The index $i$ appears inside the reduction operator but does not appear on the result. We described this by saying that the reduction consumes or eliminates the index. A matrix has two indices:
+
+$$
+X_{ij}.
+$$
+
+The first index $i$ identifies a row, and the second index $j$ identifies a column. A reduction may eliminate both indices, producing one scalar, or eliminate only one index, producing a vector indexed by the dimension that remains. This leads to a general principle:
+
+$$
+\boxed{
+\text{a reduced index disappears from the output;
+an unreduced index remains}.
+}
+$$
+
+### A Matrix with Two Kinds of Position
+
+Suppose three computer servers handle four requests. Their response times, measured in milliseconds, are
+
+$$
+\mathbf{X}
+=
+\begin{bmatrix}
+18 & 25 & 13 & 31\\
+22 & 20 & 24 & 19\\
+35 & 28 & 30 & 26
+\end{bmatrix}.
+$$
+
+Let the row index
+
+$$
+i\in\{1,2,3\}
+$$
+
+identify the server, and let the column index
+
+$$
+j\in\{1,2,3,4\}
+$$
+
+identify the request. Thus,
+
+$$
+X_{ij}
+=
+\text{response time of server }i
+\text{ for request }j.
+$$
+
+For example,
+
+$$
+X_{2,3}=24
+$$
+
+means that server $2$ took $24$ milliseconds to handle request $3$. The matrix belongs to
+
+$$
+\mathbf{X}\in\mathbb{R}^{3\times4}.
+$$
+
+The shape $(3,4)$ records that the matrix contains three server positions and four request positions. The semantic interpretation of those dimensions is
+
+$$
+(\text{servers},\text{requests}).
+$$
+
+The shape alone does not contain these names. They come from the model of the problem.
+
+### One Maximum for Each Server
+
+Suppose we ask:
+
+> What was the largest response time produced by each server?
+
+For server $1$, the relevant values are
+
+$$
+18,\quad25,\quad13,\quad31,
+$$
+
+so the maximum is
+
+$$
+31.
+$$
+
+For server $2$,
+
+$$
+22,\quad20,\quad24,\quad19,
+$$
+
+so the maximum is
+
+$$
+24.
+$$
+
+For server $3$,
+
+$$
+35,\quad28,\quad30,\quad26,
+$$
+
+so the maximum is
+
+$$
+35.
+$$
+
+The result is the vector
+
+$$
+\mathbf{y}
+=
+\begin{bmatrix}
+31\\
+24\\
+35
+\end{bmatrix}.
+$$
+
+There is one output for every server. Therefore the server index $i$ remains:
+
+$$
+y_i.
+$$
+
+The request index $j$ is reduced because all request values associated with one server are combined into one maximum:
+
+$$
+\boxed{
+y_i=\max_{1\leq j\leq4}X_{ij}.
+}
+$$
+
+The index structure makes the operation explicit:
+
+- $i$ remains free and identifies the output component;
+- $j$ is bound by the maximum and disappears from the output.
+
+For each fixed $i$, the maximum ranges over every admissible $j$.
+
+The shape transformation is
+
+$$
+\boxed{
+\mathbb{R}^{3\times4}
+\longrightarrow
+\mathbb{R}^{3}.
+}
+$$
+
+The request dimension has been removed, while the server dimension has been preserved.
+
+### Fix One Index and Reduce the Other
+
+The expression
+
+$$
+y_i=\max_j X_{ij}
+$$
+
+can be read as a two-stage instruction. First, fix a server index $i$. For example, choose $i=2$. This selects the row
+
+$$
+X_{2,1},X_{2,2},X_{2,3},X_{2,4}.
+$$
+
+Second, reduce across the request index $j$:
+
+$$
+y_2
+=
+\max
+\left(
+X_{2,1},
+X_{2,2},
+X_{2,3},
+X_{2,4}
+\right).
+$$
+
+Substituting the values gives
+
+$$
+y_2=\max(22,20,24,19)=24.
+$$
+
+Repeating this relationship for every fixed $i$ constructs the output vector. This is not one global maximum over the whole matrix. It is a family of reductions: one reduction for every value of the preserved index. The distinction is
+
+$$
+\boxed{
+\text{fix the index that remains;
+range over the index being reduced}.
+}
+$$
+
+### One Maximum for Each Request
+
+Now ask a different question:
+
+> What was the largest response time observed for each request across all servers?
+
+For request $1$, the server values are
+
+$$
+18,\quad22,\quad35,
+$$
+
+so the maximum is
+
+$$
+35.
+$$
+
+For request $2$,
+
+$$
+25,\quad20,\quad28,
+$$
+
+so the maximum is
+
+$$
+28.
+$$
+
+For request $3$,
+
+$$
+13,\quad24,\quad30,
+$$
+
+so the maximum is
+
+$$
+30.
+$$
+
+For request $4$,
+
+$$
+31,\quad19,\quad26,
+$$
+
+so the maximum is
+
+$$
+31.
+$$
+
+The output is
+
+$$
+\mathbf{z}
+=
+\begin{bmatrix}
+35\\
+28\\
+30\\
+31
+\end{bmatrix}.
+$$
+
+There is one result for each request. Therefore the request index $j$ remains:
+
+$$
+z_j.
+$$
+
+The server index $i$ is reduced:
+
+$$
+\boxed{
+z_j=\max_{1\leq i\leq3}X_{ij}.
+}
+$$
+
+The shape transformation is
+
+$$
+\boxed{
+\mathbb{R}^{3\times4}
+\longrightarrow
+\mathbb{R}^{4}.
+}
+$$
+
+This time the server dimension disappears and the request dimension remains.
+
+### Similar Operators Can Answer Different Questions
+
+The expressions
+
+$$
+y_i=\max_jX_{ij}
+$$
+
+and
+
+$$
+z_j=\max_iX_{ij}
+$$
+
+use the same maximum operator. They do not perform the same reduction. The first means:
+
+> For each server $i$, find the maximum over requests $j$.
+
+The second means:
+
+> For each request $j$, find the maximum over servers $i$.
+
+Their outputs have different lengths:
+
+$$
+\mathbf{y}\in\mathbb{R}^{3},
+$$
+
+$$
+\mathbf{z}\in\mathbb{R}^{4}.
+$$
+
+They also have different semantic meanings. The components of $\mathbf{y}$ describe servers. The components of $\mathbf{z}$ describe requests. The choice of reduced axis is therefore part of the mathematical question, not merely a parameter supplied to a library function.
+
+### Reducing Both Indices
+
+Suppose we ask:
+
+> What was the largest response time anywhere in the matrix?
+
+Now neither a server-specific nor a request-specific index should remain. The complete reduction is
+
+$$
+r=\max_{i,j}X_{ij}.
+$$
+
+For the concrete matrix,
+
+$$
+r=35.
+$$
+
+Both indices are consumed by the reduction, so the output is a scalar:
+
+$$
+\boxed{
+\mathbb{R}^{3\times4}
+\longrightarrow
+\mathbb{R}.
+}
+$$
+
+The three possibilities can be compared:
+
+$$
+\boxed{
+\begin{aligned}
+y_i=\max_jX_{ij}
+&:\quad
+\text{preserve }i,\text{ reduce }j,\\
+z_j=\max_iX_{ij}
+&:\quad
+\text{reduce }i,\text{ preserve }j,\\
+r=\max_{i,j}X_{ij}
+&:\quad
+\text{reduce both }i\text{ and }j.
+\end{aligned}
+}
+$$
+
+The indices present on the left side reveal the shape of the output.
+
+### The Same Axis Logic Applies to Other Reductions
+
+The distinction is not specific to maximum. The total response time for each server is
+
+$$
+T_i=\sum_{j=1}^{4}X_{ij}.
+$$
+
+For the concrete matrix,
+
+$$
+\begin{aligned}
+T_1&=18+25+13+31=87,\\
+T_2&=22+20+24+19=85,\\
+T_3&=35+28+30+26=119.
+\end{aligned}
+$$
+
+Thus,
+
+$$
+\mathbf{T}
+=
+\begin{bmatrix}
+87\\
+85\\
+119
+\end{bmatrix}.
+$$
+
+The request index $j$ has been reduced, while the server index $i$ remains. The average response time for each server is
+
+$$
+\bar{X}_i
+=
+\frac{1}{4}
+\sum_{j=1}^{4}X_{ij}.
+$$
+
+The results are
+
+$$
+\bar{X}_1=21.75,
+$$
+
+$$
+\bar{X}_2=21.25,
+$$
+
+and
+
+$$
+\bar{X}_3=29.75.
+$$
+
+Again, there is one result per server. The minimum response time for each request is
+
+$$
+m_j=\min_iX_{ij}.
+$$
+
+This reduces the server index $i$ and preserves the request index $j$. The reduction operator determines what property is preserved. The chosen axis determines which kind of position remains represented in the output.
+
+### Axis Means an Index Direction
+
+In array programming, the word **axis** refers to one dimension of an array’s index structure.
+
+For
+
+$$
+X_{ij},
+$$
+
+the first axis corresponds to $i$, and the second axis corresponds to $j$. Under the current interpretation,
+
+$$
+i=\text{server index},
+$$
+
+$$
+j=\text{request index}.
+$$
+
+To reduce along an axis means to range over that axis’s index and eliminate it from the output. This language can be confusing because people sometimes say “calculate the row maximum” when they mean either:
+
+- find a maximum within every row;
+- reduce the row dimension.
+
+These are not the same instruction. Finding a maximum within every row means ranging across columns:
+
+$$
+y_i=\max_jX_{ij}.
+$$
+
+The row index remains. Reducing the row axis means ranging across rows:
+
+$$
+z_j=\max_iX_{ij}.
+$$
+
+The row index disappears. The safest wording is:
+
+$$
+\boxed{
+\text{reduce over the index that should disappear}.
+}
+$$
+
+### Translating the Axes into NumPy
+
+Represent the matrix in Python:
+
+```python
+import numpy as np
+
+response_times = np.array([
+    [18, 25, 13, 31],
+    [22, 20, 24, 19],
+    [35, 28, 30, 26],
+])
+```
+
+Its shape is
+
+```python
+(3, 4)
+```
+
+NumPy calls the first dimension `axis=0` and the second dimension `axis=1`. Reducing with
+
+```python
+response_times.max(axis=1)
+```
+
+eliminates the second dimension. The operation ranges across columns within each row and returns one value per row:
+
+```python
+[31, 24, 35]
+```
+
+Mathematically,
+
+$$
+y_i=\max_jX_{ij}.
+$$
+
+Reducing with
+
+```python
+response_times.max(axis=0)
+```
+
+eliminates the first dimension. The operation ranges across rows and returns one value per column:
+
+```python
+[35, 28, 30, 31]
+```
+
+Mathematically,
+
+$$
+z_j=\max_iX_{ij}.
+$$
+
+Reducing without specifying an axis,
+
+```python
+response_times.max()
+```
+
+reduces the entire array and returns
+
+```python
+35
+```
+
+Mathematically,
+
+$$
+r=\max_{i,j}X_{ij}.
+$$
+
+The numerical axis parameter identifies the dimension to remove:
+
+$$
+\boxed{
+\begin{aligned}
+\texttt{axis=0}
+&:\quad
+\text{remove the first index},\\
+\texttt{axis=1}
+&:\quad
+\text{remove the second index}.
+\end{aligned}
+}
+$$
+
+The parameter does not describe the meaning of the dimension. NumPy does not know that axis $0$ represents servers or that axis $1$ represents requests. The programmer must preserve that semantic interpretation.
+
+Suppose the same numerical matrix is stored with the opposite orientation:
+
+$$
+\widetilde{X}_{ji}
+=
+\text{response time for request }j
+\text{ on server }i.
+$$
+
+Its shape would be
+
+$$
+(4,3)
+$$
+
+rather than
+
+$$
+(3,4).
+$$
+
+Now the request index is first and the server index is second. A per-server reduction would use a different numerical axis than before. This demonstrates that `axis=0` does not inherently mean “server” or “sample,” and `axis=1` does not inherently mean “request” or “feature.” Axis numbers refer to storage positions in the shape tuple. Their semantic meanings depend on how the data was organized. The correct reasoning order is
+
+$$
+\boxed{
+\text{question}
+\rightarrow
+\text{index to preserve}
+\rightarrow
+\text{index to reduce}
+\rightarrow
+\text{numerical axis}.
+}
+$$
+
+Choosing an axis merely because a familiar example used the same number can produce a mechanically valid result with the wrong meaning.
+
+### Preserving a Reduced Dimension as Size One
+
+Some numerical libraries allow a reduced dimension to remain in the output with length $1$.
+
+For example,
+
+```python
+response_times.max(axis=1, keepdims=True)
+```
+
+produces an array with shape
+
+```python
+(3, 1)
+```
+
+rather than
+
+```python
+(3,)
+```
+
+and values
+
+```text
+[[31],
+ [24],
+ [35]]
+```
+
+The reduction still ranges over the request index $j$. There is still only one maximum per server. The singleton dimension is retained as a structural placeholder. Without preservation,
+
+$$
+\mathbb{R}^{3\times4}
+\longrightarrow
+\mathbb{R}^{3}.
+$$
+
+With a singleton dimension retained,
+
+$$
+\mathbb{R}^{3\times4}
+\longrightarrow
+\mathbb{R}^{3\times1}.
+$$
+
+The reduced index no longer varies over four request positions. It has been collapsed to one summary position. Retaining a size-one dimension can help later operations align shapes, but it does not restore the information removed by the reduction. The four original request values cannot be recovered from one maximum. Thus,
+
+$$
+\boxed{
+\text{keeping the dimension is not the same as keeping the data}.
+}
+$$
+
+### Argmax Along an Axis
+
+The distinction between value and location also applies to axis reductions. For each server, the largest response time is
+
+$$
+y_i=\max_jX_{ij}.
+$$
+
+The request position at which that maximum occurs is
+
+$$
+q_i\in\operatorname*{arg\,max}_jX_{ij}.
+$$
+
+For the concrete matrix,
+
+$$
+\mathbf{q}
+=
+\begin{bmatrix}
+4\\
+3\\
+1
+\end{bmatrix}
+$$
+
+under one-based indexing:
+
+- server $1$ has its maximum at request $4$;
+- server $2$ has its maximum at request $3$;
+- server $3$ has its maximum at request $1$.
+
+The output retains the server index $i$ because there is one maximizing request position for each server:
+
+$$
+q_i.
+$$
+
+The reduced request index $j$ reappears as the value stored in $q_i$. This does not mean that $j$ remains as an output dimension. Instead, a selected value from the request index set becomes the content of each output component. The value and location outputs are
+
+$$
+y_i=\max_jX_{ij}
+$$
+
+and
+
+$$
+q_i\in\operatorname*{arg\,max}_jX_{ij}.
+$$
+
+Their relationship is
+
+$$
+X_{i,q_i}=y_i.
+$$
+
+### Generalizing to More Dimensions
+
+Suppose a tensor has components
+
+$$
+X_{ijk}.
+$$
+
+A reduction over $k$ produces
+
+$$
+Y_{ij}=\sum_kX_{ijk}.
+$$
+
+The index $k$ disappears, while $i$ and $j$ remain. A reduction over $j$ and $k$ produces
+
+$$
+Z_i=\max_{j,k}X_{ijk}.
+$$
+
+Only $i$ remains. A complete reduction produces
+
+$$
+r=\min_{i,j,k}X_{ijk}.
+$$
+
+No index remains. The general rule is visible directly from the notation:
+
+$$
+\boxed{
+\text{indices on the right but not the left are reduced}.
+}
+$$
+
+This provides a mathematical method for predicting output shape before writing code. If
+
+$$
+X_{i_1i_2\ldots i_d}
+$$
+
+has $d$ indices and a reduction eliminates a subset of them, the output retains exactly the complementary subset of indices.
+
+### Reduction as a Transformation of Index Structure
+
+An axis reduction does two things simultaneously:
+
+1. it combines numerical values according to an operator;
+2. it transforms the index structure of the object.
+
+For
+
+$$
+y_i=\max_jX_{ij},
+$$
+
+the maximum operator preserves the upper extreme across $j$, while the index transformation removes the request dimension and preserves the server dimension. The numerical and structural questions are distinct:
+
+> Which property should be preserved across the reduced positions?
+
+and
+
+> Which positions should remain represented in the output?
+
+The first determines whether we use sum, mean, maximum, minimum, or another reduction. The second determines the axis. The complete design process is
+
+$$
+\boxed{
+\text{global question}
+\rightarrow
+\text{reduction operator}
+\rightarrow
+\text{index to eliminate}
+\rightarrow
+\text{output index structure}.
+}
+$$
+
+For the server matrix:
+
+$$
+\boxed{
+\begin{aligned}
+\text{largest time per server}
+&\rightarrow
+\max
+\rightarrow
+\text{eliminate request index }j
+\rightarrow
+y_i,\\
+\text{largest time per request}
+&\rightarrow
+\max
+\rightarrow
+\text{eliminate server index }i
+\rightarrow
+z_j,\\
+\text{largest time overall}
+&\rightarrow
+\max
+\rightarrow
+\text{eliminate }i\text{ and }j
+\rightarrow
+r.
+\end{aligned}
+}
+$$
+
+A reduction is therefore not adequately described by saying that “many values become one.” In multidimensional data, many values may become one value for every remaining index. The more precise principle is:
+
+$$
+\boxed{
+\text{many values along the reduced indices
+become one value for each configuration of the preserved indices}.
+}
+$$
+
+The chapter has now established how reductions choose a property, return a value or location, and transform index structure. The final section will examine reduction as deliberate information loss: what the reduced result preserves, what it destroys, and why that loss is necessary for the summary to perform its intended role.
+
+## 10.5 Reduction as Deliberate Information Loss
+
+A computation need not retain only one reduced value. It can preserve several summaries:
+
+$$
+S(\mathbf{x})
+=
+\left(
+\min_i x_i,
+\max_i x_i,
+\frac{1}{n}\sum_i x_i
+\right).
+$$
+
+For the response times,
+
+$$
+S(\mathbf{x})
+=
+(13,31,21.8).
+$$
+
+This summary distinguishes more collections than any one of its components alone. Two vectors with the same mean but different maxima no longer produce the same combined summary. However, even the triple
+
+$$
+(\text{minimum},\text{maximum},\text{mean})
+$$
+
+does not generally reconstruct the original data. For example,
+
+$$
+\begin{bmatrix}
+0\\
+2\\
+4
+\end{bmatrix}
+$$
+
+and
+
+$$
+\begin{bmatrix}
+0\\
+1\\
+5
+\end{bmatrix}
+$$
+
+do not have the same maximum, so they are distinguished. But other distinct collections can share the same minimum, maximum, and mean. For instance,
+
+$$
+\mathbf{a}
+=
+\begin{bmatrix}
+0\\
+2\\
+4\\
+6
+\end{bmatrix}
+$$
+
+and
+
+$$
+\mathbf{b}
+=
+\begin{bmatrix}
+0\\
+3\\
+3\\
+6
+\end{bmatrix}
+$$
+
+both have
+
+$$
+\min=0,
+$$
+
+$$
+\max=6,
+$$
+
+and
+
+$$
+\text{mean}=3.
+$$
+
+Yet
+
+$$
+\mathbf{a}\neq\mathbf{b}.
+$$
+
+Adding summaries can preserve more properties without preserving the complete input. This creates a spectrum:
+
+$$
+\boxed{
+\text{less summary information}
+\longrightarrow
+\text{more indistinguishable inputs}
+}
+$$
+
+and
+
+$$
+\boxed{
+\text{more summary information}
+\longrightarrow
+\text{fewer indistinguishable inputs}.
+}
+$$
+
+The appropriate point on this spectrum depends on the task, storage constraints, computational needs, and future questions.
+
+Suppose we preserve both the total
+
+$$
+T=\sum_i x_i
+$$
+
+and the count
+
+$$
+n.
+$$
+
+The mean can be reconstructed:
+
+$$
+\bar{x}=\frac{T}{n}.
+$$
+
+Therefore, the pair
+
+$$
+(T,n)
+$$
+
+contains enough information to compute the mean. The mean alone does not generally contain enough information to recover the total because the count may be unknown. A mean of $10$ could come from
+
+$$
+\begin{bmatrix}
+10
+\end{bmatrix},
+$$
+
+with total $10$, or
+
+$$
+\begin{bmatrix}
+10\\
+10\\
+10
+\end{bmatrix},
+$$
+
+with total $30$. This establishes an ordering of information content. If one summary can be computed from another, the second summary preserves at least enough information for the first. Symbolically, if
+
+$$
+R_2(\mathbf{x})=h(R_1(\mathbf{x}))
+$$
+
+for some function $h$, then $R_1$ contains sufficient information to derive $R_2$. For example,
+
+$$
+\text{mean}
+=
+h(\text{total},\text{count})
+$$
+
+with
+
+$$
+h(T,n)=\frac{T}{n}.
+$$
+
+But total and count cannot generally be reconstructed from mean alone. The direction of derivability reveals which summary is more informative for a specified family of questions.
+
+### Reduction Can Remove Meaningful Context
+
+Suppose response times are ordered chronologically:
+
+$$
+x_1,x_2,\ldots,x_n.
+$$
+
+The maximum preserves the worst observed duration but removes when it occurred. The mean preserves average level but removes temporal patterns. Two systems could have the same mean while one steadily degrades and the other remains stable. Similarly, reducing an image to its average brightness removes spatial arrangement. Two images with the same average may depict entirely different scenes. The lost context may be irrelevant to the immediate decision and essential to later analysis. A reduction should therefore be treated as a commitment:
+
+$$
+\boxed{
+\text{after reduction, only properties encoded in the result remain available}.
+}
+$$
+
+### Choosing a Reduction Is Choosing an Invariant
+
+A mathematical invariant is a property that remains unchanged under some transformations or variations. The sum is invariant under any rearrangement or redistribution that preserves total magnitude. The mean is invariant under changes that preserve both total relative to count. The maximum is invariant under changes to nonmaximal values that remain below the maximum. Argmax is invariant under changes that do not alter which index attains the maximum. Each reduction declares certain distinctions irrelevant. For maximum,
+
+$$
+\begin{bmatrix}
+31\\
+1\\
+1
+\end{bmatrix}
+$$
+
+and
+
+$$
+\begin{bmatrix}
+31\\
+30\\
+29
+\end{bmatrix}
+$$
+
+are equivalent because both preserve the upper extreme $31$. For sum, they are different because their totals differ. The reduction operator therefore encodes a philosophy of relevance:
+
+> Preserve this property; ignore distinctions that do not affect it.
+
+This is why reduction belongs to problem formulation rather than merely implementation.
+
+### A Responsible Reduction Workflow
+
+Before reducing a collection, determine the global question:
+
+> What must the output tell us?
+
+Then identify the property that answers that question:
+
+$$
+\text{total},
+\quad
+\text{average},
+\quad
+\text{extreme value},
+\quad
+\text{extreme location},
+\quad
+\text{or another summary}.
+$$
+
+Next, determine which indices may be eliminated and which must remain. If the output must retain one result per server, preserve the server index. If it must retain one result per class, preserve the class index. Then ask what future questions will be impossible after the reduction. This does not require preserving every possible detail, but it makes the loss explicit.

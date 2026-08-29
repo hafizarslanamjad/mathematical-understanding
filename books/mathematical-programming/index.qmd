@@ -56,6 +56,22 @@ This chapter develops masks from descriptions of selected positions into mechani
 
 This chapter develops the transition from repeated scalar operations to transformations of structured collections. It separates execution order from mathematical dependency, constructs coordinatewise lifting, teaches componentwise interpretation of vector expressions, and distinguishes independent elementwise transformations from locally and globally coupled transformations.
 
+### [Chapter 10 — Dimension Reduction](chapters/10-dimension-reduction/index.qmd)
+
+This chapter examines computations in which many values are deliberately reduced into a smaller result. It distinguishes different reductions by the information they preserve, separates maximum value from maximum position, develops axis-based reduction, and interprets reduction as a controlled loss of dimensional information.
+
+### [Chapter 11 — From Hard Selection to Soft Selection](chapters/11-hard-and-soft-selection/index.qmd)
+
+This chapter relaxes binary selection into graded contribution. It begins with the limitations of choosing only zero or one, derives complementary shares through $wA+(1-w)B$, interprets $B+w(A-B)$ as movement from a baseline, and distinguishes interpolation, extrapolation, mixture, expectation, and soft gating.
+
+### [Chapter 12 — Weighted Combinations](chapters/12-weighted-combinations/index.qmd)
+
+This chapter generalizes selection from two alternatives to many. It develops one-hot choice, graded shares, weighted sums, weighted averages, and convex combinations, then shows how the same algebraic structure supports expectation, mixtures, model ensembles, and attention while preserving their different meanings.
+
+### [Chapter 13 — From Scores to Shares](chapters/13-normalizing-scores/index.qmd)
+
+This chapter explains how unrestricted numerical scores become normalized weights. It derives normalization from part-to-whole reasoning, examines why ordinary division fails for arbitrary signed scores, derives exponentiation from the relationship between score differences and weight ratios, and constructs softmax as a smooth, stable allocation mechanism.
+
 ## How This Book Is Being Written
 
 This is a book in progress. It is being written and published one comprehensive mini-section at a time. Each mini-section answers one precise conceptual question, begins with concrete examples, and develops its abstraction only after the underlying experience is clear.

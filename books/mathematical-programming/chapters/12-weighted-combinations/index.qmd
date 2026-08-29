@@ -1,0 +1,2646 @@
+---
+title: "Chapter 12 — Weighted Combinations"
+subtitle: "From One-Hot Choice to Convex Mixtures"
+description: "A chapter about extending selection from two alternatives to many through one-hot vectors, graded weights, weighted sums, weighted averages, convex combinations, mixtures, ensembles, and attention."
+number-sections: false
+---
+
+## 12.1 From Two Alternatives to Many Alternatives
+
+Suppose a machine can operate in three modes:
+
+- economy mode uses $30$ watts;
+- standard mode uses $60$ watts;
+- performance mode uses $90$ watts.
+
+An ordinary program can select the power level through a conditional chain:
+
+```python
+if mode == "economy":
+    power = 30
+elif mode == "standard":
+    power = 60
+else:
+    power = 90
+```
+
+The possible numerical outputs are
+
+$$
+A_1=30,
+\qquad
+A_2=60,
+\qquad
+A_3=90.
+$$
+
+The program must return exactly one of them. If the mode is economy, the output must be $30$. If the mode is standard, the output must be $60$. If the mode is performance, the output must be $90$. The complete input-output relationship is
+
+$$
+\text{power}
+=
+\begin{cases}
+30, & \text{economy mode},\\
+60, & \text{standard mode},\\
+90, & \text{performance mode}.
+\end{cases}
+$$
+
+This is a hard choice among three alternatives. The output cannot be $45$, $70$, or a simultaneous combination of several modes. One alternative must survive completely while the others contribute nothing.
+
+In this case, introduce one binary indicator for every alternative:
+
+$$
+I_1=
+\begin{cases}
+1, & \text{economy mode is selected},\\
+0, & \text{otherwise},
+\end{cases}
+$$
+
+$$
+I_2=
+\begin{cases}
+1, & \text{standard mode is selected},\\
+0, & \text{otherwise},
+\end{cases}
+$$
+
+and
+
+$$
+I_3=
+\begin{cases}
+1, & \text{performance mode is selected},\\
+0, & \text{otherwise}.
+\end{cases}
+$$
+
+Each indicator answers a separate membership question:
+
+$$
+I_1=\mathbf{1}[\text{mode}=\text{economy}],
+$$
+
+$$
+I_2=\mathbf{1}[\text{mode}=\text{standard}],
+$$
+
+$$
+I_3=\mathbf{1}[\text{mode}=\text{performance}].
+$$
+
+For economy mode,
+
+$$
+(I_1,I_2,I_3)=(1,0,0).
+$$
+
+For standard mode,
+
+$$
+(I_1,I_2,I_3)=(0,1,0).
+$$
+
+For performance mode,
+
+$$
+(I_1,I_2,I_3)=(0,0,1).
+$$
+
+The three binary values are not independent decisions. They jointly describe one choice. The machine cannot be in two of these modes simultaneously under the stated model. If economy mode is selected, standard and performance modes are not selected. If standard mode is selected, the other two are not selected. This gives pairwise mutual exclusion:
+
+$$
+I_1I_2=0,
+$$
+
+$$
+I_1I_3=0,
+$$
+
+and
+
+$$
+I_2I_3=0.
+$$
+
+More generally,
+
+$$
+\boxed{
+I_iI_j=0
+\qquad
+\text{whenever }i\neq j.
+}
+$$
+
+### Exhaustiveness
+
+The program must also select some valid mode. Economy, standard, and performance modes are assumed to cover all allowed cases. Therefore,
+
+$$
+I_1+I_2+I_3=1.
+$$
+
+For economy mode,
+
+$$
+1+0+0=1.
+$$
+
+For standard mode,
+
+$$
+0+1+0=1.
+$$
+
+For performance mode,
+
+$$
+0+0+1=1.
+$$
+
+The sum-to-one requirement ensures that at least one indicator is active. Combined with binary values, it also ensures that no more than one is active. Thus,
+
+$$
+\boxed{
+I_i\in\{0,1\},
+\qquad
+\sum_{i=1}^{3}I_i=1
+}
+$$
+
+means that exactly one indicator equals $1`$. The two requirements perform different logical roles:
+
+$$
+\boxed{
+\begin{aligned}
+\text{mutual exclusivity}
+&:\quad
+\text{no two alternatives are selected together},\\
+\text{exhaustiveness}
+&:\quad
+\text{some alternative is selected}.
+\end{aligned}
+}
+$$
+
+Together they create exactly-one selection. The indicator $I_1$ controls the contribution of $A_1=30$:
+
+$$
+I_1A_1.
+$$
+
+The indicator $I_2$ controls the contribution of $A_2=60$:
+
+$$
+I_2A_2.
+$$
+
+The indicator $I_3$ controls the contribution of $A_3=90$:
+
+$$
+I_3A_3.
+$$
+
+When an indicator equals $1$, its alternative survives:
+
+$$
+1A_i=A_i.
+$$
+
+When it equals $0$, its alternative is suppressed:
+
+$$
+0A_i=0.
+$$
+
+The three possible contributions are therefore
+
+$$
+I_1(30),
+\qquad
+I_2(60),
+\qquad
+I_3(90).
+$$
+
+Because exactly one indicator is active, exactly one contribution can be nonzero. The final power can be constructed by adding the mutually exclusive contributions:
+
+$$
+\boxed{
+\text{power}
+=
+I_1(30)+I_2(60)+I_3(90).
+}
+$$
+
+Addition returns the surviving value because all other contributions equal zero.
+
+### The Selector Is One Structured Object
+
+The indicators can be organized into a vector:
+
+$$
+\mathbf{I}
+=
+\begin{bmatrix}
+I_1\\
+I_2\\
+I_3
+\end{bmatrix}.
+$$
+
+The three possible selector vectors are
+
+$$
+\begin{bmatrix}
+1\\
+0\\
+0
+\end{bmatrix},
+\qquad
+\begin{bmatrix}
+0\\
+1\\
+0
+\end{bmatrix},
+\qquad
+\begin{bmatrix}
+0\\
+0\\
+1
+\end{bmatrix}.
+$$
+
+Each vector contains one component equal to $1$ and all other components equal to $0$. Such a vector is called a **one-hot vector**. The word *one* refers to exactly one active component. The word *hot* refers informally to the active value $1$. A one-hot selector is not merely a list of three Boolean facts. Its components jointly encode one categorical choice. The position of the $1$ identifies the selected alternative:
+
+$$
+\begin{bmatrix}
+1\\
+0\\
+0
+\end{bmatrix}
+\longleftrightarrow
+A_1,
+$$
+
+$$
+\begin{bmatrix}
+0\\
+1\\
+0
+\end{bmatrix}
+\longleftrightarrow
+A_2,
+$$
+
+$$
+\begin{bmatrix}
+0\\
+0\\
+1
+\end{bmatrix}
+\longleftrightarrow
+A_3.
+$$
+
+The numerical value $1$ means complete activation. Its index identifies what is activated.
+
+### The Alternatives Form a Corresponding Vector
+
+Organize the possible power levels as
+
+$$
+\mathbf{A}
+=
+\begin{bmatrix}
+A_1\\
+A_2\\
+A_3
+\end{bmatrix}
+=
+\begin{bmatrix}
+30\\
+60\\
+90
+\end{bmatrix}.
+$$
+
+The selector and alternative vectors have matching positions:
+
+$$
+I_i\longleftrightarrow A_i.
+$$
+
+The selected value is
+
+$$
+I_1A_1+I_2A_2+I_3A_3.
+$$
+
+This is the dot product
+
+$$
+\boxed{
+C=\mathbf{I}^{\mathsf T}\mathbf{A}.
+}
+$$
+
+For standard mode,
+
+$$
+\mathbf{I}
+=
+\begin{bmatrix}
+0\\
+1\\
+0
+\end{bmatrix},
+$$
+
+so
+
+$$
+\begin{aligned}
+\mathbf{I}^{\mathsf T}\mathbf{A}
+&=
+\begin{bmatrix}
+0 & 1 & 0
+\end{bmatrix}
+\begin{bmatrix}
+30\\
+60\\
+90
+\end{bmatrix}\\
+&=
+0(30)+1(60)+0(90)\\
+&=
+60.
+\end{aligned}
+$$
+
+The dot product combines corresponding positions and reduces them to one scalar. The one-hot structure ensures that this reduction behaves as selection rather than blending.
+
+In order to have a generalized form, Let $A_1,A_2,\ldots,A_n$ be $n$ numerical alternatives. Introduce binary selectors $I_i\in\{0,1\}$ satisfying
+
+$$
+\sum_{i=1}^{n}I_i=1.
+$$
+
+Exactly one indicator equals $1$, so the selected output is
+
+$$
+\boxed{
+C=\sum_{i=1}^{n}I_iA_i.
+}
+$$
+
+If alternative $A_k$ is selected, then $I_k=1$ and
+
+$$
+I_i=0
+\qquad
+\text{for }i\neq k.
+$$
+
+Therefore,
+
+$$
+\begin{aligned}
+C
+&=\sum_{i=1}^{n}I_iA_i\\
+&=0A_1+\cdots+1A_k+\cdots+0A_n\\
+&=A_k.
+\end{aligned}
+$$
+
+The summation is a compact description of a family of gated contributions. Its meaning is
+
+$$
+\boxed{
+\text{gate every alternative}
++
+\text{sum the mutually exclusive contributions}
+=
+\text{selected value}.
+}
+$$
+
+### The Sum-to-One Constraint Is Not Sufficient by Itself
+
+Suppose the selector components were allowed to be arbitrary real numbers satisfying only
+
+$$
+I_1+I_2+I_3=1.
+$$
+
+The vector
+
+$$
+\begin{bmatrix}
+\frac12\\
+\frac12\\
+0
+\end{bmatrix}
+$$
+
+satisfies the sum-to-one condition, but it does not represent a hard choice. It produces
+
+$$
+\frac12(30)+\frac12(60)=45.
+$$
+
+The result $45$ is a combination of economy and standard power, not one of the original alternatives. Likewise,
+
+$$
+\begin{bmatrix}
+2\\
+-1\\
+0
+\end{bmatrix}
+$$
+
+sums to one but produces $2(30)-1(60)=0.$ This is neither a hard choice nor a convex intermediate value. Hard selection therefore requires both $I_i\in\{0,1\}$ and $\sum_{i=1}^{n}I_i=1.$ The binary constraint supplies exclusivity. The sum-to-one constraint supplies completeness.
+
+For hard one-hot selection, only one numerical alternative survives. Nevertheless, the algebraic expression adds gated versions of all alternatives $\sum_iI_iA_i.$ The alternatives must therefore belong to a common mathematical space in which addition and scalar multiplication are defined. For scalar power levels, $A_i\in\mathbb{R}$ with units of watts. For vector alternatives, $\mathbf{A}_i\in\mathbb{R}^{d},$ the selected output can be
+
+$$
+\mathbf{C}
+=
+\sum_{i=1}^{n}I_i\mathbf{A}_i.
+$$
+
+Each alternative must have a compatible shape and interpretation. If the alternatives are arbitrary category names such as `"economy"` and `"performance"`, arithmetic combination is not directly defined. A one-hot vector can still identify the chosen category, but the category labels themselves cannot be meaningfully multiplied and added without a numerical representation.
+
+This distinction will matter when hard selection is relaxed into weighted combination. Intermediate weights require the alternatives to support meaningful partial contributions.
+
+### Hard Selection as an Extreme Allocation
+
+The one-hot vector assigns one complete unit of influence as $\sum_iI_i=1.$ All of that influence is concentrated at one position. For standard mode,
+
+$$
+\mathbf{I}
+=
+\begin{bmatrix}
+0\\
+1\\
+0
+\end{bmatrix}.
+$$
+
+The allocation is:
+
+$$
+0\%
+\text{ to economy},
+$$
+
+$$
+100\%
+\text{ to standard},
+$$
+
+and
+
+$$
+0\%
+\text{ to performance}.
+$$
+
+One-hot selection can therefore be understood as an extreme form of weighted allocation. The total influence is one, but it is not distributed across several alternatives. The next conceptual step is to retain $\sum_iw_i=1$ while relaxing $I_i\in\{0,1\}$ to $w_i\geq0.$ This will allow one complete unit of influence to be distributed among several alternatives rather than concentrated at one position. The resulting expression will no longer perform only hard selection as $\sum_{i=1}^{n}w_iA_i$ but it will also construct a graded weighted combination.
+
+## 12.2 Relaxing One-Hot Choice into Graded Shares
+
+Section 12.1 represented a hard choice among three power levels:
+
+$$
+A_1=30,
+\qquad
+A_2=60,
+\qquad
+A_3=90.
+$$
+
+A one-hot selector could be
+
+$$
+\mathbf{I}
+=
+\begin{bmatrix}
+1\\
+0\\
+0
+\end{bmatrix},
+\qquad
+\begin{bmatrix}
+0\\
+1\\
+0
+\end{bmatrix},
+\qquad
+\text{or}
+\qquad
+\begin{bmatrix}
+0\\
+0\\
+1
+\end{bmatrix}.
+$$
+
+Its components satisfy $I_i\in\{0,1\}$ and $\sum_{i=1}^{3}I_i=1.$ Now suppose the machine is allowed to combine the three operating profiles. The controller may assign:
+
+- $20\%$ of the influence to economy mode;
+- $50\%$ to standard mode;
+- $30\%$ to performance mode.
+
+The allocation is
+
+$$
+\mathbf{w}
+=
+\begin{bmatrix}
+0.2\\
+0.5\\
+0.3
+\end{bmatrix}.
+$$
+
+No component is binary, yet the components still form one complete allocation $0.2+0.5+0.3=1.$ The selection is no longer one-hot. Influence has been distributed across several alternatives.
+
+### Preserving the Complete Allocation
+
+Let $w_1,$ $w_2,$ and $w_3$ represent the shares assigned to the three power levels. If the weights represent parts of one complete allocation, they must satisfy $w_1+w_2+w_3=1.$ The total $1$ represents the whole amount of influence available for distribution. For the concrete weights, $w_1=0.2,$ $w_2=0.5,$ and $w_3=0.3.$ Therefore,
+
+$$
+w_1+w_2+w_3
+=
+0.2+0.5+0.3
+=
+1.
+$$
+
+Unlike the two-alternative case, specifying one weight does not determine every remaining weight. If $w_1=0.2,$ the remaining amount is $1-w_1=0.8,$ but that remaining share can be distributed between $w_2$ and $w_3$ in many ways:
+
+$$
+(w_2,w_3)=(0.5,0.3),
+$$
+
+$$
+(w_2,w_3)=(0.6,0.2),
+$$
+
+or
+
+$$
+(w_2,w_3)=(0.1,0.7).
+$$
+
+For $n$ alternatives, the completeness requirement is $\sum_{i=1}^{n}w_i=1.$ The summation says that all individual shares together account for one whole allocation.
+
+### Why the Weights Must Be Nonnegative
+
+If $w_i$ represents a share of influence, then $w_i\geq0.$ A negative share would not represent an ordinary allocation.
+
+Consider
+
+$$
+\mathbf{w}
+=
+\begin{bmatrix}
+0.5\\
+0.8\\
+-0.3
+\end{bmatrix}.
+$$
+
+The components sum to $0.5+0.8-0.3=1.$ Nevertheless, the third alternative has been assigned negative influence. The resulting expression would subtract part of $A_3$ $0.5A_1+0.8A_2-0.3A_3.$ Such an affine combination may be mathematically meaningful in another model, just as extrapolation was meaningful in Chapter 11. It does not represent a division of one whole into nonnegative shares.Therefore a graded allocation requires both $w_i\geq0$ and $\sum_{i=1}^{n}w_i=1.$ Nonnegativity prevents subtractive influence. Sum-to-one prevents missing or excess total influence.
+
+### Turning Shares into Contributions
+
+The first power level is
+
+$$
+A_1=30\text{ watts}.
+$$
+
+Its share is
+
+$$
+w_1=0.2.
+$$
+
+Its contribution is therefore
+
+$$
+w_1A_1
+=
+0.2(30)
+=
+6\text{ watts}.
+$$
+
+The second contribution is
+
+$$
+w_2A_2
+=
+0.5(60)
+=
+30\text{ watts}.
+$$
+
+The third contribution is
+
+$$
+w_3A_3
+=
+0.3(90)
+=
+27\text{ watts}.
+$$
+
+The combined power is the sum of the three contributions:
+
+$$
+\begin{aligned}
+C
+&=w_1A_1+w_2A_2+w_3A_3\\
+&=0.2(30)+0.5(60)+0.3(90)\\
+&=6+30+27\\
+&=63.
+\end{aligned}
+$$
+
+Thus,
+
+$$
+\boxed{
+C=63\text{ watts}.
+}
+$$
+
+The result is not one of the original power levels. It is produced by allowing all three alternatives to contribute partially. The calculation has two conceptual stages:
+
+$$
+\boxed{
+\text{share}\times\text{alternative}
+=
+\text{weighted contribution},
+}
+$$
+
+followed by
+
+$$
+\boxed{
+\text{sum of weighted contributions}
+=
+\text{combined output}.
+}
+$$
+
+### Generalizing the Construction
+
+Let $A_1,A_2,\ldots,A_n$ be $n$ alternatives, and let $w_1,w_2,\ldots,w_n$ be their assigned shares. The contribution of alternative $A_i$ is $w_iA_i.$ Adding all contributions gives
+
+$$
+\boxed{
+C=\sum_{i=1}^{n}w_iA_i.
+}
+$$
+
+For a graded allocation, the weights satisfy
+
+$$
+\boxed{
+w_i\geq0,
+\qquad
+\sum_{i=1}^{n}w_i=1.
+}
+$$
+
+The expression should be read as
+
+$$
+\sum_{i=1}^{n}
+\underbrace{w_i}_{\text{share of influence}}
+\underbrace{A_i}_{\text{alternative value}}.
+$$
+
+Every term retains the correspondence
+
+$$
+w_i\longleftrightarrow A_i.
+$$
+
+Rearranging the alternatives without rearranging their weights changes the meaning of the combination. The index $i$ preserves which share belongs to which alternative.
+
+### Vector Form
+
+Organize the weights as
+
+$$
+\mathbf{w}
+=
+\begin{bmatrix}
+w_1\\
+w_2\\
+\vdots\\
+w_n
+\end{bmatrix}
+$$
+
+and the scalar alternatives as
+
+$$
+\mathbf{A}
+=
+\begin{bmatrix}
+A_1\\
+A_2\\
+\vdots\\
+A_n
+\end{bmatrix}.
+$$
+
+The weighted combination is their dot product:
+
+$$
+\boxed{
+C=\mathbf{w}^{\mathsf T}\mathbf{A}.
+}
+$$
+
+Expanding the dot product recovers
+
+$$
+\mathbf{w}^{\mathsf T}\mathbf{A}
+=
+\sum_{i=1}^{n}w_iA_i.
+$$
+
+For the concrete example,
+
+$$
+\mathbf{w}
+=
+\begin{bmatrix}
+0.2\\
+0.5\\
+0.3
+\end{bmatrix},
+\qquad
+\mathbf{A}
+=
+\begin{bmatrix}
+30\\
+60\\
+90
+\end{bmatrix}.
+$$
+
+Therefore,
+
+$$
+\begin{aligned}
+\mathbf{w}^{\mathsf T}\mathbf{A}
+&=
+\begin{bmatrix}
+0.2 & 0.5 & 0.3
+\end{bmatrix}
+\begin{bmatrix}
+30\\
+60\\
+90
+\end{bmatrix}\\
+&=
+63.
+\end{aligned}
+$$
+
+The dot product reduces the indexed contributions to one scalar output.
+
+### One-Hot Selection Remains a Special Case
+
+Suppose
+
+$$
+\mathbf{w}
+=
+\begin{bmatrix}
+0\\
+1\\
+0
+\end{bmatrix}.
+$$
+
+The constraints are satisfied $w_i\geq0$ and $w_1+w_2+w_3=1$ The weighted combination is
+
+$$
+\begin{aligned}
+C
+&=0(30)+1(60)+0(90)\\
+&=60.
+\end{aligned}
+$$
+
+Thus one-hot selection is contained inside the graded-weight formulation. The distinction lies in how the unit allocation is distributed:
+
+$$
+\boxed{
+\begin{aligned}
+\text{one-hot weights}
+&:\quad
+\text{all influence at one position},\\
+\text{graded weights}
+&:\quad
+\text{influence distributed across positions}.
+\end{aligned}
+}
+$$
+
+The general constraint set includes both:
+
+$$
+\left\{
+\mathbf{w}\in\mathbb{R}^{n}:
+w_i\geq0,\ 
+\sum_iw_i=1
+\right\}.
+$$
+
+One-hot vectors occupy extreme cases of this set.
+
+### The Weight Space
+
+For three alternatives, the valid weights satisfy $w_1+w_2+w_3=1$ with $w_1,w_2,w_3\geq0.$ Because$
+w_3=1-w_1-w_2,$ only two weights can vary independently. Once $w_1$ and $w_2$ are chosen, $w_3$ is determined. The valid allocations include $(1,0,0),$ $(0,1,0),$ $(0,0,1),$
+
+$$
+\left(\frac13,\frac13,\frac13\right),
+$$
+
+and infinitely many intermediate triples. Geometrically, these weights form a triangle in three-dimensional coordinate space. The three one-hot vectors are the triangle’s vertices:
+
+$$
+\begin{bmatrix}
+1\\
+0\\
+0
+\end{bmatrix},
+\qquad
+\begin{bmatrix}
+0\\
+1\\
+0
+\end{bmatrix},
+\qquad
+\begin{bmatrix}
+0\\
+0\\
+1
+\end{bmatrix}.
+$$
+
+Points inside the triangle distribute influence among several alternatives. For $n$ alternatives, the valid weight set is called the **probability simplex** or simply the **simplex**:
+
+$$
+\boxed{
+\Delta^{n-1}
+=
+\left\{
+\mathbf{w}\in\mathbb{R}^{n}:
+w_i\geq0,\ 
+\sum_{i=1}^{n}w_i=1
+\right\}.
+}
+$$
+
+The term *probability simplex* describes the mathematical shape of normalized nonnegative vectors. A weight vector can lie on this simplex without necessarily representing probability. Its application-specific meaning must still be established separately.
+
+### Redistributing Influence
+
+Suppose a small amount $\delta$ of influence is transferred from alternative $A_j$ to alternative $A_k$. The original weights are $w_j$ and $w_k.$
+
+After the transfer,
+
+$$
+w_j'=w_j-\delta,
+$$
+
+$$
+w_k'=w_k+\delta.
+$$
+
+The total weight remains unchanged:
+
+$$
+w_j'+w_k'
+=
+w_j-\delta+w_k+\delta
+=
+w_j+w_k.
+$$
+
+The change in the combined output is
+
+$$
+\begin{aligned}
+C'-C
+&=
+(w_j-\delta)A_j
++
+(w_k+\delta)A_k
+-
+w_jA_j
+-
+w_kA_k\\
+&=
+-\delta A_j+\delta A_k\\
+&=
+\delta(A_k-A_j).
+\end{aligned}
+$$
+
+Therefore,
+
+$$
+\boxed{
+C'-C=\delta(A_k-A_j).
+}
+$$
+
+The effect of moving weight depends on the difference between the alternatives. If $A_k>A_j,$ transferring positive weight from $A_j$ to $A_k$ increases the output. If $A_k<A_j,$ the same transfer decreases it. If $A_k=A_j,$ redistributing weight between them does not change the output. This relationship reveals that weights matter through both their magnitude and the alternatives to which they are attached.
+
+### Vector-Valued Alternatives
+
+The alternatives may themselves be vectors:
+
+$$
+\mathbf{A}_i\in\mathbb{R}^{d}.
+$$
+
+The weighted combination becomes
+
+$$
+\boxed{
+\mathbf{C}
+=
+\sum_{i=1}^{n}w_i\mathbf{A}_i.
+}
+$$
+
+For example, let
+
+$$
+\mathbf{A}_1=
+\begin{bmatrix}
+1\\
+0
+\end{bmatrix},
+\qquad
+\mathbf{A}_2=
+\begin{bmatrix}
+0\\
+1
+\end{bmatrix},
+\qquad
+\mathbf{A}_3=
+\begin{bmatrix}
+1\\
+1
+\end{bmatrix},
+$$
+
+and
+
+$$
+\mathbf{w}
+=
+\begin{bmatrix}
+0.2\\
+0.5\\
+0.3
+\end{bmatrix}.
+$$
+
+Then
+
+$$
+\begin{aligned}
+\mathbf{C}
+&=
+0.2
+\begin{bmatrix}
+1\\
+0
+\end{bmatrix}
++
+0.5
+\begin{bmatrix}
+0\\
+1
+\end{bmatrix}
++
+0.3
+\begin{bmatrix}
+1\\
+1
+\end{bmatrix}\\
+&=
+\begin{bmatrix}
+0.2\\
+0
+\end{bmatrix}
++
+\begin{bmatrix}
+0\\
+0.5
+\end{bmatrix}
++
+\begin{bmatrix}
+0.3\\
+0.3
+\end{bmatrix}\\
+&=
+\begin{bmatrix}
+0.5\\
+0.8
+\end{bmatrix}.
+\end{aligned}
+$$
+
+The same scalar weight $w_i$ scales every component of alternative $\mathbf{A}_i$. All vector alternatives must belong to a common space so that their scaled contributions can be added.
+
+### The Weight Constraints Do Not Explain Their Origin
+
+The conditions $w_i\geq0$ and $\sum_iw_i=1$
+
+tell us that the weights form a complete nonnegative allocation. They do not tell us how the weights were obtained. The weights may be:
+
+- chosen manually;
+- measured as proportions;
+- estimated from data;
+- derived from probabilities;
+- assigned according to reliability;
+- produced dynamically by another computation;
+- learned by a model.
+
+The same vector
+
+$$
+\begin{bmatrix}
+0.2\\
+0.5\\
+0.3
+\end{bmatrix}
+$$
+
+can participate in several semantic models. The current section has constructed the contribution structure:
+
+$$
+\boxed{
+C=\sum_iw_iA_i.
+}
+$$
+
+It has not yet determined whether this expression should be called a weighted sum, weighted average, expectation, mixture, ensemble, or attention output. That distinction depends on both the constraints on the weights and their meaning. The next section will separate arbitrary weighted sums from normalized weighted averages and show how nonnegative sum-to-one weights constrain the output relative to the alternatives.
+
+## 12.3 Weighted Sum, Weighted Average, and Convex Combination
+
+Section 12.2 constructed the combination $C=\sum_{i=1}^{n}w_iA_i$ under the constraints $w_i\geq0$ and $\sum_{i=1}^{n}w_i=1.$ For the power levels $A_1=30,$ $A_2=60,$ $A_3=90,$ the weights
+
+$$
+\mathbf{w}
+=
+\begin{bmatrix}
+0.2\\
+0.5\\
+0.3
+\end{bmatrix}
+$$
+
+produce $C=0.2(30)+0.5(60)+0.3(90)=63.$ Now consider the expression $S=2(30)+5(60)+3(90).$ Its coefficients are $2,$ $5,$ $3.$ The calculation gives $S=60+300+270=630.$ Both expressions multiply alternatives by coefficients and add the results. Yet $63$ and $630$ represent different constructions. The first coefficients form shares:
+
+$$
+0.2+0.5+0.3=1.
+$$
+
+The second coefficients have total weight
+
+$$
+2+5+3=10.
+$$
+
+The distinction is between a **weighted sum** and a **weighted average**.
+
+### An Arbitrary Weighted Sum
+
+Let $a_1,a_2,\ldots,a_n$ be arbitrary coefficients. The expression $S=\sum_{i=1}^{n}a_iA_i$ is a weighted sum. The coefficients may represent counts, strengths, multiplicities, signed contributions, or other scaling factors. They are not necessarily shares of one whole. For the concrete coefficients, $a_1=2,$ $a_2=5,$ $a_3=3,$ the weighted sum is $S=630.$ Because the coefficient total is $10$, the expression contains ten total units of weight rather than one. If every coefficient is multiplied by $2$,
+
+$$
+(2,5,3)
+\longrightarrow
+(4,10,6),
+$$
+
+then the weighted sum doubles:
+
+$$
+\begin{aligned}
+S'
+&=4(30)+10(60)+6(90)\\
+&=1260\\
+&=2S.
+\end{aligned}
+$$
+
+Thus an arbitrary weighted sum is sensitive to the overall scale of its coefficients.
+
+### A Weighted Average Removes Overall Weight Scale
+
+Suppose the coefficients $2$, $5$, and $3$ describe relative importance. Their ratio is $2:5:3.$ The same relative importance is represented by $4:10:6$ or $20:50:30.$ If only the ratios matter, changing every coefficient by the same positive factor should not change the combined result. The raw weighted sum does not possess this invariance. To remove the effect of total coefficient scale, divide by the total weight $ W=\sum_{i=1}^{n}a_i$ The weighted average is
+
+$$
+\boxed{
+\bar{A}_w
+=
+\frac{\sum_{i=1}^{n}a_iA_i}
+{\sum_{i=1}^{n}a_i}.
+}
+$$
+
+For the concrete coefficients, $W=2+5+3=10.$ Therefore,
+
+$$
+\begin{aligned}
+\bar{A}_w
+&=
+\frac{2(30)+5(60)+3(90)}{2+5+3}\\
+&=
+\frac{630}{10}\\
+&=
+63.
+\end{aligned}
+$$
+
+If all coefficients are doubled,
+
+$$
+\begin{aligned}
+\bar{A}_w'
+&=
+\frac{4(30)+10(60)+6(90)}{4+10+6}\\
+&=
+\frac{1260}{20}\\
+&=
+63.
+\end{aligned}
+$$
+
+The weighted average preserves relative proportions while ignoring common positive rescaling:
+
+$$
+\boxed{
+\frac{\sum_i(ca_i)A_i}{\sum_i ca_i}
+=
+\frac{\sum_i a_iA_i}{\sum_i a_i}
+\qquad
+\text{for }c>0.
+}
+$$
+
+### Constructing Normalized Weights
+
+Define
+
+$$
+w_i
+=
+\frac{a_i}{\sum_{j=1}^{n}a_j}.
+$$
+
+The denominator uses a different index $j$ because it ranges over all raw coefficients, while the numerator refers to the particular coefficient being normalized. For the concrete values,
+
+$$
+w_1=\frac{2}{10}=0.2,
+$$
+
+$$
+w_2=\frac{5}{10}=0.5,
+$$
+
+and
+
+$$
+w_3=\frac{3}{10}=0.3.
+$$
+
+The normalized weights sum to one:
+
+$$
+\begin{aligned}
+\sum_{i=1}^{n}w_i
+&=
+\sum_{i=1}^{n}
+\frac{a_i}{\sum_{j=1}^{n}a_j}\\
+&=
+\frac{\sum_{i=1}^{n}a_i}
+{\sum_{j=1}^{n}a_j}\\
+&=1.
+\end{aligned}
+$$
+
+The weighted average can now be written as
+
+$$
+\bar{A}_w
+=
+\sum_{i=1}^{n}w_iA_i.
+$$
+
+Thus,
+
+$$
+\boxed{
+\frac{\sum_i a_iA_i}{\sum_i a_i}
+=
+\sum_iw_iA_i,
+\qquad
+w_i=\frac{a_i}{\sum_j a_j}.
+}
+$$
+
+The raw coefficients $a_i$ describe relative amounts. The normalized weights $w_i$ describe shares of the total amount.
+
+### Why the Denominator Must Be Nonzero
+
+The normalization
+
+$$
+w_i=\frac{a_i}{\sum_j a_j}
+$$
+
+is defined only when
+
+$$
+\sum_j a_j\neq0.
+$$
+
+If all nonnegative coefficients are zero,
+
+$$
+a_1=a_2=\cdots=a_n=0,
+$$
+
+then
+
+$$
+\sum_j a_j=0.
+$$
+
+No relative allocation has been specified. The expression
+
+$$
+\frac{0}{0}
+$$
+
+is undefined. This is not merely a technical division error. If every alternative has zero raw weight, the model has provided no basis for deciding how the unit allocation should be distributed. A normalization procedure must therefore either require positive total weight or define an explicit fallback rule.
+
+### Constant Preservation
+
+Suppose every alternative has the same value $A_1=A_2=\cdots=A_n=K.$ A sensible average should return $K$ regardless of the distribution of normalized weights. Indeed,
+
+$$
+\begin{aligned}
+\sum_{i=1}^{n}w_iA_i
+&=
+\sum_{i=1}^{n}w_iK\\
+&=
+K\sum_{i=1}^{n}w_i\\
+&=
+K.
+\end{aligned}
+$$
+
+Therefore,
+
+$$
+\boxed{
+A_i=K\text{ for every }i
+\quad\Longrightarrow\quad
+\sum_iw_iA_i=K.
+}
+$$
+
+This property depends on $\sum_iw_i=1.$ For arbitrary coefficients,
+
+$$
+\sum_i a_iK
+=
+K\sum_i a_i.
+$$
+
+The common value is scaled by the total coefficient weight. It is preserved only when that total equals one. Constant preservation distinguishes averaging from accumulation.
+
+### Scalar Boundedness
+
+Let
+
+$$
+m=\min_i A_i
+$$
+
+and
+
+$$
+M=\max_i A_i.
+$$
+
+Then every alternative satisfies
+
+$$
+m\leq A_i\leq M.
+$$
+
+Assume
+
+$$
+w_i\geq0.
+$$
+
+Multiplying by $w_i$ preserves the inequalities:
+
+$$
+w_im\leq w_iA_i\leq w_iM.
+$$
+
+Summing over $i$ gives
+
+$$
+\sum_iw_im
+\leq
+\sum_iw_iA_i
+\leq
+\sum_iw_iM.
+$$
+
+Because $m$ and $M$ do not depend on $i$,
+
+$$
+m\sum_iw_i
+\leq
+\sum_iw_iA_i
+\leq
+M\sum_iw_i.
+$$
+
+Using
+
+$$
+\sum_iw_i=1,
+$$
+
+we obtain
+
+$$
+\boxed{
+m
+\leq
+\sum_{i=1}^{n}w_iA_i
+\leq
+M.
+}
+$$
+
+A normalized nonnegative weighted combination cannot exceed the largest input or fall below the smallest input.
+
+For the power levels,
+
+$$
+30\leq63\leq90.
+$$
+
+The output remains inside the interval determined by the alternatives.
+
+### Why Both Constraints Are Necessary
+
+The sum-to-one condition alone does not guarantee boundedness.
+
+Consider
+
+$$
+\mathbf{w}
+=
+\begin{bmatrix}
+2\\
+-1\\
+0
+\end{bmatrix}.
+$$
+
+The weights sum to one:
+
+$$
+2-1+0=1.
+$$
+
+But the weighted combination is
+
+$$
+2(30)-1(60)+0(90)=0,
+$$
+
+which lies below the minimum input $30$.
+
+The negative weight creates extrapolation.
+
+Nonnegativity alone also does not guarantee boundedness relative to the original alternatives.
+
+Consider
+
+$$
+\mathbf{a}
+=
+\begin{bmatrix}
+1\\
+1\\
+1
+\end{bmatrix}.
+$$
+
+All coefficients are nonnegative, but their sum is $3$. The weighted sum is
+
+$$
+30+60+90=180,
+$$
+
+which exceeds the maximum $90$.
+
+Boundedness requires both:
+
+$$
+\boxed{
+w_i\geq0
+\quad\text{and}\quad
+\sum_iw_i=1.
+}
+$$
+
+The first prevents subtractive extrapolation. The second prevents global expansion or contraction caused by excess or missing total weight.
+
+### Translation Consistency
+
+Suppose every alternative is shifted by the same amount $c$:
+
+$$
+A_i'=A_i+c.
+$$
+
+The weighted combination becomes
+
+$$
+\begin{aligned}
+\sum_iw_iA_i'
+&=
+\sum_iw_i(A_i+c)\\
+&=
+\sum_iw_iA_i
++
+c\sum_iw_i\\
+&=
+\sum_iw_iA_i+c.
+\end{aligned}
+$$
+
+Therefore,
+
+$$
+\boxed{
+\sum_iw_i(A_i+c)
+=
+\sum_iw_iA_i+c.
+}
+$$
+
+Shifting every input by $c$ shifts the weighted average by exactly $c$.
+
+For arbitrary coefficients $a_i$,
+
+$$
+\sum_i a_i(A_i+c)
+=
+\sum_i a_iA_i
++
+c\sum_i a_i.
+$$
+
+The shift is multiplied by the total coefficient weight. Translation behaves naturally only when the weights sum to one.
+
+### Scaling Consistency
+
+If every alternative is multiplied by a scalar $c$, then
+
+$$
+\begin{aligned}
+\sum_iw_i(cA_i)
+&=
+c\sum_iw_iA_i.
+\end{aligned}
+$$
+
+Thus,
+
+$$
+\boxed{
+\text{scaling all alternatives scales the combination equally}.
+}
+$$
+
+Together, translation and scaling consistency show that normalized weighted combinations respect changes of numerical reference and unit scale.
+
+### Weighted Average as an Equalized Value
+
+An ordinary mean is the common value that preserves a total when every observation is made equal.
+
+The same interpretation extends to weighted averages.
+
+Suppose alternative $A_i$ carries an amount of weight $a_i$. Its weighted contribution is
+
+$$
+a_iA_i.
+$$
+
+The total weighted contribution is
+
+$$
+\sum_i a_iA_i.
+$$
+
+The total weight is
+
+$$
+\sum_i a_i.
+$$
+
+The weighted average $\bar{A}_w$ is the common value that would preserve the weighted total if every unit of weight received the same value:
+
+$$
+\bar{A}_w\sum_i a_i
+=
+\sum_i a_iA_i.
+$$
+
+Solving gives
+
+$$
+\boxed{
+\bar{A}_w
+=
+\frac{\sum_i a_iA_i}{\sum_i a_i}.
+}
+$$
+
+This derivation explains the denominator. It converts accumulated weighted contribution into contribution per unit of weight.
+
+### Replication Interpretation
+
+When the raw weights are nonnegative integers, a weighted average can be interpreted as an ordinary average over repeated values.
+
+For
+
+$$
+a_1=2,
+\qquad
+a_2=5,
+\qquad
+a_3=3,
+$$
+
+the weighted average of
+
+$$
+30,\quad60,\quad90
+$$
+
+is equivalent to the ordinary average of
+
+$$
+30,30,
+$$
+
+$$
+60,60,60,60,60,
+$$
+
+and
+
+$$
+90,90,90.
+$$
+
+There are ten values in total. Their sum is
+
+$$
+630,
+$$
+
+and their average is
+
+$$
+\frac{630}{10}=63.
+$$
+
+The weights act as multiplicities. Larger weights cause an alternative to appear more often in the conceptual expanded collection.
+
+This interpretation is not required for fractional weights, but it provides intuition for why the denominator is the sum of weights rather than the number of distinct alternatives.
+
+### Vector Alternatives and the Convex Hull
+
+Let
+
+$$
+\mathbf{A}_1,\mathbf{A}_2,\ldots,\mathbf{A}_n
+\in\mathbb{R}^{d}.
+$$
+
+Their normalized weighted combination is
+
+$$
+\boxed{
+\mathbf{C}
+=
+\sum_{i=1}^{n}w_i\mathbf{A}_i,
+\qquad
+w_i\geq0,
+\qquad
+\sum_iw_i=1.
+}
+$$
+
+For two vector endpoints, the valid combinations form the line segment between them.
+
+For three points in a two-dimensional plane, the valid combinations form the filled triangle determined by those points.
+
+For more points or higher-dimensional spaces, the set of all valid combinations is called their **convex hull**:
+
+$$
+\boxed{
+\operatorname{conv}
+\{\mathbf{A}_1,\ldots,\mathbf{A}_n\}
+=
+\left\{
+\sum_{i=1}^{n}w_i\mathbf{A}_i:
+w_i\geq0,\ 
+\sum_iw_i=1
+\right\}.
+}
+$$
+
+The convex hull is the set of all points obtainable by distributing one complete nonnegative unit of influence among the alternatives.
+
+The one-hot weight vectors recover the original points:
+
+$$
+(1,0,\ldots,0)
+\longrightarrow
+\mathbf{A}_1,
+$$
+
+$$
+(0,1,\ldots,0)
+\longrightarrow
+\mathbf{A}_2,
+$$
+
+and so forth.
+
+Weights distributed among several alternatives produce points inside or on the boundary of the convex hull.
+
+### Geometry and Weight Geometry Are Related
+
+The valid weight vectors form a simplex:
+
+$$
+\Delta^{n-1}
+=
+\left\{
+\mathbf{w}:
+w_i\geq0,\ 
+\sum_iw_i=1
+\right\}.
+$$
+
+The weighted-combination map
+
+$$
+\mathbf{w}
+\longmapsto
+\sum_iw_i\mathbf{A}_i
+$$
+
+maps points in the weight simplex into points in the convex hull of the alternatives.
+
+Thus there are two related geometric objects:
+
+- the simplex describes how influence is allocated;
+- the convex hull describes which combined outputs those allocations can produce.
+
+Different weight vectors can sometimes produce the same output. This occurs when the alternatives contain geometric redundancy. For example, if one alternative already lies between two others, it may be represented directly or reconstructed as their combination.
+
+Therefore, the weights need not always be uniquely determined by the output.
+
+### Terminology Depends on the Constraints
+
+The expression
+
+$$
+\sum_i a_iA_i
+$$
+
+can receive different mathematical names depending on the coefficient constraints:
+
+| Coefficient condition | Common description |
+|---|---|
+| arbitrary $a_i$ | weighted sum or linear combination |
+| $\sum_i a_i=1$ | affine combination |
+| $a_i\geq0$ and $\sum_i a_i=1$ | convex combination |
+| nonnegative raw weights divided by their total | weighted average |
+
+These categories are related but not interchangeable. Every convex combination is an affine combination. Every affine combination is a linear combination. The reverse implications do not generally hold.
+
+### Raw Importance Is Not Yet a Share
+
+Suppose a system assigns the raw importance scores
+
+$$
+2,\quad5,\quad3.
+$$
+
+These numbers express relative strength:
+
+$$
+2:5:3.
+$$
+
+They do not yet express shares of one complete allocation because
+
+$$
+2+5+3=10.
+$$
+
+Converting them into shares requires normalization:
+
+$$
+\frac{2}{10},
+\qquad
+\frac{5}{10},
+\qquad
+\frac{3}{10}.
+$$
+
+The current section has shown what normalization must accomplish:
+
+$$
+\boxed{
+\text{preserve relative importance while making total weight equal one}.
+}
+$$
+
+The next chapter will examine this transformation directly. It will distinguish raw scores from usable weights, derive normalization, and then address the harder case in which raw scores may be negative or unconstrained. That path will lead to softmax.
+
+## 12.4 One Algebraic Skeleton, Several Computational Meanings
+
+The previous sections developed the expression
+
+$$
+C=\sum_{i=1}^{n} w_iA_i,
+$$
+
+together with the conditions
+
+$$
+w_i\geq 0
+\qquad\text{and}\qquad
+\sum_{i=1}^{n}w_i=1.
+$$
+
+Under these conditions, $C$ is a weighted average or, more geometrically, a convex combination of the alternatives
+
+$$
+A_1,A_2,\ldots,A_n.
+$$
+
+This equation appears in many areas of mathematics and programming. It appears when calculating an expected value, mixing several substances, combining predictions from several models, and constructing an attention-weighted representation.
+
+The algebraic skeleton is the same:
+
+$$
+\boxed{
+\text{result}
+=
+\sum_i
+\text{weight}_i
+\cdot
+\text{alternative}_i
+}
+$$
+
+But the meanings carried by its symbols are not always the same.
+
+This distinction is important. Recognizing a familiar algebraic form can help us understand a computation, but algebraic resemblance alone does not prove that two computations represent the same concept.
+
+Two formulas may have the same visible structure while answering different questions.
+
+---
+
+### The three semantic roles inside a weighted combination
+
+Before examining particular applications, it is useful to separate the three roles present in
+
+$$
+C=\sum_{i=1}^{n}w_iA_i.
+$$
+
+The symbols $A_i$ represent the objects being combined. The symbols $w_i$ determine how strongly those objects contribute. The result $C$ is the object produced by the combination.
+
+Therefore, interpreting the formula requires three questions:
+
+1. What kind of object is each $A_i$?
+2. What does each weight $w_i$ measure?
+3. What does the resulting combination $C$ mean?
+
+The same arithmetic operation can acquire a different interpretation when any of these answers changes.
+
+For example, suppose
+
+$$
+A_1=20,\qquad A_2=50,\qquad A_3=80
+$$
+
+and
+
+$$
+w_1=0.2,\qquad w_2=0.5,\qquad w_3=0.3.
+$$
+
+Then
+
+$$
+C
+=
+0.2(20)+0.5(50)+0.3(80)
+=
+4+25+24
+=
+53.
+$$
+
+The number $53$ is mathematically determined. Its meaning, however, is not determined by the arithmetic alone.
+
+It might be:
+
+- an expected monetary return,
+- the average temperature of a mixture,
+- an ensemble prediction,
+- an attention-weighted feature,
+- or an ordinary weighted average of observations.
+
+The equation tells us how the number was constructed. The surrounding model tells us what the number represents.
+
+This gives us an important interpretive principle:
+
+$$
+\boxed{
+\text{An equation determines relationships among quantities, but context determines the roles of those quantities.}
+}
+$$
+
+---
+
+### Weighted measurements: unequal contribution to an average
+
+Consider three measurements of the same quantity:
+
+$$
+A_1=20,\qquad A_2=50,\qquad A_3=80.
+$$
+
+Suppose the measurements do not have equal reliability. We assign the normalized reliability weights
+
+$$
+w_1=0.2,\qquad w_2=0.5,\qquad w_3=0.3.
+$$
+
+The combined estimate is
+
+$$
+C=\sum_{i=1}^{3}w_iA_i=53.
+$$
+
+Here, each $A_i$ is a measurement of the same underlying quantity. The weight $w_i$ expresses the relative influence assigned to that measurement.
+
+The result $C$ is another estimate of the same kind of quantity.
+
+If the $A_i$ are temperatures measured in degrees Celsius, then $C$ is also measured in degrees Celsius. The weights are dimensionless shares, so multiplication does not change the physical unit:
+
+$$
+(\text{dimensionless weight})(\text{temperature})
+=
+\text{temperature}.
+$$
+
+This interpretation depends on the alternatives being comparable. Averaging a temperature, a distance, and a monetary amount would not ordinarily produce a meaningful quantity merely because the computer can perform the arithmetic.
+
+Thus, mechanical validity is not sufficient. The addition
+
+$$
+w_1A_1+w_2A_2+w_3A_3
+$$
+
+also requires semantic compatibility among the terms.
+
+---
+
+### Expected value: distributing probability across possible outcomes
+
+Now suppose $A_i$ is not a measurement. Instead, it is a possible outcome of an uncertain process.
+
+Let a random quantity $X$ take the values
+
+$$
+x_1,x_2,\ldots,x_n
+$$
+
+with probabilities
+
+$$
+p_1,p_2,\ldots,p_n.
+$$
+
+The probabilities satisfy
+
+$$
+p_i\geq 0
+\qquad\text{and}\qquad
+\sum_{i=1}^{n}p_i=1.
+$$
+
+The expected value of $X$ is
+
+$$
+\mathbb{E}[X]
+=
+\sum_{i=1}^{n}p_ix_i.
+$$
+
+This has exactly the form of a convex combination:
+
+$$
+\mathbb{E}[X]
+=
+\sum_{i=1}^{n}w_iA_i,
+$$
+
+where
+
+$$
+w_i=p_i
+\qquad\text{and}\qquad
+A_i=x_i.
+$$
+
+Suppose a game produces one of three monetary outcomes:
+
+$$
+x_1=20,\qquad x_2=50,\qquad x_3=80,
+$$
+
+with probabilities
+
+$$
+p_1=0.2,\qquad p_2=0.5,\qquad p_3=0.3.
+$$
+
+Then
+
+$$
+\mathbb{E}[X]
+=
+0.2(20)+0.5(50)+0.3(80)
+=
+53.
+$$
+
+But the expected value is not necessarily an outcome that will actually occur.
+
+The game can produce only
+
+$$
+20,\qquad 50,\qquad\text{or}\qquad 80.
+$$
+
+It never produces $53$ in a single play.
+
+Therefore, $\mathbb{E}[X]=53$ should not be interpreted as a fourth possible outcome. It is the probability-weighted center of the possible outcomes.
+
+Over many repetitions, if the empirical frequencies approach the probabilities, the average outcome approaches the expected value. For $N$ trials, suppose outcome $x_i$ occurs $n_i$ times. The sample average is
+
+$$
+\overline{x}_N
+=
+\frac{n_1x_1+n_2x_2+\cdots+n_nx_n}{N}.
+$$
+
+Since
+
+$$
+\frac{n_1}{N}+\frac{n_2}{N}+\cdots+\frac{n_n}{N}=1,
+$$
+
+we may write
+
+$$
+\overline{x}_N
+=
+\sum_{i=1}^{n}
+\frac{n_i}{N}x_i.
+$$
+
+If
+
+$$
+\frac{n_i}{N}\longrightarrow p_i,
+$$
+
+then
+
+$$
+\overline{x}_N
+\longrightarrow
+\sum_{i=1}^{n}p_ix_i
+=
+\mathbb{E}[X].
+$$
+
+The weights are probabilities, the alternatives are possible outcomes, and the result is a probabilistic center.
+
+---
+
+### Mixtures: distributing composition across components
+
+The same equation can describe the composition of a physical or abstract mixture.
+
+Suppose three solutions have salt concentrations
+
+$$
+A_1=20\%,\qquad A_2=50\%,\qquad A_3=80\%.
+$$
+
+A new solution is formed using the proportions
+
+$$
+w_1=0.2,\qquad w_2=0.5,\qquad w_3=0.3.
+$$
+
+Assuming the concentration combines linearly, the resulting concentration is
+
+$$
+C
+=
+0.2(20)+0.5(50)+0.3(80)
+=
+53\%.
+$$
+
+The formula is numerically identical to the earlier examples, but the interpretation is different.
+
+Here:
+
+- $A_i$ is a property of component $i$;
+- $w_i$ is the proportion of the total mixture contributed by component $i$;
+- $C$ is the corresponding property of the completed mixture.
+
+The weights describe composition rather than probability or reliability.
+
+Nevertheless, there is a structural relationship between mixture proportions and probabilities. Both distribute a total amount of one across several alternatives:
+
+$$
+\sum_iw_i=1.
+$$
+
+In probability, the total unit represents all probability mass. In a physical mixture, it represents the whole amount of material. In both cases, the weights divide a whole into nonnegative shares.
+
+This is why the same geometry appears. The vector
+
+$$
+\mathbf{w}
+=
+(w_1,w_2,\ldots,w_n)
+$$
+
+lies in the simplex
+
+$$
+\Delta^{n-1}
+=
+\left\{
+\mathbf{w}\in\mathbb{R}^n
+:
+w_i\geq 0,\;
+\sum_{i=1}^{n}w_i=1
+\right\}.
+$$
+
+The simplex does not by itself tell us whether its coordinates are probabilities, mixture proportions, or model weights. It tells us only that a unit total has been distributed among several positions.
+
+The meaning of the distributed unit comes from the model.
+
+---
+
+### Model ensembles: distributing predictive influence
+
+Suppose several machine-learning models make predictions for the same input.
+
+Let their predictions be
+
+$$
+A_1=20,\qquad A_2=50,\qquad A_3=80.
+$$
+
+An ensemble may combine them using
+
+$$
+w_1=0.2,\qquad w_2=0.5,\qquad w_3=0.3.
+$$
+
+The ensemble prediction is
+
+$$
+C
+=
+\sum_{i=1}^{3}w_iA_i
+=
+53.
+$$
+
+Here:
+
+- $A_i$ is the prediction made by model $i$;
+- $w_i$ is the influence assigned to model $i$;
+- $C$ is the prediction made by the ensemble.
+
+The weights might be selected manually, estimated from validation performance, or learned by another model.
+
+The weighted combination expresses a division of predictive responsibility. A model with a larger weight has a stronger effect on the final prediction.
+
+To see this effect algebraically, consider changing one model prediction while leaving the others fixed. If $A_k$ changes by $\Delta A_k$, then
+
+$$
+\Delta C=w_k\Delta A_k.
+$$
+
+Thus, the weight $w_k$ measures the sensitivity of the ensemble output to the prediction of model $k$:
+
+$$
+\frac{\partial C}{\partial A_k}=w_k.
+$$
+
+This gives the weight an operational interpretation. It does not merely accompany $A_k$; it controls how strongly a change in $A_k$ moves the result.
+
+However, an ensemble average is meaningful only when its predictions inhabit a space in which averaging makes sense.
+
+Averaging three temperature predictions is natural. Averaging three probability vectors can also be meaningful because their coordinates have corresponding interpretations.
+
+But averaging arbitrary class labels represented by integers may be meaningless. If the labels
+
+$$
+\text{cat}=0,\qquad
+\text{dog}=1,\qquad
+\text{horse}=2
+$$
+
+are merely codes, then a weighted average such as
+
+$$
+0.2(0)+0.5(1)+0.3(2)=1.1
+$$
+
+does not represent a meaningful intermediate animal.
+
+The arithmetic succeeds, but the representation does not support the intended combination.
+
+This reveals another general principle:
+
+$$
+\boxed{
+\text{A weighted combination requires not only valid weights but also a meaningful space of alternatives.}
+}
+$$
+
+---
+
+### Attention: distributing relevance across representations
+
+In an attention mechanism, the alternatives are commonly vectors rather than scalar values.
+
+Suppose
+
+$$
+\mathbf{v}_1,\mathbf{v}_2,\ldots,\mathbf{v}_n
+$$
+
+are value vectors. An attention mechanism produces weights
+
+$$
+\alpha_1,\alpha_2,\ldots,\alpha_n
+$$
+
+satisfying
+
+$$
+\alpha_i\geq 0
+\qquad\text{and}\qquad
+\sum_{i=1}^{n}\alpha_i=1.
+$$
+
+The resulting context vector is
+
+$$
+\mathbf{c}
+=
+\sum_{i=1}^{n}\alpha_i\mathbf{v}_i.
+$$
+
+For example, let
+
+$$
+\mathbf{v}_1=
+\begin{bmatrix}
+1\\
+0
+\end{bmatrix},
+\qquad
+\mathbf{v}_2=
+\begin{bmatrix}
+0\\
+2
+\end{bmatrix},
+\qquad
+\mathbf{v}_3=
+\begin{bmatrix}
+3\\
+1
+\end{bmatrix},
+$$
+
+and let
+
+$$
+\alpha_1=0.2,\qquad
+\alpha_2=0.5,\qquad
+\alpha_3=0.3.
+$$
+
+Then
+
+$$
+\mathbf{c}
+=
+0.2
+\begin{bmatrix}
+1\\
+0
+\end{bmatrix}
++
+0.5
+\begin{bmatrix}
+0\\
+2
+\end{bmatrix}
++
+0.3
+\begin{bmatrix}
+3\\
+1
+\end{bmatrix}.
+$$
+
+Combining the coordinates gives
+
+$$
+\mathbf{c}
+=
+\begin{bmatrix}
+0.2\\
+0
+\end{bmatrix}
++
+\begin{bmatrix}
+0\\
+1
+\end{bmatrix}
++
+\begin{bmatrix}
+0.9\\
+0.3
+\end{bmatrix}
+=
+\begin{bmatrix}
+1.1\\
+1.3
+\end{bmatrix}.
+$$
+
+The context vector is therefore a convex combination of the value vectors.
+
+But attention weights do not necessarily have the same meaning as probabilities of mutually exclusive events. Their numerical constraints resemble probability constraints, but their semantic role is different.
+
+An attention weight generally determines how strongly a value vector contributes to the constructed representation. It expresses an allocation of influence within that computation.
+
+The weights are also usually input-dependent. For one input, the mechanism might produce
+
+$$
+(\alpha_1,\alpha_2,\alpha_3)
+=
+(0.2,0.5,0.3),
+$$
+
+while for another input it might produce
+
+$$
+(\alpha_1,\alpha_2,\alpha_3)
+=
+(0.7,0.1,0.2).
+$$
+
+Consequently, attention is not merely a fixed weighted average. It is a system that constructs the weights from the current computational context and then uses those weights to construct a new representation.
+
+At a high level, its structure is
+
+$$
+\text{input-dependent scores}
+\longrightarrow
+\text{normalized weights}
+\longrightarrow
+\text{weighted combination}.
+$$
+
+The final stage is already familiar:
+
+$$
+\mathbf{c}
+=
+\sum_i\alpha_i\mathbf{v}_i.
+$$
+
+The new problem is how the valid weights $\alpha_i$ are obtained from unrestricted scores. That question will lead directly to normalization and softmax.
+
+---
+
+### The same formula does not imply the same ontology
+
+The applications can now be compared directly.
+
+| Application | Meaning of $A_i$ | Meaning of $w_i$ | Meaning of $\sum_iw_iA_i$ |
+|---|---|---|---|
+| Weighted measurement | A measurement or estimate | Relative reliability or influence | Combined estimate |
+| Expected value | A possible outcome | Probability of that outcome | Probability-weighted center |
+| Mixture | A component or component property | Proportion of the mixture | Property or representation of the mixture |
+| Model ensemble | A model prediction | Predictive influence | Combined prediction |
+| Attention | A value representation | Input-dependent contribution strength | Constructed context representation |
+
+The same mathematical skeleton appears in every row:
+
+$$
+C=\sum_iw_iA_i.
+$$
+
+But the objects named by its symbols differ. This distinction may be described as a difference in ontology: a difference in what kinds of things the mathematical objects are understood to represent. In one case, $w_i$ is a probability. In another, it is a physical proportion. In another, it is a model coefficient. In another, it is an attention allocation. All these weights may be nonnegative and sum to one, but those shared constraints do not erase their conceptual differences. A probability may support claims about uncertainty. A mixture proportion may support claims about composition. A model weight may support claims about influence. An attention weight may support claims about contribution within a representation. One kind of claim cannot automatically be transferred to another merely because the equations look alike. For example, since attention weights sum to one, they can be mathematically treated like a probability distribution over positions. But it does not follow automatically that an attention weight is the probability that a position is the uniquely correct explanation of a model’s decision. The first statement concerns mathematical form. The second introduces a much stronger semantic interpretation. Therefore, we should separate two levels of understanding:
+
+$$
+\boxed{
+\begin{aligned}
+\text{structural interpretation}
+&:\quad
+\text{How are the quantities combined?}\\[4pt]
+\text{semantic interpretation}
+&:\quad
+\text{What do the quantities represent?}
+\end{aligned}
+}
+$$
+
+Structural recognition allows knowledge to transfer between domains. Semantic discipline prevents that transfer from becoming careless.
+
+---
+
+### What remains invariant across the interpretations?
+
+Although the meanings differ, several mathematical facts remain valid whenever
+
+$$
+w_i\geq 0
+\qquad\text{and}\qquad
+\sum_iw_i=1.
+$$
+
+For scalar alternatives,
+
+$$
+\min_iA_i
+\leq
+\sum_iw_iA_i
+\leq
+\max_iA_i.
+$$
+
+For vector alternatives, the result lies in their convex hull:
+
+$$
+C\in\operatorname{conv}\{A_1,\ldots,A_n\}.
+$$
+
+If every alternative is the same object $A$, then
+
+$$
+\sum_iw_iA
+=
+\left(\sum_iw_i\right)A
+=
+A.
+$$
+
+If one weight equals one and all the others equal zero, then the weighted combination becomes hard selection:
+
+$$
+w_k=1
+\quad\Longrightarrow\quad
+C=A_k.
+$$
+
+A continuous change in the weights produces a continuous movement through the region generated by the alternatives. These properties are algebraic and geometric. They remain available regardless of whether the weights represent probabilities, proportions, model influence, or attention. This is the productive power of abstraction. Once the shared mathematical structure has been identified, general results can be proved once and applied in many settings. But abstraction must preserve enough information to return to the original problem. If we forget what the weights and alternatives represent, we may retain the calculation while losing its meaning.
+
+---
+
+### From mathematical skeleton to program
+
+The same weighted-combination program can operate on many interpretations.
+
+```python
+def weighted_combination(weights, alternatives):
+    return sum(
+        weight * alternative
+        for weight, alternative in zip(weights, alternatives)
+    )
+```
+
+For scalar alternatives:
+
+```python
+weights = [0.2, 0.5, 0.3]
+alternatives = [20, 50, 80]
+
+result = weighted_combination(weights, alternatives)
+
+print(result)
+```
+
+The result is
+
+```text
+53.0
+```
+
+The function cannot determine whether `53.0` is an expectation, a mixture concentration, or an ensemble prediction. That meaning exists in the relationship between the program and the problem being modeled. For NumPy vectors, the same construction can be written as a weighted reduction:
+
+```python
+import numpy as np
+
+weights = np.array([0.2, 0.5, 0.3])
+
+values = np.array([
+    [1.0, 0.0],
+    [0.0, 2.0],
+    [3.0, 1.0],
+])
+
+context = np.sum(weights[:, None] * values, axis=0)
+
+print(context)
+```
+
+The expression
+
+```python
+weights[:, None] * values
+```
+
+scales every value vector by its corresponding weight. The reduction
+
+```python
+np.sum(..., axis=0)
+```
+
+then adds the weighted vectors. The program implements
+
+$$
+\mathbf{c}
+=
+\sum_{i=1}^{n}w_i\mathbf{v}_i.
+$$
+
+Once again, the machine executes the structure. The surrounding model supplies the interpretation.
+
+### Chapter conclusion
+
+This chapter began by extending a choice between two alternatives into a choice among many alternatives. Hard selection was represented by a one-hot vector:
+
+$$
+C=\sum_{i=1}^{n}I_iA_i,
+$$
+
+where
+
+$$
+I_i\in\{0,1\}
+\qquad\text{and}\qquad
+\sum_iI_i=1.
+$$
+
+The one-hot restriction was then relaxed into graded shares:
+
+$$
+C=\sum_{i=1}^{n}w_iA_i,
+$$
+
+where
+
+$$
+w_i\geq 0
+\qquad\text{and}\qquad
+\sum_iw_i=1.
+$$
+
+This relaxation transformed discrete choice into continuous allocation. Instead of preserving exactly one alternative, the computation could distribute influence across several alternatives.
+
+We then distinguished a raw weighted sum,
+
+$$
+S=\sum_i a_iA_i,
+$$
+
+from a normalized weighted average,
+
+$$
+C=
+\frac{\sum_i a_iA_i}{\sum_i a_i}
+=
+\sum_iw_iA_i.
+$$
+
+Finally, we observed that the same normalized equation supports several computational meanings:
+
+$$
+\boxed{
+\begin{aligned}
+\text{expectation}
+&:\quad
+\sum_i p_ix_i,\\[4pt]
+\text{mixture}
+&:\quad
+\sum_i w_iA_i,\\[4pt]
+\text{ensemble}
+&:\quad
+\sum_i w_i\widehat{y}_i,\\[4pt]
+\text{attention}
+&:\quad
+\sum_i\alpha_i\mathbf{v}_i.
+\end{aligned}
+}
+$$
+
+The common structure is valuable because it allows mathematical knowledge to move between domains. The differing meanings are equally important because they determine which conclusions may legitimately move with it. The central lesson is therefore not merely that many systems use weighted combinations. It is that mathematical programming requires us to reason at two levels simultaneously:
+
+$$
+\boxed{
+\text{recognize the shared structure}
+\quad+\quad
+\text{preserve the domain-specific meaning}.
+}
+$$
+
+One major question remains unanswered. In this chapter, the normalized weights were assumed to exist. But real computational systems often begin with arbitrary scores:
+
+$$
+s_1,s_2,\ldots,s_n.
+$$
+
+These scores may be negative. They may not sum to one. They may have no immediate interpretation as shares. How can unrestricted scores be transformed into nonnegative weights satisfying
+
+$$
+\sum_iw_i=1?
+$$
+
+That transformation is the subject of the next chapter.
